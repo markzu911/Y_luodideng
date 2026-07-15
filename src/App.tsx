@@ -9,6 +9,49 @@ import { motion, AnimatePresence } from "motion/react";
 import { VIRTUAL_ROOMS, PRESET_LAMPS } from "./data";
 import { RoomAnalysis, LampAnalysis, VirtualRoom, PresetLamp, GenerationParams } from "./types";
 
+// Helper to compress an uploaded image using HTML5 Canvas (max dimension 1600px, quality 0.85, output format image/jpeg)
+const compressImage = (file: File, maxDimension = 1600, quality = 0.85): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target?.result as string;
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        let width = img.width;
+        let height = img.height;
+
+        // Scale proportionally if any dimension exceeds maxDimension
+        if (width > maxDimension || height > maxDimension) {
+          if (width > height) {
+            height = Math.round((height * maxDimension) / width);
+            width = maxDimension;
+          } else {
+            width = Math.round((width * maxDimension) / height);
+            height = maxDimension;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        if (!ctx) {
+          reject(new Error("Could not get 2D canvas context"));
+          return;
+        }
+
+        ctx.drawImage(img, 0, 0, width, height);
+        // Output as image/jpeg to compress effectively
+        const compressedBase64 = canvas.toDataURL("image/jpeg", quality);
+        resolve(compressedBase64);
+      };
+      img.onerror = (err) => reject(err);
+    };
+    reader.onerror = (err) => reject(err);
+  });
+};
+
 export default function App() {
   // Current step state: 1, 2, 3, 4
   const [step, setStep] = useState<number>(1);
@@ -160,115 +203,110 @@ export default function App() {
   };
 
   // Handle Room Photo upload
-  const handleRoomUpload = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleRoomUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = async () => {
-      const base64String = reader.result as string;
+    setSelectedVirtualRoom(null);
+    setRoomAnalysis(null);
+    setRoomError(null);
+    setIsRoomAnalyzing(true);
+    setUploadedRoomBase64(null);
+
+    try {
+      // Compress the image first (returns data:image/jpeg;base64,...)
+      const base64String = await compressImage(file);
       setUploadedRoomBase64(base64String);
-      setSelectedVirtualRoom(null);
-      setRoomAnalysis(null);
-      setRoomError(null);
+
+      // Strip out metadata prefix for API call
+      const pureBase64 = base64String.split(",")[1];
+      const res = await fetch("/api/gemini", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "gemini-2.5-flash",
+          payload: {
+            task: "analyze-room",
+            image: pureBase64,
+            mimeType: "image/jpeg"
+          }
+        })
+      });
       
-      // Call Room Analysis API
-      setIsRoomAnalyzing(true);
-      try {
-        // Strip out metadata prefix (e.g., "data:image/jpeg;base64,") for API call
-        const pureBase64 = base64String.split(",")[1];
-        const res = await fetch("/api/gemini", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            model: "gemini-2.5-flash",
-            payload: {
-              task: "analyze-room",
-              image: pureBase64,
-              mimeType: file.type
-            }
-          })
-        });
-        
-        if (!res.ok) {
-          throw new Error("场景分析接口请求失败");
-        }
-        
-        const data = await res.json();
-        setRoomAnalysis(data);
-      } catch (err: any) {
-        console.error(err);
-        setRoomError("房间场景智能分析失败，已为您加载兜底分析方案。");
-        // Fallback analysis to prevent blocking the user
-        setRoomAnalysis({
-          style: "现代简约起居空间",
-          layout: "温馨明亮的室内客房布局，光线充足",
-          furniture: ["休闲沙发", "舒适抱枕", "现代质感背景墙"],
-          colors: ["米白色", "原木色", "浅灰色"],
-          recommendation: "建议将落地灯摆放在沙发后方拐角处，或者休闲椅旁，创造温馨的局部光照区。",
-          lightSuggestion: "推荐 3000开尔文 暖白光或暖黄光，以增强温馨柔和的包裹感色彩氛围。"
-        });
-      } finally {
-        setIsRoomAnalyzing(false);
+      if (!res.ok) {
+        throw new Error("场景分析接口请求失败");
       }
-    };
-    reader.readAsDataURL(file);
+      
+      const data = await res.json();
+      setRoomAnalysis(data);
+    } catch (err: any) {
+      console.error(err);
+      setRoomError("房间场景智能分析失败，已为您加载兜底分析方案。");
+      // Fallback analysis to prevent blocking the user
+      setRoomAnalysis({
+        style: "现代简约起居空间",
+        layout: "温馨明亮的室内客房布局，光线充足",
+        furniture: ["休闲沙发", "舒适抱枕", "现代质感背景墙"],
+        colors: ["米白色", "原木色", "浅灰色"],
+        recommendation: "建议将落地灯摆放在沙发后方拐角处，或者休闲椅旁，创造温馨的局部光照区。",
+        lightSuggestion: "推荐 3000开尔文 暖白光或暖黄光，以增强温馨柔和的包裹感色彩氛围。"
+      });
+    } finally {
+      setIsRoomAnalyzing(false);
+    }
   };
 
   // Handle Lamp Photo upload
-  const handleLampUpload = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleLampUpload = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    const reader = new FileReader();
-    reader.onload = async () => {
-      const base64String = reader.result as string;
+    setSelectedPresetLamp(null);
+    setLampAnalysis(null);
+    setLampError(null);
+    setIsLampAnalyzing(true);
+    setUploadedLampBase64(null);
+
+    try {
+      const base64String = await compressImage(file);
       setUploadedLampBase64(base64String);
-      setSelectedPresetLamp(null);
-      setLampAnalysis(null);
-      setLampError(null);
 
-      // Call Lamp Analysis API
-      setIsLampAnalyzing(true);
-      try {
-        const pureBase64 = base64String.split(",")[1];
-        const res = await fetch("/api/gemini", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            model: "gemini-2.5-flash",
-            payload: {
-              task: "analyze-lamp",
-              image: pureBase64,
-              mimeType: file.type
-            }
-          })
-        });
+      const pureBase64 = base64String.split(",")[1];
+      const res = await fetch("/api/gemini", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "gemini-2.5-flash",
+          payload: {
+            task: "analyze-lamp",
+            image: pureBase64,
+            mimeType: "image/jpeg"
+          }
+        })
+      });
 
-        if (!res.ok) {
-          throw new Error("灯具分析接口请求失败");
-        }
-
-        const data = await res.json();
-        setLampAnalysis(data);
-      } catch (err: any) {
-        console.error(err);
-        setLampError("落地灯设计分析失败，已为您加载兜底分析方案。");
-        // Fallback lamp analysis to prevent blocking the user
-        setLampAnalysis({
-          style: "极简现代落地灯",
-          materials: ["金属烤漆立柱", "高透散光灯罩"],
-          color: "曜石黑",
-          lightType: "漫反射温柔环境光",
-          lightWarmth: "推荐 3000开尔文 温馨暖光",
-          cozyIndex: 8,
-          placementTip: "纤细的灯柱适合靠紧墙壁放置。将灯罩角度朝向阅读位倾斜，不仅照度完美而且能渲染出极致的光阴过度。"
-        });
-      } finally {
-        setIsLampAnalyzing(false);
+      if (!res.ok) {
+        throw new Error("灯具分析接口请求失败");
       }
-    };
-    reader.readAsDataURL(file);
+
+      const data = await res.json();
+      setLampAnalysis(data);
+    } catch (err: any) {
+      console.error(err);
+      setLampError("落地灯设计分析失败，已为您加载兜底分析方案。");
+      // Fallback lamp analysis to prevent blocking the user
+      setLampAnalysis({
+        style: "极简现代落地灯",
+        materials: ["金属烤漆立柱", "高透散光灯罩"],
+        color: "曜石黑",
+        lightType: "漫反射温柔环境光",
+        lightWarmth: "推荐 3000开尔文 温馨暖光",
+        cozyIndex: 8,
+        placementTip: "纤细的灯柱适合靠紧墙壁放置。将灯罩角度朝向阅读位倾斜，不仅照度完美而且能渲染出极致的光阴过度。"
+      });
+    } finally {
+      setIsLampAnalyzing(false);
+    }
   };
 
   // Trigger high tech rendering progress in Step 3
@@ -682,7 +720,7 @@ export default function App() {
                         </div>
                         <div>
                           <p className="text-base font-bold text-[#2C2623]">{isRoomAnalyzing ? "分析中..." : "点击或拖拽上传房间场景图"}</p>
-                          <p className="text-xs text-[#8C8375] mt-1.5">{isRoomAnalyzing ? "请稍候" : "支持常见图片格式，推荐沙发或墙角等试摆全景"}</p>
+                          <p className="text-xs text-[#8C8375] mt-1.5">{isRoomAnalyzing ? "请稍候" : "支持常见图片格式（如 JPG, PNG, WebP），最大支持 20MB"}</p>
                         </div>
                       </div>
                     )}
@@ -882,7 +920,7 @@ export default function App() {
                       </div>
                       <div>
                         <p className="text-base font-bold text-[#2C2623]">{isLampAnalyzing ? "分析中..." : "点击或拖拽上传落地灯背景图"}</p>
-                        <p className="text-xs text-[#8C8375] mt-1.5">{isLampAnalyzing ? "请稍候" : "支持实拍图，推荐透明背景或白底效果最佳"}</p>
+                        <p className="text-xs text-[#8C8375] mt-1.5">{isLampAnalyzing ? "请稍候" : "支持常见图片格式（如 JPG, PNG, WebP），最大支持 20MB"}</p>
                       </div>
                     </div>
                   )}
