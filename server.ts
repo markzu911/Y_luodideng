@@ -316,7 +316,15 @@ The room style and context MUST match:
 The floor lamp style, color, and materials MUST perfectly match the reference lamp image:
 - Style: ${lampAnalysis.style}
 - Materials & Finish: ${lampAnalysis.materials.join(", ")} in ${lampAnalysis.color}
-- Lighting: ${params.lightState === "on" ? `Turned ON, emitting a warm, inviting ${lampAnalysis.lightType} (${lampAnalysis.lightWarmth || "3000开尔文 warm yellow glow"}).` : "Turned OFF. No light is emitted, allowing the natural daylight and room ambient light to reveal the true textures and colors of the lamp."}
+- Lighting: ${params.lightState === "on" 
+  ? `CRITICAL (LIGHT IS ON): The floor lamp is TURNED ON. Emitted light MUST be rendered with maximum physical realism as follows:
+    1. VOLUMETRIC GLOW & BLOOM: The lampshade must glow with high luminescent intensity, creating a realistic warm light bloom and subtle atmospheric halo around the shade. The light source within must look active and bright.
+    2. DIRECT & INDIRECT WALL WASHING: The lamp must project a strong, beautiful, realistic cone of light (光锥) or diffuse wash onto the adjacent wall, floor, and ceiling according to its lighting type (${lampAnalysis.lightType || "ambient diffuse light"}). The light pool on the wall must have a smooth, natural gradient falloff.
+    3. LOCALIZED GLOBAL ILLUMINATION: The emitted light (${lampAnalysis.lightWarmth || "3000开尔文暖黄光"}) must dynamically illuminate surrounding surfaces. Fabric sofas, leather chairs, wooden floors, and pillows adjacent to the lamp must show natural warm highlights, enhanced texture relief, and soft specular reflections from the light.
+    4. ACCURATE CAST SHADOWS: The lamp base must ground naturally on the floor with soft ambient occlusion shadows. Furniture pieces closest to the lamp must cast subtle, soft-edged contact shadows in the direction away from the lamp, blending seamlessly with the room's ambient illumination.
+    5. DAYLIGHT-GLOW CONTRAST: The warm yellow/amber illumination must realistically blend with the cooler, natural daylight in the room, creating an atmospheric, high-end architectural digest photograph feel with complex multi-source lighting.`
+  : `CRITICAL (LIGHT IS OFF): The floor lamp is TURNED OFF. No artificial light is emitted. The lamp is purely lit by the room's ambient daylight and surrounding lights, revealing the authentic texture, colors, and shadows of its structural elements (lampshade, metal poles, wooden elements) without any active glow or light-cone emission.`
+}
 
 HIGHEST PRIORITY CONSTRAINTS (MUST BE STRICTLY FOLLOWED):
 1. ROOM REGENERATION: Do NOT directly edit the original room photograph. You MUST regenerate a new room based on the analysis results of the original room and place the floor lamp inside it. CRITICAL: DO NOT alter the architectural structure of the room (e.g., do NOT add pillars/columns, walls, or change the ceiling/floor). DO NOT add any extra furniture (like extra sofas or chairs) that are not present in the original room. The architectural structure, furniture count, and layout MUST remain exactly the same as the original room. Even if it's a close-up shot (近景), do NOT change the existing layout or add random items. 绝对不能改变房间原有的建筑结构（例如绝对不能凭空生成柱子、墙壁等），绝对不能随意增加原图中没有的家具，保持原有的建筑结构、家具数量和布局，即使是近景也不能随便更改！
@@ -607,7 +615,15 @@ The room style and context MUST match:
 The floor lamp style, color, and materials MUST perfectly match the reference lamp image:
 - Style: ${lampAnalysis.style}
 - Materials & Finish: ${lampAnalysis.materials.join(", ")} in ${lampAnalysis.color}
-- Lighting: ${params.lightState === "on" ? `Turned ON, emitting a warm, inviting ${lampAnalysis.lightType} (${lampAnalysis.lightWarmth || "3000开尔文 warm yellow glow"}).` : "Turned OFF. No light is emitted, allowing the natural daylight and room ambient light to reveal the true textures and colors of the lamp."}
+- Lighting: ${params.lightState === "on" 
+  ? `CRITICAL (LIGHT IS ON): The floor lamp is TURNED ON. Emitted light MUST be rendered with maximum physical realism as follows:
+    1. VOLUMETRIC GLOW & BLOOM: The lampshade must glow with high luminescent intensity, creating a realistic warm light bloom and subtle atmospheric halo around the shade. The light source within must look active and bright.
+    2. DIRECT & INDIRECT WALL WASHING: The lamp must project a strong, beautiful, realistic cone of light (光锥) or diffuse wash onto the adjacent wall, floor, and ceiling according to its lighting type (${lampAnalysis.lightType || "ambient diffuse light"}). The light pool on the wall must have a smooth, natural gradient falloff.
+    3. LOCALIZED GLOBAL ILLUMINATION: The emitted light (${lampAnalysis.lightWarmth || "3000开尔文暖黄光"}) must dynamically illuminate surrounding surfaces. Fabric sofas, leather chairs, wooden floors, and pillows adjacent to the lamp must show natural warm highlights, enhanced texture relief, and soft specular reflections from the light.
+    4. ACCURATE CAST SHADOWS: The lamp base must ground naturally on the floor with soft ambient occlusion shadows. Furniture pieces closest to the lamp must cast subtle, soft-edged contact shadows in the direction away from the lamp, blending seamlessly with the room's ambient illumination.
+    5. DAYLIGHT-GLOW CONTRAST: The warm yellow/amber illumination must realistically blend with the cooler, natural daylight in the room, creating an atmospheric, high-end architectural digest photograph feel with complex multi-source lighting.`
+  : `CRITICAL (LIGHT IS OFF): The floor lamp is TURNED OFF. No artificial light is emitted. The lamp is purely lit by the room's ambient daylight and surrounding lights, revealing the authentic texture, colors, and shadows of its structural elements (lampshade, metal poles, wooden elements) without any active glow or light-cone emission.`
+}
 
 HIGHEST PRIORITY CONSTRAINTS (MUST BE STRICTLY FOLLOWED):
 1. ROOM REGENERATION: Do NOT directly edit the original room photograph. You MUST regenerate a new room based on the analysis results of the original room and place the floor lamp inside it. CRITICAL: DO NOT alter the architectural structure of the room (e.g., do NOT add pillars/columns, walls, or change the ceiling/floor). DO NOT add any extra furniture (like extra sofas or chairs) that are not present in the original room. The architectural structure, furniture count, and layout MUST remain exactly the same as the original room. Even if it's a close-up shot (近景), do NOT change the existing layout or add random items. 绝对不能改变房间原有的建筑结构（例如绝对不能凭空生成柱子、墙壁等），绝对不能随意增加原图中没有的家具，保持原有的建筑结构、家具数量和布局，即使是近景也不能随便更改！
