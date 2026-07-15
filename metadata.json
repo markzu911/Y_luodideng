@@ -1,0 +1,6 @@
+{
+  "name": "落地灯试摆助手",
+  "description": "一个智能落地灯试摆与空间搭配设计应用，支持上传房间照片或选择虚拟房间进行智能场景分析、灯具风格分析，并提供实时交互试摆与效果图导出。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

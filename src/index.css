@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+@layer utilities {
+  /* Slow spin animation for AI generation overlay */
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  .animate-spin-slow {
+    animation: spin-slow 16s linear infinite;
+  }
+}
+
+/* Custom premium styling for range inputs across the try-on workspace */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: #EBE8DF;
+  height: 6px;
+  border-radius: 9999px;
+  outline: none;
+  transition: background 0.15s;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #967C55;
+  cursor: pointer;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.18);
+  transition: transform 0.15s ease-in-out, background-color 0.15s;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  background: #836C47;
+}
+
+input[type="range"]::-webkit-slider-thumb:active {
+  transform: scale(1.1);
+  background: #6D5939;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #967C55;
+  cursor: pointer;
+  border: 2px solid #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.18);
+  transition: transform 0.15s ease-in-out, background-color 0.15s;
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+  transform: scale(1.2);
+  background: #836C47;
+}
+
+input[type="range"]::-moz-range-thumb:active {
+  transform: scale(1.1);
+  background: #6D5939;
+}
