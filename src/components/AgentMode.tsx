@@ -667,7 +667,7 @@ export default function AgentMode({
       lowerText.includes("卧室") && r.id === "room_2" ||
       lowerText.includes("中式") && r.id === "room_3" ||
       lowerText.includes("奶油") && r.id === "room_4" ||
-      lowerText.includes("侘寂") && r.id === "room_5"
+      (lowerText.includes("侘寂") || lowerText.includes("寂宅") || lowerText.includes("寂静")) && r.id === "room_5"
     );
 
     if (matchedRoom) {
