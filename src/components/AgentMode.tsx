@@ -99,6 +99,8 @@ export default function AgentMode({
   const [renderingText, setRenderingText] = useState<string>("");
   const [isChatAnalyzing, setIsChatAnalyzing] = useState<boolean>(false);
 
+  const isOutOfCredits = userIntegral !== null && userIntegral < toolRequiredIntegral;
+
   const chatEndRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const isFirstMount = useRef(true);
@@ -453,11 +455,11 @@ export default function AgentMode({
       });
       const verifyData = await verifyRes.json();
       if (!verifyRes.ok || !verifyData.success) {
-        const errorMsg = verifyData.message || "❌ 积分不足，无法执行该操作";
+        const errorMsg = verifyData.message || "❌ 体验额度不足，无法执行该操作";
         appendMessage({
           id: `err-pts-${Date.now()}`,
           sender: "ai",
-          text: `❌ 积分不足，无法执行该操作（当前所需：${toolRequiredIntegral}积分，您的积分余额不足）。`,
+          text: `❌ 体验额度不足，无法执行该操作（当前所需：${toolRequiredIntegral}次，您的额度余额不足）。`,
           timestamp: new Date(),
           isError: true
         });
@@ -468,7 +470,7 @@ export default function AgentMode({
       appendMessage({
         id: `err-pts-${Date.now()}`,
         sender: "ai",
-        text: `❌ 积分校验遇到异常，请稍后重试。`,
+        text: `❌ 额度校验遇到异常，请稍后重试。`,
         timestamp: new Date(),
         isError: true
       });
@@ -534,7 +536,7 @@ export default function AgentMode({
         const consumeData = await consumeRes.json();
         
         if (!consumeRes.ok || !consumeData.success) {
-          throw new Error(consumeData.message || "积分扣除失败，请重试。");
+          throw new Error(consumeData.message || "额度扣除失败，请重试。");
         }
 
         // Sync points
@@ -1063,11 +1065,7 @@ export default function AgentMode({
                   }`}
                 >
                   {/* Message Text with simple rich paragraph format */}
-                  {msg.text && (
-                    <div className="whitespace-pre-line space-y-1 font-sans">
-                      {msg.text}
-                    </div>
-                  )}
+                  {msg.text && renderFormattedText(msg.text, isUser)}
 
                   {/* Thumbnail attachment */}
                   {msg.image && msg.type !== "result-card" && (
@@ -1265,14 +1263,16 @@ export default function AgentMode({
                           <Sparkles className="w-4 h-4 text-[#967C55]" />
                           <span>
                             {userIntegral !== null 
-                              ? `所需积分: ${toolRequiredIntegral} | 当前可用: ${userIntegral}`
-                              : `所需积分: ${toolRequiredIntegral}`}
+                              ? `所需额度: ${toolRequiredIntegral} | 当前可用: ${userIntegral}`
+                              : `所需额度: ${toolRequiredIntegral}`}
                           </span>
                         </div>
                         <button
                           onClick={handleGenerate}
-                          disabled={isRendering}
-                          className="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-[#967C55] hover:bg-[#836C47] text-white text-xs font-extrabold flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all"
+                          disabled={isRendering || isOutOfCredits}
+                          className={`w-full sm:w-auto px-6 py-2.5 rounded-xl text-white text-xs font-extrabold flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all ${
+                            isOutOfCredits ? "bg-[#D6CFC1] cursor-not-allowed hover:shadow-none" : "bg-[#967C55] hover:bg-[#836C47]"
+                          }`}
                         >
                           <Sparkles className="w-3.5 h-3.5 text-amber-200" />
                           <span>一键智能试摆合成 🚀</span>
@@ -1398,30 +1398,147 @@ export default function AgentMode({
 
       {/* Chat bottom Input container */}
       <div className="shrink-0 p-4 bg-white border-t border-[#EBE8DF] flex flex-col gap-2">
-        <div className="flex items-stretch gap-2.5">
-          <input
-            type="text"
-            value={inputMessage}
-            onChange={(e) => setInputMessage(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                handleSendMessage();
-              }
-            }}
-            placeholder="输入如「我想看开灯效果」、「中式风格」、「远景视角」或输入想说的话..."
-            className="flex-1 px-4 py-3 bg-[#FAF9F5] border border-[#EBE8DF] rounded-2xl text-xs text-[#2C2623] placeholder-[#8C8375] focus:outline-none focus:ring-2 focus:ring-[#967C55]/30 focus:bg-white transition-all shadow-inner"
-          />
+        {isOutOfCredits ? (
+          <div className="bg-amber-50 border border-amber-200 text-[#7A5B35] rounded-2xl p-4 text-xs font-bold flex items-start gap-3 shadow-inner">
+            <Info className="w-4 h-4 text-[#967C55] shrink-0 mt-0.5" />
+            <div className="space-y-1">
+              <p className="font-extrabold text-[13px] text-[#2C2623]">⚠️ 您的体验额度已用尽</p>
+              <p className="text-[#8C8375] text-[11px] font-medium leading-relaxed">
+                当前的体验额度余额不足以支持下一次渲染或对话。由于目前额度已全部用完，对话已自动终止。
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-stretch gap-2.5">
+            <input
+              type="text"
+              value={inputMessage}
+              disabled={isOutOfCredits}
+              onChange={(e) => setInputMessage(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSendMessage();
+                }
+              }}
+              placeholder="输入如「我想看开灯效果」、「中式风格」、「远景视角」或输入想说的话..."
+              className="flex-1 px-4 py-3 bg-[#FAF9F5] border border-[#EBE8DF] rounded-2xl text-xs text-[#2C2623] placeholder-[#8C8375] focus:outline-none focus:ring-2 focus:ring-[#967C55]/30 focus:bg-white transition-all shadow-inner disabled:opacity-50"
+            />
 
-          <button
-            onClick={handleSendMessage}
-            className="px-5 bg-[#967C55] hover:bg-[#836C47] text-white rounded-2xl flex items-center justify-center shadow-md transition-all active:scale-95 shrink-0"
-          >
-            <Send className="w-4 h-4 text-white" />
-          </button>
-        </div>
+            <button
+              onClick={handleSendMessage}
+              disabled={isOutOfCredits}
+              className="px-5 bg-[#967C55] hover:bg-[#836C47] text-white rounded-2xl flex items-center justify-center shadow-md transition-all active:scale-95 shrink-0 disabled:bg-[#D6CFC1]"
+            >
+              <Send className="w-4 h-4 text-white" />
+            </button>
+          </div>
+        )}
       </div>
 
     </div>
   );
+}
+
+function renderFormattedText(text: string, isUser: boolean) {
+  if (isUser) {
+    return <div className="whitespace-pre-line font-sans">{text}</div>;
+  }
+
+  const paragraphs = text.split(/\n\n+/);
+
+  return (
+    <div className="space-y-3 font-sans text-sm text-[#2C2623]">
+      {paragraphs.map((p, pIdx) => {
+        const trimmedP = p.trim();
+        if (!trimmedP) return null;
+
+        const lines = trimmedP.split("\n");
+        const isList = lines.every(line => {
+          const l = line.trim();
+          return l.startsWith("•") || l.startsWith("*") || l.startsWith("-") || l.match(/^\d+\./);
+        });
+
+        if (isList) {
+          return (
+            <ul key={pIdx} className="space-y-2.5 my-2">
+              {lines.map((line, lIdx) => {
+                const cleanLine = line.replace(/^[•*\-]\s*/, "").replace(/^\d+\.\s*/, "");
+                return (
+                  <li key={lIdx} className="flex items-start gap-2 text-[13px] leading-relaxed">
+                    <span className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-amber-100 text-[#967C55] text-[9px] font-bold shrink-0 mt-0.5">
+                      ✦
+                    </span>
+                    <span className="flex-1">{parseInlineStyles(cleanLine)}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          );
+        }
+
+        return (
+          <div key={pIdx} className="space-y-1.5 leading-relaxed text-[13px]">
+            {lines.map((line, lIdx) => {
+              const trimmedLine = line.trim();
+              if (trimmedLine.startsWith("•") || trimmedLine.startsWith("*") || trimmedLine.startsWith("-")) {
+                const cleanLine = trimmedLine.replace(/^[•*\-]\s*/, "");
+                return (
+                  <div key={lIdx} className="flex items-start gap-2 pl-1 py-0.5 text-[13px]">
+                    <span className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-amber-100 text-[#967C55] text-[9px] font-bold shrink-0 mt-0.5">
+                      ✦
+                    </span>
+                    <span className="flex-1">{parseInlineStyles(cleanLine)}</span>
+                  </div>
+                );
+              }
+
+              const isHeader = trimmedLine.startsWith("🔍") || trimmedLine.startsWith("✨") || trimmedLine.startsWith("💡") || (trimmedLine.startsWith("**") && trimmedLine.endsWith("**"));
+              if (isHeader) {
+                return (
+                  <div key={lIdx} className="text-sm font-extrabold text-[#1C1715] pt-1.5 pb-0.5 flex items-center gap-1.5">
+                    {parseInlineStyles(trimmedLine)}
+                  </div>
+                );
+              }
+
+              return (
+                <p key={lIdx} className="text-[13px] leading-relaxed">
+                  {parseInlineStyles(line)}
+                </p>
+              );
+            })}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function parseInlineStyles(text: string) {
+  const parts: React.ReactNode[] = [];
+  let currentKey = 0;
+
+  const regex = /(\*\*[^*]+\*\*|`[^`]+`)/g;
+  const tokens = text.split(regex);
+
+  tokens.forEach(token => {
+    if (token.startsWith("**") && token.endsWith("**")) {
+      parts.push(
+        <strong key={currentKey++} className="font-extrabold text-[#1C1715]">
+          {token.slice(2, -2)}
+        </strong>
+      );
+    } else if (token.startsWith("`") && token.endsWith("`")) {
+      parts.push(
+        <code key={currentKey++} className="mx-1 bg-[#FAF9F5] border border-[#EBE8DF] text-[#967C55] px-1.5 py-0.5 rounded-md font-mono text-[11px] font-bold">
+          {token.slice(1, -1)}
+        </code>
+      );
+    } else {
+      parts.push(<React.Fragment key={currentKey++}>{token}</React.Fragment>);
+    }
+  });
+
+  return parts;
 }
