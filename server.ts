@@ -413,8 +413,9 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
           : "5. PERSONA / HUMAN PRESENCE: DO NOT include any human figures or models in the scene. Provide a pure architectural and furniture visualization. 绝对不要在画面中出现任何人物模型。";
 
         const prompt = `A professional, beautiful, and ultra-high-resolution interior design photograph.
-Your task is to generate a beautiful, normal, and perfectly balanced room based on the reference room image and seamlessly integrate the provided floor lamp into it.
+Your task is to generate a beautiful, normal, and perfectly balanced room that EXACTLY MATCHES the visual style, vibe, and architectural elements of the reference room image, and seamlessly integrate the provided floor lamp into it.
 
+CRITICAL ROOM STYLE MATCHING: You MUST preserve the exact interior design style provided in the reference room image (e.g., Wabi-Sabi, Modern Cream, Minimalist, etc.). Do NOT invent a different room style! The generated room MUST feel like the exact same space as the reference image, just with the lamp added.
 The room style and context MUST match:
 - Style: ${roomAnalysis.style}
 - Layout: ${roomAnalysis.layout}

@@ -758,9 +758,9 @@ export default function App() {
             setGenerationHistory={setGenerationHistory}
           />
         ) : (
-          <div className="flex-1 overflow-y-auto min-h-0 pr-1 pb-16 scrollbar-thin scrollbar-thumb-gray-200">
+          <div className="flex flex-col flex-1 overflow-y-auto min-h-0 pr-1 pb-4 scrollbar-thin scrollbar-thumb-gray-200">
             {/* Expert Mode Stepper Indicator */}
-            <div className="shrink-0 flex items-center justify-center space-x-2 md:space-x-4 text-xs font-semibold mb-8 pb-4 border-b border-[#EBE8DF]/60 max-w-2xl mx-auto">
+            <div className="shrink-0 flex items-center justify-center space-x-2 md:space-x-4 text-xs font-semibold mb-4 pb-2 border-b border-[#EBE8DF]/60 max-w-2xl mx-auto">
               {[
                 { num: 1, label: "场景分析" },
                 { num: 2, label: "灯具匹配" },
@@ -795,45 +795,45 @@ export default function App() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="space-y-8"
+            className="flex flex-col flex-1 min-h-0 space-y-3"
           >
-            <div className="text-center space-y-2">
-              <span className="text-[11px] font-bold tracking-widest text-[#967C55] uppercase">第一步 / 共四步</span>
-              <h2 className="text-2xl md:text-3.5xl font-extrabold tracking-tight text-[#1C1715]">第 1 步：选择或上传场景</h2>
-              <p className="text-sm text-[#7A7061] max-w-xl mx-auto">
+            <div className="shrink-0 text-center space-y-1">
+              <span className="text-[10px] font-bold tracking-widest text-[#967C55] uppercase">第一步 / 共四步</span>
+              <h2 className="text-xl md:text-2xl font-extrabold tracking-tight text-[#1C1715]">第 1 步：选择或上传场景</h2>
+              <p className="text-xs text-[#7A7061] max-w-xl mx-auto">
                 人工智能专家模型将根据您上传的房间照片或所选风格进行高精度空间布局与光影关系分析
               </p>
             </div>
 
             {/* Toggle Modes */}
-            <div className="flex justify-center">
+            <div className="shrink-0 flex justify-center">
               <div className="bg-[#EBE8DF] p-1 rounded-2xl inline-flex shadow-inner">
                 <button
                   id="tab-upload-room"
                   onClick={() => setSceneMode("upload")}
-                  className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${sceneMode === "upload" ? "bg-white text-[#1C1715] shadow-sm" : "text-[#7A7061] hover:text-[#1C1715]"}`}
+                  className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${sceneMode === "upload" ? "bg-white text-[#1C1715] shadow-sm" : "text-[#7A7061] hover:text-[#1C1715]"}`}
                 >
-                  <Upload className="w-4 h-4 inline-block mr-2 -mt-0.5" />
+                  <Upload className="w-4 h-4 inline-block mr-1 -mt-0.5" />
                   上传房间照片
                 </button>
                 <button
                   id="tab-virtual-room"
                   onClick={() => setSceneMode("virtual")}
-                  className={`px-5 py-2.5 rounded-xl text-sm font-semibold transition-all ${sceneMode === "virtual" ? "bg-white text-[#1C1715] shadow-sm" : "text-[#7A7061] hover:text-[#1C1715]"}`}
+                  className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all ${sceneMode === "virtual" ? "bg-white text-[#1C1715] shadow-sm" : "text-[#7A7061] hover:text-[#1C1715]"}`}
                 >
-                  <Grid className="w-4 h-4 inline-block mr-2 -mt-0.5" />
+                  <Grid className="w-4 h-4 inline-block mr-1 -mt-0.5" />
                   选择虚拟房间
                 </button>
               </div>
             </div>
 
             {/* Render Scene Selector and Analysis Split */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+            <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
               
               {/* Left Selector Area */}
-              <div className="lg:col-span-7 h-full flex flex-col">
+              <div className="lg:col-span-7 h-full flex flex-col min-h-0">
                 {sceneMode === "upload" ? (
-                  <div className="bg-white rounded-3xl border-2 border-dashed border-[#D6CFC1] hover:border-[#967C55] p-8 transition-colors flex flex-col items-center justify-center flex-1 min-h-[340px] relative overflow-hidden group">
+                  <div className="bg-white rounded-3xl border-2 border-dashed border-[#D6CFC1] hover:border-[#967C55] p-4 transition-colors flex flex-col items-center justify-center flex-1 min-h-0 relative overflow-hidden group">
                     <input 
                       type="file" 
                       accept="image/*" 
@@ -894,23 +894,23 @@ export default function App() {
                     )}
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 overflow-y-auto">
                     {VIRTUAL_ROOMS.map((room) => (
                       <div
                         key={room.id}
                         id={`virtual-room-card-${room.id}`}
                         onClick={() => handleSelectVirtualRoom(room)}
-                        className={`group relative rounded-3xl overflow-hidden cursor-pointer border-2 transition-all duration-300 p-6 flex flex-col ${selectedVirtualRoom?.id === room.id ? "bg-white border-[#967C55] ring-4 ring-[#967C55]/10 shadow-sm" : "bg-white border-[#EBE8DF] hover:border-[#967C55]/60 hover:shadow-md"}`}
+                        className={`group relative rounded-3xl overflow-hidden cursor-pointer border-2 transition-all duration-300 p-4 flex flex-col ${selectedVirtualRoom?.id === room.id ? "bg-white border-[#967C55] ring-4 ring-[#967C55]/10 shadow-sm" : "bg-white border-[#EBE8DF] hover:border-[#967C55]/60 hover:shadow-md"}`}
                       >
-                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-colors ${selectedVirtualRoom?.id === room.id ? "bg-[#967C55]/10 text-[#967C55]" : "bg-indigo-50 text-indigo-500 group-hover:bg-indigo-100 group-hover:text-indigo-600"}`}>
-                          <Sparkles className="w-6 h-6" />
+                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-2 transition-colors ${selectedVirtualRoom?.id === room.id ? "bg-[#967C55]/10 text-[#967C55]" : "bg-indigo-50 text-indigo-500 group-hover:bg-indigo-100 group-hover:text-indigo-600"}`}>
+                          <Sparkles className="w-5 h-5" />
                         </div>
-                        <h4 className="text-base font-bold text-[#1C1715] mb-2">{room.name}</h4>
-                        <p className="text-xs text-[#8C8375] leading-relaxed flex-1">{room.style}</p>
+                        <h4 className="text-sm font-bold text-[#1C1715] mb-1">{room.name}</h4>
+                        <p className="text-[10px] text-[#8C8375] leading-relaxed flex-1 line-clamp-2">{room.style}</p>
                         
                         {selectedVirtualRoom?.id === room.id && (
-                          <div className="absolute top-4 right-4 w-6 h-6 rounded-full bg-[#967C55] text-white flex items-center justify-center shadow-lg">
-                            <Check className="w-3.5 h-3.5 stroke-[3]" />
+                          <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-[#967C55] text-white flex items-center justify-center shadow-lg">
+                            <Check className="w-3 h-3 stroke-[3]" />
                           </div>
                         )}
                       </div>
@@ -920,69 +920,68 @@ export default function App() {
               </div>
 
               {/* Right Analysis Dashboard Area */}
-              <div className="lg:col-span-5 h-full flex flex-col">
+              <div className="lg:col-span-5 h-full flex flex-col min-h-0">
                 {roomAnalysis ? (
                   <motion.div 
                     initial={{ opacity: 0, scale: 0.98 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="bg-white rounded-3xl border border-[#EBE8DF] p-6 space-y-5 shadow-sm flex-1"
+                    className="bg-white rounded-3xl border border-[#EBE8DF] p-4 space-y-3 shadow-sm flex-1 min-h-0 overflow-y-auto"
                   >
-                    <div className="flex items-center justify-between border-b border-[#FAF9F5] pb-4">
-                      <div className="flex items-center space-x-2.5">
-                        <div className="p-2 rounded-xl bg-[#FAF9F5] border border-[#EBE8DF] text-[#967C55]">
-                          <Sparkles className="w-4 h-4" />
+                    <div className="flex items-center justify-between border-b border-[#FAF9F5] pb-2">
+                      <div className="flex items-center space-x-2">
+                        <div className="p-1.5 rounded-xl bg-[#FAF9F5] border border-[#EBE8DF] text-[#967C55]">
+                          <Sparkles className="w-3.5 h-3.5" />
                         </div>
-                        <h3 className="text-base font-bold text-[#1C1715]">场景空间解析报告</h3>
+                        <h3 className="text-sm font-bold text-[#1C1715]">场景解析报告</h3>
                       </div>
-                      <span className="text-[10px] bg-[#FAF9F5] border border-[#EBE8DF] text-[#7A7061] px-2.5 py-1 rounded-full font-bold">深度解析</span>
                     </div>
 
                     {/* Room Style */}
-                    <div className="bg-[#FAF9F5] border border-[#EBE8DF] rounded-2xl p-4 space-y-2">
-                      <div className="flex items-center space-x-1.5 text-xs font-bold text-[#967C55]">
+                    <div className="bg-[#FAF9F5] border border-[#EBE8DF] rounded-2xl p-3 space-y-1">
+                      <div className="flex items-center space-x-1.5 text-[10px] font-bold text-[#967C55]">
                         <Compass className="w-3.5 h-3.5" />
-                        <span>空间设计风格定位</span>
+                        <span>设计风格</span>
                       </div>
-                      <p className="text-sm font-bold text-[#2C2623]">{roomAnalysis.style}</p>
+                      <p className="text-xs font-bold text-[#2C2623]">{roomAnalysis.style}</p>
                     </div>
                     
                     {/* Furniture & Colors */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-1">
-                        <span className="text-xs font-semibold text-[#8C8375]">主要家具物件</span>
+                        <span className="text-[10px] font-semibold text-[#8C8375]">主要物件</span>
                         <div className="flex flex-wrap gap-1 mt-1">
                           {roomAnalysis.furniture.slice(0,4).map((m: string, i: number) => (
-                            <span key={i} className="text-[10px] px-2 py-0.5 rounded bg-[#FAF9F5] border border-[#EBE8DF] text-[#665D4F] font-bold">{m}</span>
+                            <span key={i} className="text-[9px] px-1.5 py-0.5 rounded bg-[#FAF9F5] border border-[#EBE8DF] text-[#665D4F] font-bold line-clamp-1">{m}</span>
                           ))}
                         </div>
                       </div>
                       <div className="space-y-1">
-                        <span className="text-xs font-semibold text-[#8C8375]">主导色彩分布</span>
+                        <span className="text-[10px] font-semibold text-[#8C8375]">主要色彩</span>
                         <div className="flex flex-wrap gap-1 mt-1">
                           {roomAnalysis.colors.slice(0,3).map((c: string, i: number) => (
-                            <span key={i} className="text-[10px] px-2 py-0.5 rounded bg-[#FAF9F5] border border-[#EBE8DF] text-[#665D4F] font-bold">{c}</span>
+                            <span key={i} className="text-[9px] px-1.5 py-0.5 rounded bg-[#FAF9F5] border border-[#EBE8DF] text-[#665D4F] font-bold line-clamp-1">{c}</span>
                           ))}
                         </div>
                       </div>
                     </div>
 
                     {/* Placement recommendation */}
-                    <div className="border-t border-[#FAF9F5] pt-4 space-y-2">
-                      <div className="flex items-center space-x-1.5 text-xs font-bold text-[#967C55]">
-                        <Sparkles className="w-3.5 h-3.5" />
-                        <span>智能摆放机位建议</span>
+                    <div className="border-t border-[#FAF9F5] pt-2 space-y-1">
+                      <div className="flex items-center space-x-1.5 text-[10px] font-bold text-[#967C55]">
+                        <Sparkles className="w-3 h-3" />
+                        <span>摆放机位建议</span>
                       </div>
-                      <p className="text-xs text-[#665D4F] leading-relaxed bg-[#FAF9F5] border border-[#EBE8DF] p-3 rounded-xl">{roomAnalysis.recommendation}</p>
+                      <p className="text-[10px] text-[#665D4F] leading-relaxed bg-[#FAF9F5] border border-[#EBE8DF] p-2 rounded-xl">{roomAnalysis.recommendation}</p>
                     </div>
                   </motion.div>
                 ) : (
-                  <div className="bg-white rounded-3xl border border-[#EBE8DF] p-8 flex flex-col items-center justify-center flex-1 min-h-[340px] text-center space-y-3.5 shadow-sm">
-                    <div className="w-12 h-12 rounded-full bg-[#FAF9F5] border border-[#EBE8DF] flex items-center justify-center text-[#8C8375]">
-                      <Sparkles className="w-5 h-5" />
+                  <div className="bg-white rounded-3xl border border-[#EBE8DF] p-4 flex flex-col items-center justify-center flex-1 min-h-0 text-center space-y-2 shadow-sm">
+                    <div className="w-10 h-10 rounded-full bg-[#FAF9F5] border border-[#EBE8DF] flex items-center justify-center text-[#8C8375]">
+                      <Sparkles className="w-4 h-4" />
                     </div>
                     <div className="space-y-1">
-                      <h4 className="text-sm font-bold text-[#2C2623]">等待上传场景</h4>
-                      <p className="text-xs text-[#8C8375] max-w-[220px]">上传您的房间照片以生成智能空间布局分析报告</p>
+                      <h4 className="text-xs font-bold text-[#2C2623]">等待上传场景</h4>
+                      <p className="text-[10px] text-[#8C8375] max-w-[200px]">上传照片以生成智能布局分析</p>
                     </div>
                   </div>
                 )}
@@ -991,22 +990,22 @@ export default function App() {
 
             {/* Error state */}
             {roomError && (
-              <div className="bg-amber-50 border border-amber-200 text-amber-900 rounded-2xl p-4 text-xs flex items-start space-x-2">
+              <div className="shrink-0 bg-amber-50 border border-amber-200 text-amber-900 rounded-2xl p-3 text-xs flex items-start space-x-2">
                 <Info className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
                 <span>{roomError}</span>
               </div>
             )}
 
             {/* Next buttons */}
-            <div className="flex justify-end pt-4">
+            <div className="shrink-0 flex justify-end pt-2">
               <button
                 id="btn-goto-step-2"
                 disabled={!roomAnalysis}
                 onClick={() => setStep(2)}
-                className={`px-8 py-3.5 rounded-2xl text-sm font-extrabold flex items-center space-x-2 shadow-sm transition-all ${roomAnalysis ? "bg-[#967C55] text-white hover:bg-[#836C47] cursor-pointer" : "bg-[#FAF9F5] border border-[#EBE8DF] text-[#C4BDB0] cursor-not-allowed"}`}
+                className={`px-6 py-2.5 rounded-xl text-xs font-extrabold flex items-center space-x-2 shadow-sm transition-all ${roomAnalysis ? "bg-[#967C55] text-white hover:bg-[#836C47] cursor-pointer" : "bg-[#FAF9F5] border border-[#EBE8DF] text-[#C4BDB0] cursor-not-allowed"}`}
               >
                 <span>下一步：选择灯具</span>
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
           </motion.div>
@@ -1018,22 +1017,22 @@ export default function App() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="space-y-8"
+            className="flex flex-col flex-1 min-h-0 space-y-3"
           >
-            <div className="text-center space-y-2">
-              <span className="text-[11px] font-bold tracking-widest text-[#967C55] uppercase">第二步 / 共四步</span>
-              <h2 className="text-2xl md:text-3.5xl font-extrabold tracking-tight text-[#1C1715]">第 2 步：上传落地灯图片</h2>
-              <p className="text-sm text-[#7A7061] max-w-xl mx-auto">
-                上传需要试摆的灯具照片，人工智能视觉大模型将智能识别材质、出光方向并自动计算推荐摆放参数
+            <div className="shrink-0 text-center space-y-1">
+              <span className="text-[10px] font-bold tracking-widest text-[#967C55] uppercase">第二步 / 共四步</span>
+              <h2 className="text-xl md:text-2xl font-extrabold tracking-tight text-[#1C1715]">第 2 步：上传落地灯图片</h2>
+              <p className="text-xs text-[#7A7061] max-w-xl mx-auto">
+                上传需要试摆的灯具照片，模型将识别材质出光方向并自动计算摆放参数
               </p>
             </div>
 
             {/* Selector Area */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+            <div className="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
               
               {/* Left Upload Area */}
-              <div className="lg:col-span-7 h-full flex flex-col">
-                <div className="bg-white rounded-3xl border-2 border-dashed border-[#D6CFC1] hover:border-[#967C55] p-8 transition-colors flex flex-col items-center justify-center flex-1 min-h-[340px] relative overflow-hidden group">
+              <div className="lg:col-span-7 h-full flex flex-col min-h-0">
+                <div className="bg-white rounded-3xl border-2 border-dashed border-[#D6CFC1] hover:border-[#967C55] p-4 transition-colors flex flex-col items-center justify-center flex-1 min-h-0 relative overflow-hidden group">
                   <input 
                     type="file" 
                     accept="image/*" 
@@ -1096,89 +1095,87 @@ export default function App() {
               </div>
 
               {/* Right Analysis Dashboard Area */}
-              <div className="lg:col-span-5 h-full flex flex-col">
+              <div className="lg:col-span-5 h-full flex flex-col min-h-0">
                 {lampAnalysis ? (
                   <motion.div 
                     initial={{ opacity: 0, scale: 0.98 }}
                     animate={{ opacity: 1, scale: 1 }}
-                    className="bg-white rounded-3xl border border-[#EBE8DF] p-6 space-y-5 shadow-sm flex-1"
+                    className="bg-white rounded-3xl border border-[#EBE8DF] p-4 space-y-3 shadow-sm flex-1 min-h-0 overflow-y-auto"
                   >
-                    <div className="flex items-center justify-between border-b border-[#FAF9F5] pb-4">
-                      <div className="flex items-center space-x-2.5">
-                        <div className="p-2 rounded-xl bg-[#FAF9F5] border border-[#EBE8DF] text-[#967C55]">
-                          <Lightbulb className="w-4 h-4" />
+                    <div className="flex items-center justify-between border-b border-[#FAF9F5] pb-2">
+                      <div className="flex items-center space-x-2">
+                        <div className="p-1.5 rounded-xl bg-[#FAF9F5] border border-[#EBE8DF] text-[#967C55]">
+                          <Lightbulb className="w-3.5 h-3.5" />
                         </div>
-                        <h3 className="text-base font-bold text-[#1C1715]">人工智能灯具产品解析报告</h3>
+                        <h3 className="text-sm font-bold text-[#1C1715]">灯具产品解析</h3>
                       </div>
-                      <span className="text-[10px] bg-[#FAF9F5] border border-[#EBE8DF] text-[#7A7061] px-2.5 py-1 rounded-full font-bold">精细解析</span>
                     </div>
 
                     {/* Lamp Style */}
-                    <div className="bg-[#FAF9F5] border border-[#EBE8DF] rounded-2xl p-4 space-y-2">
-                      <div className="flex items-center space-x-1.5 text-xs font-bold text-[#967C55]">
+                    <div className="bg-[#FAF9F5] border border-[#EBE8DF] rounded-2xl p-3 space-y-1">
+                      <div className="flex items-center space-x-1.5 text-[10px] font-bold text-[#967C55]">
                         <Sparkles className="w-3.5 h-3.5" />
-                        <span>灯具设计风格归类</span>
+                        <span>灯具风格归类</span>
                       </div>
-                      <p className="text-sm font-bold text-[#2C2623]">{lampAnalysis.style}</p>
+                      <p className="text-xs font-bold text-[#2C2623]">{lampAnalysis.style}</p>
                     </div>
 
                     {/* Cozy Dial (Radial Indicator approximation) */}
-                    <div className="flex items-center justify-between bg-[#FAF9F5] border border-[#EBE8DF] p-4 rounded-2xl">
+                    <div className="flex items-center justify-between bg-[#FAF9F5] border border-[#EBE8DF] p-3 rounded-2xl">
                       <div>
-                        <span className="text-xs font-semibold text-[#8C8375]">居家氛围治愈指数</span>
-                        <p className="text-xs text-[#665D4F] mt-1 font-medium">评分越高代表夜间弱光治愈感越好</p>
+                        <span className="text-[10px] font-semibold text-[#8C8375]">居家氛围治愈指数</span>
+                        <p className="text-[9px] text-[#665D4F] mt-0.5 font-medium">评分越高代表夜间治愈感越好</p>
                       </div>
-                      <div className="flex flex-col items-center justify-center shrink-0 w-16 h-16 rounded-full bg-white border border-[#EBE8DF]">
-                        <span className="text-xl font-black text-[#967C55]">{lampAnalysis.cozyIndex}</span>
-                        <span className="text-[9px] text-[#8C8375] font-bold">/ 10</span>
+                      <div className="flex flex-col items-center justify-center shrink-0 w-12 h-12 rounded-full bg-white border border-[#EBE8DF]">
+                        <span className="text-lg font-black text-[#967C55]">{lampAnalysis.cozyIndex}</span>
                       </div>
                     </div>
 
                     {/* Materials & Color */}
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 gap-3">
                       <div className="space-y-1">
-                        <span className="text-xs font-semibold text-[#8C8375]">主体骨架材质</span>
+                        <span className="text-[10px] font-semibold text-[#8C8375]">主体骨架材质</span>
                         <div className="flex flex-wrap gap-1">
                           {lampAnalysis.materials.map((m, i) => (
-                            <span key={i} className="text-[10px] px-2 py-0.5 rounded bg-[#FAF9F5] border border-[#EBE8DF] text-[#665D4F] font-bold">{m}</span>
+                            <span key={i} className="text-[9px] px-1.5 py-0.5 rounded bg-[#FAF9F5] border border-[#EBE8DF] text-[#665D4F] font-bold">{m}</span>
                           ))}
                         </div>
                       </div>
                       <div className="space-y-1">
-                        <span className="text-xs font-semibold text-[#8C8375]">主要色彩配色</span>
+                        <span className="text-[10px] font-semibold text-[#8C8375]">主要色彩配色</span>
                         <p className="text-xs text-[#2C2623] font-bold mt-1">{lampAnalysis.color}</p>
                       </div>
                     </div>
 
                     {/* Light type */}
                     <div className="space-y-1">
-                      <span className="text-xs font-semibold text-[#8C8375]">出光方向与光路类型</span>
-                      <p className="text-sm text-[#2C2623] font-medium">{lampAnalysis.lightType}</p>
+                      <span className="text-[10px] font-semibold text-[#8C8375]">出光方向与光路</span>
+                      <p className="text-xs text-[#2C2623] font-medium">{lampAnalysis.lightType}</p>
                     </div>
 
                     {/* Recommend light temperature */}
                     <div className="space-y-1">
-                      <span className="text-xs font-semibold text-[#8C8375]">推荐搭配光色色温</span>
-                      <p className="text-sm text-[#967C55] font-bold">{lampAnalysis.lightWarmth}</p>
+                      <span className="text-[10px] font-semibold text-[#8C8375]">推荐搭配色温</span>
+                      <p className="text-xs text-[#967C55] font-bold">{lampAnalysis.lightWarmth}</p>
                     </div>
 
                     {/* Placement recommendation */}
-                    <div className="border-t border-[#FAF9F5] pt-4 space-y-2">
-                      <div className="flex items-center space-x-1.5 text-xs font-bold text-[#967C55]">
-                        <Compass className="w-3.5 h-3.5" />
-                        <span>光影摆放融合贴士</span>
+                    <div className="border-t border-[#FAF9F5] pt-2 space-y-1">
+                      <div className="flex items-center space-x-1.5 text-[10px] font-bold text-[#967C55]">
+                        <Compass className="w-3 h-3" />
+                        <span>光影摆放贴士</span>
                       </div>
-                      <p className="text-xs text-[#665D4F] leading-relaxed bg-[#FAF9F5] border border-[#EBE8DF] p-3 rounded-xl">{lampAnalysis.placementTip}</p>
+                      <p className="text-[10px] text-[#665D4F] leading-relaxed bg-[#FAF9F5] border border-[#EBE8DF] p-2 rounded-xl">{lampAnalysis.placementTip}</p>
                     </div>
                   </motion.div>
                 ) : (
-                  <div className="bg-white rounded-3xl border border-[#EBE8DF] p-8 flex flex-col items-center justify-center flex-1 min-h-[340px] text-center space-y-3.5 shadow-sm">
-                    <div className="w-12 h-12 rounded-full bg-[#FAF9F5] border border-[#EBE8DF] flex items-center justify-center text-[#8C8375]">
-                      <Lightbulb className="w-5 h-5" />
+                  <div className="bg-white rounded-3xl border border-[#EBE8DF] p-4 flex flex-col items-center justify-center flex-1 min-h-0 text-center space-y-2 shadow-sm">
+                    <div className="w-10 h-10 rounded-full bg-[#FAF9F5] border border-[#EBE8DF] flex items-center justify-center text-[#8C8375]">
+                      <Lightbulb className="w-4 h-4" />
                     </div>
                     <div className="space-y-1">
-                      <h4 className="text-sm font-bold text-[#2C2623]">等待上传灯具</h4>
-                      <p className="text-xs text-[#8C8375] max-w-[220px]">上传您中意的落地灯实拍以生成智能分析报告</p>
+                      <h4 className="text-xs font-bold text-[#2C2623]">等待上传灯具</h4>
+                      <p className="text-[10px] text-[#8C8375] max-w-[200px]">上传照片以生成智能分析报告</p>
                     </div>
                   </div>
                 )}
@@ -1187,30 +1184,30 @@ export default function App() {
 
             {/* Error state */}
             {lampError && (
-              <div className="bg-amber-50 border border-amber-200 text-amber-900 rounded-2xl p-4 text-xs flex items-start space-x-2">
+              <div className="shrink-0 bg-amber-50 border border-amber-200 text-amber-900 rounded-2xl p-3 text-xs flex items-start space-x-2">
                 <Info className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
                 <span>{lampError}</span>
               </div>
             )}
 
             {/* Back & Next actions */}
-            <div className="flex justify-between pt-4">
+            <div className="shrink-0 flex justify-between pt-2">
               <button
                 onClick={() => setStep(1)}
-                className="px-6 py-3.5 border border-[#EBE8DF] rounded-2xl text-sm font-bold flex items-center space-x-2 text-[#7A7061] hover:bg-[#FAF9F5] transition-colors"
+                className="px-5 py-2.5 border border-[#EBE8DF] rounded-xl text-xs font-bold flex items-center space-x-1.5 text-[#7A7061] hover:bg-[#FAF9F5] transition-colors"
               >
-                <ArrowLeft className="w-4 h-4" />
-                <span>上一步：更换场景</span>
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>更换场景</span>
               </button>
 
               <button
                 id="btn-goto-step-3"
                 disabled={!lampAnalysis}
                 onClick={() => setStep(3)}
-                className={`px-8 py-3.5 rounded-2xl text-sm font-extrabold flex items-center space-x-2 shadow-sm transition-all ${lampAnalysis ? "bg-[#967C55] text-white hover:bg-[#836C47] cursor-pointer" : "bg-[#FAF9F5] border border-[#EBE8DF] text-[#C4BDB0] cursor-not-allowed"}`}
+                className={`px-6 py-2.5 rounded-xl text-xs font-extrabold flex items-center space-x-2 shadow-sm transition-all ${lampAnalysis ? "bg-[#967C55] text-white hover:bg-[#836C47] cursor-pointer" : "bg-[#FAF9F5] border border-[#EBE8DF] text-[#C4BDB0] cursor-not-allowed"}`}
               >
-                <span>下一步：生成参数</span>
-                <ChevronRight className="w-4 h-4" />
+                <span>下一步：选择参数</span>
+                <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
           </motion.div>
@@ -1222,166 +1219,157 @@ export default function App() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="space-y-8 max-w-4xl mx-auto"
+            className="flex flex-col flex-1 min-h-0 space-y-3 max-w-4xl mx-auto w-full"
           >
-            <div className="text-center space-y-2">
-              <span className="text-[11px] font-bold tracking-widest text-[#967C55] uppercase">第三步 / 共四步</span>
-              <h2 className="text-2xl md:text-3.5xl font-extrabold tracking-tight text-[#1C1715]">配置试摆生成参数</h2>
-              <p className="text-sm text-[#7A7061] max-w-xl mx-auto">
-                选择场景视角、清晰度、画面比例以及是否需要模特，系统将为您极速渲染生成最高维度的光照物理场景。
+            <div className="shrink-0 text-center space-y-1">
+              <span className="text-[10px] font-bold tracking-widest text-[#967C55] uppercase">第三步 / 共四步</span>
+              <h2 className="text-xl md:text-2xl font-extrabold tracking-tight text-[#1C1715]">配置试摆生成参数</h2>
+              <p className="text-xs text-[#7A7061] max-w-xl mx-auto">
+                选择场景视角、清晰度、画面比例以及是否需要模特，系统将为您渲染生成物理光照场景。
               </p>
             </div>
 
             {/* High-fidelity Parameter selector (Reference Image 2) */}
-            <div className="bg-[#FAF9F5] border border-[#E9E4D9] rounded-3xl p-6 md:p-8 space-y-8 shadow-sm">
+            <div className="flex-1 min-h-0 bg-[#FAF9F5] border border-[#E9E4D9] rounded-3xl p-4 md:p-6 space-y-4 shadow-sm overflow-y-auto">
               
               {/* Parameter 1: Perspective (场景图) */}
-              <div className="space-y-3">
+              <div className="space-y-2">
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm font-extrabold text-[#2C2623]">场景视角</span>
-                  <span className="text-[10px] text-[#967C55] bg-[#FAF9F5] px-2 py-0.5 rounded font-bold uppercase">空间视角</span>
+                  <span className="text-xs font-extrabold text-[#2C2623]">场景视角</span>
                 </div>
-                <div className="flex flex-wrap gap-3">
+                <div className="flex flex-wrap gap-2">
                   {[
                     { id: "far", name: "远景图", desc: "展示整个房间全景" },
-                    { id: "mid", name: "中近景", desc: "聚焦沙发、茶几与拐角" },
-                    { id: "close", name: "近景", desc: "细部光影雕琢与特写" }
+                    { id: "mid", name: "中近景", desc: "聚焦沙发与拐角" },
+                    { id: "close", name: "近景", desc: "细部特写" }
                   ].map((opt) => (
                     <button
                       key={opt.id}
                       onClick={() => setParams({ ...params, viewType: opt.id as any })}
-                      className={`px-6 py-4 rounded-2xl border text-left transition-all max-w-[210px] flex-1 ${params.viewType === opt.id ? "bg-white border-[#967C55] ring-2 ring-[#967C55]/10 shadow-sm" : "bg-white/40 border-[#EBE8DF] hover:border-[#967C55]/50"}`}
+                      className={`px-4 py-2.5 rounded-2xl border text-left transition-all max-w-[180px] flex-1 ${params.viewType === opt.id ? "bg-white border-[#967C55] ring-2 ring-[#967C55]/10 shadow-sm" : "bg-white/40 border-[#EBE8DF] hover:border-[#967C55]/50"}`}
                     >
                       <p className="text-xs font-extrabold text-[#2C2623]">{opt.name}</p>
-                      <p className="text-[10px] text-[#8C8375] mt-1 leading-snug">{opt.desc}</p>
+                      <p className="text-[9px] text-[#8C8375] mt-0.5 leading-snug">{opt.desc}</p>
                     </button>
                   ))}
                 </div>
               </div>
 
               {/* Parameter 2: Need Model (是否需要模特) */}
-              <div className="space-y-3">
+              <div className="space-y-2">
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm font-extrabold text-[#2C2623]">生活氛围渲染 (是否需要模特)</span>
-                  <span className="text-[10px] text-[#967C55] bg-[#FAF9F5] px-2 py-0.5 rounded font-bold uppercase">比例模特</span>
+                  <span className="text-xs font-extrabold text-[#2C2623]">生活氛围渲染 (是否需要模特)</span>
                 </div>
-                <div className="flex gap-3">
+                <div className="flex gap-2">
                   <button
                     onClick={() => setParams({ ...params, needModel: false })}
-                    className={`px-6 py-4 rounded-2xl border text-xs font-bold transition-all ${!params.needModel ? "bg-white border-[#967C55] ring-2 ring-[#967C55]/10 shadow-sm text-[#967C55]" : "bg-white/40 border-[#EBE8DF] text-[#7A7061]"}`}
+                    className={`px-4 py-2 rounded-xl border text-xs font-bold transition-all ${!params.needModel ? "bg-white border-[#967C55] ring-2 ring-[#967C55]/10 shadow-sm text-[#967C55]" : "bg-white/40 border-[#EBE8DF] text-[#7A7061]"}`}
                   >
                     不需要 (纯场景)
                   </button>
                   <button
                     onClick={() => setParams({ ...params, needModel: true })}
-                    className={`px-6 py-4 rounded-2xl border text-xs font-bold transition-all ${params.needModel ? "bg-white border-[#967C55] ring-2 ring-[#967C55]/10 shadow-sm text-[#967C55]" : "bg-white/40 border-[#EBE8DF] text-[#7A7061]"}`}
+                    className={`px-4 py-2 rounded-xl border text-xs font-bold transition-all ${params.needModel ? "bg-white border-[#967C55] ring-2 ring-[#967C55]/10 shadow-sm text-[#967C55]" : "bg-white/40 border-[#EBE8DF] text-[#7A7061]"}`}
                   >
-                    需要 (置入舒适看书剪影)
+                    需要 (置入剪影)
                   </button>
                 </div>
               </div>
 
-              {/* Parameter 3: Resolution (清晰度) */}
-              <div className="space-y-3">
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm font-extrabold text-[#2C2623]">画面清晰度</span>
-                  <span className="text-[10px] text-[#967C55] bg-[#FAF9F5] px-2 py-0.5 rounded font-bold uppercase">清晰度规格</span>
+              <div className="flex gap-4">
+                {/* Parameter 3: Resolution (清晰度) */}
+                <div className="flex-1 space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs font-extrabold text-[#2C2623]">画面清晰度</span>
+                  </div>
+                  <div className="flex gap-2">
+                    {[
+                      { id: "1K", label: "1K" },
+                      { id: "2K", label: "2K" },
+                      { id: "4K", label: "4K" }
+                    ].map((q) => (
+                      <button
+                        key={q.id}
+                        onClick={() => setParams({ ...params, quality: q.id as any })}
+                        className={`px-4 py-2 rounded-xl border text-xs font-black transition-all ${params.quality === q.id ? "bg-white border-[#967C55] ring-2 ring-[#967C55]/10 shadow-sm text-[#967C55]" : "bg-white/40 border-[#EBE8DF] text-[#7A7061]"}`}
+                      >
+                        {q.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-                <div className="flex gap-3">
-                  {[
-                    { id: "1K", label: "1K" },
-                    { id: "2K", label: "2K" },
-                    { id: "4K", label: "4K" }
-                  ].map((q) => (
-                    <button
-                      key={q.id}
-                      onClick={() => setParams({ ...params, quality: q.id as any })}
-                      className={`px-6 py-3.5 rounded-2xl border text-xs font-black transition-all ${params.quality === q.id ? "bg-white border-[#967C55] ring-2 ring-[#967C55]/10 shadow-sm text-[#967C55]" : "bg-white/40 border-[#EBE8DF] text-[#7A7061]"}`}
-                    >
-                      {q.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
 
-              {/* Parameter 4: Ratio (比例) */}
-              <div className="space-y-3">
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm font-extrabold text-[#2C2623]">画布构图比例</span>
-                  <span className="text-[10px] text-[#967C55] bg-[#FAF9F5] px-2 py-0.5 rounded font-bold uppercase">构图比例</span>
-                </div>
-                <div className="flex gap-3">
-                  {[
-                    { id: "4:3", name: "4:3 横构图", desc: "经典画幅" },
-                    { id: "3:4", name: "3:4 竖构图", desc: "极佳手机分享构图" }
-                  ].map((r) => (
-                    <button
-                      key={r.id}
-                      onClick={() => setParams({ ...params, ratio: r.id as any })}
-                      className={`px-6 py-3.5 rounded-2xl border text-xs font-bold transition-all text-left ${params.ratio === r.id ? "bg-white border-[#967C55] ring-2 ring-[#967C55]/10 shadow-sm text-[#967C55]" : "bg-white/40 border-[#EBE8DF] text-[#7A7061]"}`}
-                    >
-                      <p className="font-extrabold">{r.name}</p>
-                      <p className="text-[9px] text-[#8C8375] mt-0.5 font-medium">{r.desc}</p>
-                    </button>
-                  ))}
+                {/* Parameter 4: Ratio (比例) */}
+                <div className="flex-1 space-y-2">
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs font-extrabold text-[#2C2623]">画布构图比例</span>
+                  </div>
+                  <div className="flex gap-2">
+                    {[
+                      { id: "4:3", name: "4:3", desc: "横构图" },
+                      { id: "3:4", name: "3:4", desc: "竖构图" }
+                    ].map((r) => (
+                      <button
+                        key={r.id}
+                        onClick={() => setParams({ ...params, ratio: r.id as any })}
+                        className={`px-4 py-2 rounded-xl border text-xs font-bold transition-all flex items-center gap-1 ${params.ratio === r.id ? "bg-white border-[#967C55] ring-2 ring-[#967C55]/10 shadow-sm text-[#967C55]" : "bg-white/40 border-[#EBE8DF] text-[#7A7061]"}`}
+                      >
+                        <p className="font-extrabold">{r.name}</p>
+                        <p className="text-[9px] font-medium">{r.desc}</p>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
 
               {/* Parameter 5: Light State (开灯/关灯) */}
-              <div className="space-y-3">
+              <div className="space-y-2">
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm font-extrabold text-[#2C2623]">灯具状态</span>
-                  <span className="text-[10px] text-[#967C55] bg-[#FAF9F5] px-2 py-0.5 rounded font-bold uppercase">光效开关</span>
+                  <span className="text-xs font-extrabold text-[#2C2623]">灯具状态</span>
                 </div>
-                <div className="flex gap-3">
+                <div className="flex gap-2">
                   <button
                     onClick={() => setParams({ ...params, lightState: "on" })}
-                    className={`px-6 py-3.5 rounded-2xl border text-xs font-bold transition-all flex flex-col items-start ${params.lightState === "on" ? "bg-white border-[#967C55] ring-2 ring-[#967C55]/10 shadow-sm text-[#967C55]" : "bg-white/40 border-[#EBE8DF] text-[#7A7061]"}`}
+                    className={`px-4 py-2 rounded-xl border text-xs font-bold transition-all flex items-center gap-1.5 ${params.lightState === "on" ? "bg-white border-[#967C55] ring-2 ring-[#967C55]/10 shadow-sm text-[#967C55]" : "bg-white/40 border-[#EBE8DF] text-[#7A7061]"}`}
                   >
-                    <div className="flex items-center gap-1.5 font-extrabold">
-                      <Sun className="w-3.5 h-3.5" />
-                      <span>开启灯光</span>
-                    </div>
-                    <p className="text-[9px] text-[#8C8375] mt-0.5 font-medium">渲染物理光影漫反射</p>
+                    <Sun className="w-3.5 h-3.5" />
+                    <span>开灯 (漫反射)</span>
                   </button>
                   <button
                     onClick={() => setParams({ ...params, lightState: "off" })}
-                    className={`px-6 py-3.5 rounded-2xl border text-xs font-bold transition-all flex flex-col items-start ${params.lightState === "off" ? "bg-white border-[#967C55] ring-2 ring-[#967C55]/10 shadow-sm text-[#967C55]" : "bg-white/40 border-[#EBE8DF] text-[#7A7061]"}`}
+                    className={`px-4 py-2 rounded-xl border text-xs font-bold transition-all flex items-center gap-1.5 ${params.lightState === "off" ? "bg-white border-[#967C55] ring-2 ring-[#967C55]/10 shadow-sm text-[#967C55]" : "bg-white/40 border-[#EBE8DF] text-[#7A7061]"}`}
                   >
-                    <div className="flex items-center gap-1.5 font-extrabold">
-                      <Power className="w-3.5 h-3.5" />
-                      <span>关闭灯光</span>
-                    </div>
-                    <p className="text-[9px] text-[#8C8375] mt-0.5 font-medium">展示自然光下材质细节</p>
+                    <Power className="w-3.5 h-3.5" />
+                    <span>关灯 (自然光)</span>
                   </button>
                 </div>
               </div>
             </div>
 
             {generationError && (
-              <div className="bg-red-50 border border-red-200 text-red-950 rounded-2xl p-4 text-xs flex items-start space-x-2 mt-4">
-                <Info className="w-4 h-4 text-red-700 shrink-0 mt-0.5" />
+              <div className="shrink-0 bg-red-50 border border-red-200 text-red-950 rounded-xl p-3 text-[10px] flex items-start space-x-2 mt-2">
+                <Info className="w-3 h-3 text-red-700 shrink-0 mt-0.5" />
                 <span className="font-medium">{generationError}</span>
               </div>
             )}
 
             {/* Back & Next actions */}
-            <div className="flex justify-between pt-4">
+            <div className="shrink-0 flex justify-between pt-2">
               <button
                 onClick={() => setStep(2)}
-                className="px-6 py-3.5 border border-[#EBE8DF] rounded-2xl text-sm font-bold flex items-center space-x-2 text-[#7A7061] hover:bg-[#FAF9F5] transition-colors"
+                className="px-5 py-2.5 border border-[#EBE8DF] rounded-xl text-xs font-bold flex items-center space-x-2 text-[#7A7061] hover:bg-[#FAF9F5] transition-colors"
               >
-                <ArrowLeft className="w-4 h-4" />
-                <span>上一步：更换灯具</span>
+                <ArrowLeft className="w-3.5 h-3.5" />
+                <span>更换灯具</span>
               </button>
 
               <button
                 id="btn-generate-scene"
                 onClick={handleStartGeneration}
-                className="px-8 py-3.5 rounded-2xl bg-[#967C55] text-white hover:bg-[#836C47] text-sm font-extrabold flex items-center space-x-2 shadow-md hover:shadow-lg transition-all"
+                className="px-6 py-2.5 rounded-xl bg-[#967C55] text-white hover:bg-[#836C47] text-xs font-extrabold flex items-center space-x-1.5 shadow-md hover:shadow-lg transition-all"
               >
-                <Sparkles className="w-4 h-4 text-amber-200" />
-                <span>生成试摆效果图</span>
+                <Sparkles className="w-3.5 h-3.5 text-amber-200" />
+                <span>生成试摆效果</span>
               </button>
             </div>
           </motion.div>
