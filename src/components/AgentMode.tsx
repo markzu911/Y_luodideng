@@ -987,7 +987,7 @@ export default function AgentMode({
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto bg-white rounded-3xl border border-[#EBE8DF] shadow-xl overflow-hidden flex flex-col min-h-[680px] max-h-[820px] h-[75vh]">
+    <div className="w-full max-w-5xl mx-auto bg-white rounded-3xl border border-[#EBE8DF] shadow-xl overflow-hidden flex flex-col flex-1 min-h-0">
       
       {/* Hidden file inputs for chat uploads */}
       <input 
@@ -1398,7 +1398,7 @@ export default function AgentMode({
       </div>
 
       {/* Chat bottom Input container */}
-      <div className="p-4 bg-white border-t border-[#EBE8DF] flex flex-col gap-2">
+      <div className="shrink-0 p-4 bg-white border-t border-[#EBE8DF] flex flex-col gap-2">
         <div className="flex items-stretch gap-2.5">
           <input
             type="text"
