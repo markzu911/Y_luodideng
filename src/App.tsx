@@ -1289,9 +1289,9 @@ export default function App() {
                 </div>
                 <div className="flex gap-3">
                   {[
-                    { id: "1K", label: "标准清晰度" },
-                    { id: "2K", label: "高清晰度" },
-                    { id: "4K", label: "超高清晰度" }
+                    { id: "1K", label: "1K" },
+                    { id: "2K", label: "2K" },
+                    { id: "4K", label: "4K" }
                   ].map((q) => (
                     <button
                       key={q.id}

@@ -1239,9 +1239,9 @@ export default function AgentMode({
                           <label className="text-[11px] font-bold text-[#8C8375] uppercase tracking-wider">画面质量</label>
                           <div className="flex gap-2">
                             {[
-                              { id: "1K", label: "标准" },
-                              { id: "2K", label: "高清" },
-                              { id: "4K", label: "超清" }
+                              { id: "1K", label: "1K" },
+                              { id: "2K", label: "2K" },
+                              { id: "4K", label: "4K" }
                             ].map((v) => (
                               <button
                                 key={v.id}
