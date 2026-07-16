@@ -642,12 +642,6 @@ export default function App() {
             transition={{ duration: 0.4 }}
             className="max-w-4xl mx-auto py-12 px-4 text-center"
           >
-            {/* Top Badge */}
-            <div className="inline-flex items-center space-x-2 bg-[#967C55]/10 text-[#967C55] px-4 py-1.5 rounded-full text-xs font-black tracking-widest uppercase mb-6 border border-[#967C55]/20 shadow-sm">
-              <Sparkles className="w-3.5 h-3.5 text-[#967C55] animate-pulse" />
-              <span>智能试铺系统 V2.5</span>
-            </div>
-
             {/* Title & Subtitle */}
             <h2 className="text-3xl md:text-4xl font-black text-[#1C1715] tracking-tight mb-4">
               开启您的 AI 极速试铺之旅

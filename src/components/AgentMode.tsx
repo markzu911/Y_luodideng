@@ -208,7 +208,7 @@ export default function AgentMode({
       appendMessage({
         id: `ai-rm-${Date.now()}`,
         sender: "ai",
-        text: `✨ 房间场景已成功加载！\n\n🔍 **空间美学分析报告**:\n• 空间风格: \`${room.name}\`\n• 软装家具: \`${room.analysis.furniture.join("、")}\`\n• 推荐摆放: \`${room.analysis.recommendation}\`\n\n下一步，请选择或上传您心仪的**落地灯样式**：`,
+        text: `✨ 房间场景已成功加载！\n\n🔍 **空间美学分析报告**:\n• 空间风格: \`${room.name}\`\n• 软装家具: \`${room.analysis.furniture.join("、")}\`\n• 推荐摆放: \`${room.analysis.recommendation}\`\n\n下一步，请上传您心仪的**落地灯样式**：`,
         timestamp: new Date(),
         type: "lamp-select"
       });
@@ -276,7 +276,7 @@ export default function AgentMode({
           {
             id: `ai-rm-done-${Date.now()}`,
             sender: "ai",
-            text: `✨ 场景智能分析成功！\n\n🔍 **空间美学分析报告**:\n• 空间风格: \`${data.style}\`\n• 结构布局: \`${data.layout}\`\n• 推荐摆放: \`${data.recommendation}\`\n• 色彩色调: \`${data.colors.join("、")}\`\n\n接下来，请选择或上传您心仪的**落地灯样式**：`,
+            text: `✨ 场景智能分析成功！\n\n🔍 **空间美学分析报告**:\n• 空间风格: \`${data.style}\`\n• 结构布局: \`${data.layout}\`\n• 推荐摆放: \`${data.recommendation}\`\n• 色彩色调: \`${data.colors.join("、")}\`\n\n接下来，请上传您心仪的**落地灯样式**：`,
             timestamp: new Date(),
             type: "lamp-select"
           }
@@ -300,7 +300,7 @@ export default function AgentMode({
         {
           id: `ai-rm-fallback-${Date.now()}`,
           sender: "ai",
-          text: `⚠️ 实拍图分析稍有延迟，已为您智配兜底高契合空间美学参数：\n• 空间风格: \`现代简约简约设计\`\n• 推荐摆放: \`建议将落地灯摆放在沙发转角，作为氛围散光\`。\n\n接下来，请选择或上传您心仪的**落地灯样式**：`,
+          text: `⚠️ 实拍图分析稍有延迟，已为您智配兜底高契合空间美学参数：\n• 空间风格: \`现代简约简约设计\`\n• 推荐摆放: \`建议将落地灯摆放在沙发转角，作为氛围散光\`。\n\n接下来，请上传您心仪的**落地灯样式**：`,
           timestamp: new Date(),
           type: "lamp-select"
         }
@@ -667,36 +667,21 @@ export default function AgentMode({
       appendMessage({
         id: `ai-cmd-rm-${Date.now()}`,
         sender: "ai",
-        text: `✨ 已为您智能匹配房间场景：**${matchedRoom.name}**！\n• 风格特点：\`${matchedRoom.style}\`\n• 推荐摆放：\`${matchedRoom.analysis.recommendation}\`\n\n下一步，请在下方点击或上传您心仪的**落地灯样式**：`,
+        text: `✨ 已为您智能匹配房间场景：**${matchedRoom.name}**！\n• 风格特点：\`${matchedRoom.style}\`\n• 推荐摆放：\`${matchedRoom.analysis.recommendation}\`\n\n下一步，请上传您心仪的**落地灯样式**：`,
         timestamp: new Date(),
         type: "lamp-select"
       });
       return;
     }
 
-    // Check lamp selection
-    const matchedLamp = PRESET_LAMPS.find(l => 
-      lowerText.includes("钓鱼灯") && l.id === "lamp_1" ||
-      lowerText.includes("和纸") && l.id === "lamp_2" ||
-      lowerText.includes("野口勇") && l.id === "lamp_2" ||
-      lowerText.includes("褶皱") && l.id === "lamp_2" ||
-      lowerText.includes("黄铜") && l.id === "lamp_3" ||
-      lowerText.includes("立柱") && l.id === "lamp_3" ||
-      lowerText.includes("复古") && l.id === "lamp_4" ||
-      lowerText.includes("射灯") && l.id === "lamp_4" ||
-      lowerText.includes("工业") && l.id === "lamp_4"
-    );
-
-    if (matchedLamp) {
-      setSelectedPresetLamp(matchedLamp);
-      setUploadedLampBase64(null);
-      setLampAnalysis(matchedLamp.analysis);
+    // Check lamp selection mention
+    if (lowerText.includes("灯") || lowerText.includes("lamp") || lowerText.includes("钓鱼灯") || lowerText.includes("和纸") || lowerText.includes("褶皱") || lowerText.includes("黄铜") || lowerText.includes("复古") || lowerText.includes("射灯")) {
       appendMessage({
-        id: `ai-cmd-lp-${Date.now()}`,
+        id: `ai-cmd-lp-upload-tip-${Date.now()}`,
         sender: "ai",
-        text: `🎨 已为您智能配对灯具：**${matchedLamp.name}**！\n• 材质工艺：\`${matchedLamp.analysis.materials.join("、")}\`\n• 专属光效：\`${matchedLamp.analysis.lightType}\`\n\n最后，请微调您的**光影融合参数**并启动渲染：`,
+        text: `💡 **上传落地灯提示**：为了给您最广阔的个性化定制自由度，本项目已经去除了所有的内置预设落地灯。\n\n无论您中意的是钓鱼灯、和纸褶皱灯笼灯、黄铜复古灯，还是任何其他特殊设计，都请直接点击界面上的 **“📤 上传我的落地灯”** 按钮。上传后，AI 会自动为您分析材质特征与物理光晕并进行融合试摆！`,
         timestamp: new Date(),
-        type: "generation-controls"
+        type: "lamp-select"
       });
       return;
     }
@@ -775,7 +760,7 @@ export default function AgentMode({
         appendMessage({
           id: `ai-err-lp-${Date.now()}`,
           sender: "ai",
-          text: `⚠️ 您还没有选定落地灯样式，请点击预设落地灯或上传图片后再试。`,
+          text: `⚠️ 您还没有上传落地灯图片，请点击“📤 上传我的落地灯”按钮后再试。`,
           timestamp: new Date(),
           type: "lamp-select"
         });
@@ -789,7 +774,7 @@ export default function AgentMode({
     appendMessage({
       id: `ai-cmd-help-${Date.now()}`,
       sender: "ai",
-      text: `💡 收到您的消息。我可以智能感知多种操作指令：\n\n• 输入风格关键词（如 **「奶油风」** / **「中式」** 等）自动切换场景。\n• 输入灯具代称（如 **「钓鱼灯」** / **「褶皱灯」** 等）快速匹配。\n• 输入 **「开灯」** / **「关灯」** 实时调控灯效状态。\n\n您也可以直接点击对话中卡片的快捷选项、上传自选实拍图，或者输入 **「开始渲染」** 启动融合。`,
+      text: `💡 收到您的消息。我可以智能感知多种操作指令：\n\n• 输入风格关键词（如 **「奶油风」** / **「中式」** 等）自动切换场景。\n• 落地灯无任何内置预设，支持并引导上传您自选的落地灯照片进行试摆。\n• 输入 **「开灯」** / **「关灯」** 实时调控灯效状态。\n\n您也可以在对话卡片中选择预设房间，或上传自备落地灯，并输入 **「开始渲染」** 启动光影融合。`,
       timestamp: new Date()
     });
   };
@@ -1131,50 +1116,26 @@ export default function AgentMode({
                   {/* CUSTOM RICH INTERACTIVE COMPONENT: Lamp Selection */}
                   {msg.type === "lamp-select" && (
                     <div className="mt-4 space-y-4 pt-1 border-t border-[#FAF9F5]">
-                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                        {PRESET_LAMPS.map((lamp) => {
-                          const isSelected = selectedPresetLamp?.id === lamp.id;
-                          return (
-                            <button
-                              key={lamp.id}
-                              onClick={() => handleSelectLamp(lamp)}
-                              disabled={isLampAnalyzing}
-                              className={`group text-left rounded-xl border p-2 bg-[#FAF9F5] hover:bg-white transition-all overflow-hidden relative flex flex-col ${
-                                isSelected 
-                                  ? "border-[#967C55] ring-2 ring-[#967C55]/10 bg-white" 
-                                  : "border-[#EBE8DF] hover:border-[#967C55]/40"
-                              }`}
-                            >
-                              <div className="aspect-square w-full rounded-lg overflow-hidden relative mb-1.5 bg-white">
-                                <img 
-                                  src={lamp.imageUrl} 
-                                  alt={lamp.name} 
-                                  className="w-full h-full object-contain transition-transform group-hover:scale-105"
-                                />
-                                {isSelected && (
-                                  <div className="absolute top-1 right-1 bg-[#967C55] text-white p-0.5 rounded-full shadow">
-                                    <Check className="w-3 h-3 stroke-[3]" />
-                                  </div>
-                                )}
-                              </div>
-                              <span className="text-[11px] font-extrabold text-[#2C2623] truncate block">{lamp.name}</span>
-                              <span className="text-[9px] text-[#8C8375] block mt-0.5 font-medium truncate">{lamp.style}</span>
-                            </button>
-                          );
-                        })}
+                      <div className="bg-[#FAF9F5]/80 rounded-2xl p-4 border border-[#EBE8DF] space-y-2">
+                        <p className="text-xs text-[#5C5346] leading-relaxed">
+                          ✨ **全新升级**：本项目已去除了所有固定的预设落地灯。我们为您保留了无限的选择自由，支持您上传任何心仪的落地灯图片进行智能试摆。
+                        </p>
+                        <p className="text-[11px] text-[#967C55] font-extrabold leading-normal">
+                          💡 您可以直接上传从电商平台（淘宝、京东、得物、拼多多等）保存的商品主图、实拍图、或任何您中意的落地灯抠图。AI 物理光照引擎将自动提取灯具体态，并高拟真融合进您选择的房间场景中。
+                        </p>
                       </div>
 
                       <button
                         onClick={() => lampInputRef.current?.click()}
                         disabled={isLampAnalyzing}
-                        className="w-full py-3.5 px-4 rounded-xl border border-dashed border-[#D6CFC1] hover:border-[#967C55] bg-[#FAF9F5]/60 hover:bg-white text-xs font-extrabold text-[#967C55] flex items-center justify-center gap-2 transition-all shadow-inner"
+                        className="w-full py-4 px-4 rounded-xl border border-dashed border-[#D6CFC1] hover:border-[#967C55] bg-gradient-to-r from-amber-50/20 to-orange-50/10 hover:bg-white text-xs font-extrabold text-[#967C55] flex items-center justify-center gap-2 transition-all shadow-inner"
                       >
                         {isLampAnalyzing ? (
                           <Loader2 className="w-4 h-4 animate-spin text-[#967C55]" />
                         ) : (
                           <Upload className="w-4 h-4 text-[#967C55]" />
                         )}
-                        <span>{isLampAnalyzing ? "灯具精密材质提取中..." : "📤 上传我的落地灯抠图 / 背景实拍图"}</span>
+                        <span>{isLampAnalyzing ? "灯具精密材质提取中..." : "📤 上传我的落地灯背景实拍图 / 抠图照片"}</span>
                       </button>
                     </div>
                   )}
