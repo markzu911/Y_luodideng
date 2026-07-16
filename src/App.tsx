@@ -574,46 +574,49 @@ export default function App() {
           <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#967C55] to-[#D4C2A3] flex items-center justify-center text-white shadow-sm">
             <Lightbulb className="w-5 h-5" />
           </div>
-          <div>
-            <h1 className="text-base font-bold tracking-tight text-[#1C1715]">落地灯智能试摆助手</h1>
-            <p className="text-[10px] text-[#8C8375] uppercase tracking-wider font-medium">专业落地灯智能光影试摆工作室 二点五版本</p>
+          <div className="hidden sm:block">
+            <h1 className="text-sm font-extrabold tracking-tight text-[#1C1715]">落地灯智能试摆助手</h1>
+            <p className="text-[9px] text-[#8C8375] uppercase tracking-wider font-semibold">专业落地灯智能光影试摆工作室 二点五版本</p>
           </div>
         </div>
 
-        {/* Dynamic Stepper / Agent Status */}
-        {appMode === "expert" ? (
-          <div className="hidden lg:flex items-center space-x-2.5 text-xs font-semibold">
-            {[
-              { num: 1, label: "场景分析" },
-              { num: 2, label: "灯具匹配" },
-              { num: 3, label: "生成参数" },
-              { num: 4, label: "试摆预览" }
-            ].map((s, idx) => (
-              <React.Fragment key={s.num}>
-                {idx > 0 && <ChevronRight className="w-3.5 h-3.5 text-[#C4BDB0]" />}
-                <div className={`flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl border transition-all duration-300 ${
-                  step === s.num 
-                    ? "bg-[#967C55] text-white border-[#967C55] shadow-sm font-extrabold" 
-                    : step > s.num 
-                      ? "bg-white text-[#967C55] border-[#967C55]/30 font-bold" 
-                      : "bg-[#FAF9F5]/40 text-[#8C8375] border-[#EBE8DF]"
-                }`}>
-                  <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold ${
-                    step === s.num 
-                      ? "bg-white/20 text-white" 
-                      : step > s.num 
-                        ? "bg-[#967C55]/10 text-[#967C55]" 
-                        : "bg-[#EBE8DF] text-[#8C8375]"
-                  }`}>{s.num}</span>
-                  <span>{s.label}</span>
-                </div>
-              </React.Fragment>
-            ))}
-          </div>
-        ) : appMode === "agent" ? (
-          <div className="hidden lg:flex items-center space-x-2 bg-[#967C55]/10 border border-[#967C55]/20 px-3.5 py-1.5 rounded-xl">
-            <Sparkles className="w-3.5 h-3.5 text-[#967C55] animate-pulse" />
-            <span className="text-xs font-extrabold text-[#967C55]">AI 智能体对话导航</span>
+        {/* Dynamic Stepper / Agent Status / Switcher Integrated directly into Header */}
+        {appMode !== "select" ? (
+          <div className="flex items-center gap-2.5">
+            {/* 返回按钮 */}
+            <button
+              onClick={() => setAppMode("select")}
+              className="px-3 py-1.5 rounded-xl bg-[#FAF9F5] border border-[#EBE8DF] text-[11px] font-bold text-[#7A7061] hover:text-[#1C1715] hover:bg-[#F2EFE9] transition-all flex items-center space-x-1 shadow-sm hover:border-[#967C55]/40"
+            >
+              <ChevronLeft className="w-3.5 h-3.5 text-[#967C55]" />
+              <span className="hidden md:inline">返回主页</span>
+            </button>
+
+            {/* Switcher */}
+            <div className="bg-[#EBE8DF]/40 p-1 rounded-xl flex items-center gap-0.5 border border-[#EBE8DF]/60 shadow-inner">
+              <button
+                onClick={() => setAppMode("agent")}
+                className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 ${
+                  appMode === "agent" 
+                    ? "bg-[#967C55] text-white shadow-sm" 
+                    : "text-[#7A7061] hover:text-[#1C1715]"
+                }`}
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>智能体模式</span>
+              </button>
+              <button
+                onClick={() => setAppMode("expert")}
+                className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1 ${
+                  appMode === "expert" 
+                    ? "bg-[#967C55] text-white shadow-sm" 
+                    : "text-[#7A7061] hover:text-[#1C1715]"
+                }`}
+              >
+                <Sliders className="w-3.5 h-3.5" />
+                <span>专家模式</span>
+              </button>
+            </div>
           </div>
         ) : (
           <div className="hidden lg:flex items-center space-x-2 bg-[#F2EFE9] border border-[#E4DFD5] px-3.5 py-1.5 rounded-xl">
@@ -723,46 +726,7 @@ export default function App() {
           </motion.div>
         ) : (
           <>
-            {/* Mode Selector Toggle Switcher & Navigation Controls */}
-            <div className="shrink-0 flex flex-col md:flex-row items-center justify-between gap-4 mb-4 max-w-7xl w-full mx-auto border-b border-[#EBE8DF]/60 pb-4">
-              <button
-                onClick={() => setAppMode("select")}
-                className="px-4 py-2.5 rounded-xl bg-white border border-[#EBE8DF] text-xs font-bold text-[#7A7061] hover:text-[#1C1715] hover:bg-[#FAF9F5] transition-all flex items-center space-x-2 shadow-sm hover:border-[#967C55]/40"
-              >
-                <ChevronLeft className="w-4 h-4 text-[#967C55]" />
-                <span>返回主页模式选择</span>
-              </button>
-
-              <div className="bg-[#EBE8DF]/60 p-1.5 rounded-2xl inline-flex shadow-inner border border-[#EBE8DF]">
-                <button
-                  onClick={() => setAppMode("agent")}
-                  className={`px-6 py-2.5 rounded-xl text-xs font-black tracking-wide uppercase transition-all flex items-center space-x-2 ${
-                    appMode === "agent" 
-                      ? "bg-[#967C55] text-white shadow-md font-black" 
-                      : "text-[#7A7061] hover:text-[#1C1715] font-extrabold"
-                  }`}
-                >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>智能体模式 (Agent Mode)</span>
-                </button>
-                <button
-                  onClick={() => setAppMode("expert")}
-                  className={`px-6 py-2.5 rounded-xl text-xs font-black tracking-wide uppercase transition-all flex items-center space-x-2 ${
-                    appMode === "expert" 
-                      ? "bg-[#967C55] text-white shadow-md font-black" 
-                      : "text-[#7A7061] hover:text-[#1C1715] font-extrabold"
-                  }`}
-                >
-                  <Sliders className="w-3.5 h-3.5" />
-                  <span>专家模式 (Expert Mode)</span>
-                </button>
-              </div>
-
-              {/* Invisible spacer to center switcher on desktop */}
-              <div className="w-[155px] hidden md:block" />
-            </div>
-
-        {appMode === "agent" ? (
+            {appMode === "agent" ? (
           <AgentMode
             userId={userId}
             toolId={toolId}
@@ -795,7 +759,37 @@ export default function App() {
           />
         ) : (
           <div className="flex-1 overflow-y-auto min-h-0 pr-1 pb-16 scrollbar-thin scrollbar-thumb-gray-200">
-        {/* Step 1: Upload or Choose Scene */}
+            {/* Expert Mode Stepper Indicator */}
+            <div className="shrink-0 flex items-center justify-center space-x-2 md:space-x-4 text-xs font-semibold mb-8 pb-4 border-b border-[#EBE8DF]/60 max-w-2xl mx-auto">
+              {[
+                { num: 1, label: "场景分析" },
+                { num: 2, label: "灯具匹配" },
+                { num: 3, label: "生成参数" },
+                { num: 4, label: "试摆预览" }
+              ].map((s, idx) => (
+                <React.Fragment key={s.num}>
+                  {idx > 0 && <ChevronRight className="w-3.5 h-3.5 text-[#C4BDB0]" />}
+                  <div className={`flex items-center space-x-1 px-2.5 py-1.5 rounded-xl border transition-all duration-300 ${
+                    step === s.num 
+                      ? "bg-[#967C55] text-white border-[#967C55] shadow-sm font-extrabold" 
+                      : step > s.num 
+                        ? "bg-white text-[#967C55] border-[#967C55]/30 font-bold" 
+                        : "bg-[#FAF9F5]/40 text-[#8C8375] border-[#EBE8DF]"
+                  }`}>
+                    <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                      step === s.num 
+                        ? "bg-white/20 text-white" 
+                        : step > s.num 
+                          ? "bg-[#967C55]/10 text-[#967C55]" 
+                          : "bg-[#EBE8DF] text-[#8C8375]"
+                    }`}>{s.num}</span>
+                    <span className="text-[11px]">{s.label}</span>
+                  </div>
+                </React.Fragment>
+              ))}
+            </div>
+
+            {/* Step 1: Upload or Choose Scene */}
         {step === 1 && (
           <motion.div 
             initial={{ opacity: 0, y: 15 }}

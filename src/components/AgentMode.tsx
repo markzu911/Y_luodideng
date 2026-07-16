@@ -205,13 +205,12 @@ export default function AgentMode({
     setUploadedRoomBase64(null);
     setRoomAnalysis(room.analysis);
 
-    // 1. Add user choice message
+    // 1. Add user choice message without attaching the virtual room image
     appendMessage({
       id: `usr-rm-${Date.now()}`,
       sender: "user",
       text: `我想选择：${room.name}`,
-      timestamp: new Date(),
-      image: room.imageUrl
+      timestamp: new Date()
     });
 
     // 2. Guide to Lamp Selection after small delay
@@ -987,7 +986,7 @@ export default function AgentMode({
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto bg-white rounded-3xl border border-[#EBE8DF] shadow-xl overflow-hidden flex flex-col flex-1 min-h-0">
+    <div className="w-full max-w-7xl mx-auto bg-white rounded-3xl border border-[#EBE8DF] shadow-xl overflow-hidden flex flex-col flex-1 min-h-0">
       
       {/* Hidden file inputs for chat uploads */}
       <input 
