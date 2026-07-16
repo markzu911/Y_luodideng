@@ -344,9 +344,11 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
 
         const parts: any[] = [];
 
+        const isVirtualRoom = roomImage && roomImage.startsWith("http");
+
         // Add room image as a visual context if provided
         if (roomImage) {
-          parts.push({ text: "Reference Room Image (This is the room environment):" });
+          parts.push({ text: "Reference Room Image (This is the room environment to place the lamp into):" });
           if (roomImage.startsWith("http")) {
             try {
               const fetched = await fetchImageAsBase64(roomImage);
@@ -411,8 +413,6 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
         const humanGuidance = params.needModel 
           ? "5. PERSONA / HUMAN PRESENCE: You MUST include a realistic human model (e.g., a person reading, relaxing, or enjoying the space) to enhance the living atmosphere. The human figure should seamlessly blend into the scene and interact naturally with the lighting and environment. 必须要包含一个真实的人物模型（比如正在阅读或休息的人）。" 
           : "5. PERSONA / HUMAN PRESENCE: DO NOT include any human figures or models in the scene. Provide a pure architectural and furniture visualization. 绝对不要在画面中出现任何人物模型。";
-
-        const isVirtualRoom = roomImage && roomImage.startsWith("http");
 
         const roomStylePrompt = isVirtualRoom
           ? `CRITICAL ROOM STYLE MATCHING: You MUST preserve the exact interior design style, colors, and architectural elements provided in the Reference Room Image. The reference image represents the EXACT virtual room we want. Do NOT invent a different room style! You MUST strictly generate the room according to the reference image and the textual design specifications below to perfectly capture the essence of "${roomAnalysis.style}". 必须严格按照【参考房间图片】以及以下文字描述生成，完全还原参考图片中的【${roomAnalysis.style}】风格、颜色、材质和氛围，切记绝对不要偏离参考图片的风格！
