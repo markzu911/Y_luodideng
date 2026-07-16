@@ -1229,10 +1229,10 @@ export default function App() {
             </div>
 
             {/* High-fidelity Parameter selector (Reference Image 2) */}
-            <div className="flex-1 min-h-0 bg-[#FAF9F5] border border-[#E9E4D9] rounded-3xl p-4 md:p-6 space-y-4 shadow-sm overflow-y-auto">
+            <div className="flex-1 min-h-0 bg-[#FAF9F5] border border-[#E9E4D9] rounded-3xl p-6 md:p-8 space-y-6 shadow-sm overflow-y-auto">
               
               {/* Parameter 1: Perspective (场景图) */}
-              <div className="space-y-2">
+              <div className="space-y-3">
                 <div className="flex items-center space-x-2">
                   <span className="text-xs font-extrabold text-[#2C2623]">场景视角</span>
                 </div>
@@ -1254,13 +1254,38 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="flex gap-4">
+              {/* Parameter 4: Ratio (比例) */}
+              <div className="space-y-3">
+                <div className="flex items-center space-x-2">
+                  <span className="text-xs font-extrabold text-[#2C2623]">画布构图比例</span>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {[
+                    { id: "4:3", name: "4:3", desc: "横构图" },
+                    { id: "3:4", name: "3:4", desc: "竖构图" },
+                    { id: "1:1", name: "1:1", desc: "正方形" },
+                    { id: "16:9", name: "16:9", desc: "宽屏" },
+                    { id: "9:16", name: "9:16", desc: "竖屏" }
+                  ].map((r) => (
+                    <button
+                      key={r.id}
+                      onClick={() => setParams({ ...params, ratio: r.id as any })}
+                      className={`px-4 py-2.5 rounded-xl border text-xs font-bold transition-all flex flex-col items-start gap-0.5 ${params.ratio === r.id ? "bg-white border-[#967C55] ring-2 ring-[#967C55]/10 shadow-sm text-[#967C55]" : "bg-white/40 border-[#EBE8DF] text-[#7A7061] hover:border-[#967C55]/50"}`}
+                    >
+                      <p className="font-extrabold">{r.name}</p>
+                      <p className="text-[9px] font-medium opacity-70">{r.desc}</p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Parameter 3: Resolution (清晰度) */}
-                <div className="flex-1 space-y-2">
+                <div className="space-y-3">
                   <div className="flex items-center space-x-2">
                     <span className="text-xs font-extrabold text-[#2C2623]">画面清晰度</span>
                   </div>
-                  <div className="flex gap-2">
+                  <div className="flex flex-wrap gap-2">
                     {[
                       { id: "1K", label: "1K" },
                       { id: "2K", label: "2K" },
@@ -1269,7 +1294,7 @@ export default function App() {
                       <button
                         key={q.id}
                         onClick={() => setParams({ ...params, quality: q.id as any })}
-                        className={`px-4 py-2 rounded-xl border text-xs font-black transition-all ${params.quality === q.id ? "bg-white border-[#967C55] ring-2 ring-[#967C55]/10 shadow-sm text-[#967C55]" : "bg-white/40 border-[#EBE8DF] text-[#7A7061]"}`}
+                        className={`px-5 py-2.5 rounded-xl border text-xs font-black transition-all ${params.quality === q.id ? "bg-white border-[#967C55] ring-2 ring-[#967C55]/10 shadow-sm text-[#967C55]" : "bg-white/40 border-[#EBE8DF] text-[#7A7061] hover:border-[#967C55]/50"}`}
                       >
                         {q.label}
                       </button>
@@ -1277,52 +1302,27 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* Parameter 4: Ratio (比例) */}
-                <div className="flex-1 space-y-2">
+                {/* Parameter 5: Light State (开灯/关灯) */}
+                <div className="space-y-3">
                   <div className="flex items-center space-x-2">
-                    <span className="text-xs font-extrabold text-[#2C2623]">画布构图比例</span>
+                    <span className="text-xs font-extrabold text-[#2C2623]">灯具状态</span>
                   </div>
-                  <div className="flex gap-2">
-                    {[
-                      { id: "4:3", name: "4:3", desc: "横构图" },
-                      { id: "3:4", name: "3:4", desc: "竖构图" },
-                      { id: "1:1", name: "1:1", desc: "正方形" },
-                      { id: "16:9", name: "16:9", desc: "宽屏" },
-                      { id: "9:16", name: "9:16", desc: "竖屏" }
-                    ].map((r) => (
-                      <button
-                        key={r.id}
-                        onClick={() => setParams({ ...params, ratio: r.id as any })}
-                        className={`px-4 py-2 rounded-xl border text-xs font-bold transition-all flex items-center gap-1 ${params.ratio === r.id ? "bg-white border-[#967C55] ring-2 ring-[#967C55]/10 shadow-sm text-[#967C55]" : "bg-white/40 border-[#EBE8DF] text-[#7A7061]"}`}
-                      >
-                        <p className="font-extrabold">{r.name}</p>
-                        <p className="text-[9px] font-medium">{r.desc}</p>
-                      </button>
-                    ))}
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      onClick={() => setParams({ ...params, lightState: "on" })}
+                      className={`px-4 py-2.5 rounded-xl border text-xs font-bold transition-all flex items-center gap-1.5 ${params.lightState === "on" ? "bg-white border-[#967C55] ring-2 ring-[#967C55]/10 shadow-sm text-[#967C55]" : "bg-white/40 border-[#EBE8DF] text-[#7A7061] hover:border-[#967C55]/50"}`}
+                    >
+                      <Sun className="w-3.5 h-3.5" />
+                      <span>开灯 (漫反射)</span>
+                    </button>
+                    <button
+                      onClick={() => setParams({ ...params, lightState: "off" })}
+                      className={`px-4 py-2.5 rounded-xl border text-xs font-bold transition-all flex items-center gap-1.5 ${params.lightState === "off" ? "bg-white border-[#967C55] ring-2 ring-[#967C55]/10 shadow-sm text-[#967C55]" : "bg-white/40 border-[#EBE8DF] text-[#7A7061] hover:border-[#967C55]/50"}`}
+                    >
+                      <Power className="w-3.5 h-3.5" />
+                      <span>关灯 (自然光)</span>
+                    </button>
                   </div>
-                </div>
-              </div>
-
-              {/* Parameter 5: Light State (开灯/关灯) */}
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <span className="text-xs font-extrabold text-[#2C2623]">灯具状态</span>
-                </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setParams({ ...params, lightState: "on" })}
-                    className={`px-4 py-2 rounded-xl border text-xs font-bold transition-all flex items-center gap-1.5 ${params.lightState === "on" ? "bg-white border-[#967C55] ring-2 ring-[#967C55]/10 shadow-sm text-[#967C55]" : "bg-white/40 border-[#EBE8DF] text-[#7A7061]"}`}
-                  >
-                    <Sun className="w-3.5 h-3.5" />
-                    <span>开灯 (漫反射)</span>
-                  </button>
-                  <button
-                    onClick={() => setParams({ ...params, lightState: "off" })}
-                    className={`px-4 py-2 rounded-xl border text-xs font-bold transition-all flex items-center gap-1.5 ${params.lightState === "off" ? "bg-white border-[#967C55] ring-2 ring-[#967C55]/10 shadow-sm text-[#967C55]" : "bg-white/40 border-[#EBE8DF] text-[#7A7061]"}`}
-                  >
-                    <Power className="w-3.5 h-3.5" />
-                    <span>关灯 (自然光)</span>
-                  </button>
                 </div>
               </div>
             </div>
