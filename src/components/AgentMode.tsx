@@ -100,12 +100,23 @@ export default function AgentMode({
   const [isChatAnalyzing, setIsChatAnalyzing] = useState<boolean>(false);
 
   const chatEndRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const isFirstMount = useRef(true);
   const roomInputRef = useRef<HTMLInputElement>(null);
   const lampInputRef = useRef<HTMLInputElement>(null);
 
-  // Auto-scroll on messages or status changes
+  // Auto-scroll on messages or status changes without scrolling the entire page window
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (isFirstMount.current) {
+      isFirstMount.current = false;
+      return;
+    }
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTo({
+        top: scrollContainerRef.current.scrollHeight,
+        behavior: "smooth"
+      });
+    }
   }, [messages, isRoomAnalyzing, isLampAnalyzing, isRendering, renderingText, isChatAnalyzing]);
 
   // Helper to convert base64 image data to a Blob
@@ -1021,7 +1032,10 @@ export default function AgentMode({
       </div>
 
       {/* Message List area */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-[#FAF9F5]/40 scrollbar-thin scrollbar-thumb-gray-200">
+      <div 
+        ref={scrollContainerRef}
+        className="flex-1 overflow-y-auto p-6 space-y-6 bg-[#FAF9F5]/40 scrollbar-thin scrollbar-thumb-gray-200"
+      >
         {messages.map((msg) => {
           const isUser = msg.sender === "user";
           return (
