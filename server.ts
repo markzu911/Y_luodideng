@@ -410,8 +410,22 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
           perspectiveGuidance = "4. VIEW AND PERSPECTIVE (CLOSE VIEW): MUST show an intimate, tight close-up (特写) perspective focusing on the floor lamp in the room. CRITICAL: While the camera angle CAN VARY to show the best perspective, you MUST NOT change the room's original furniture layout. The placement of the lamp must be reasonable and logical within the existing layout (e.g. next to a sofa or bed). 即使是近景（特写）也绝对不能随便更改屋内的家具布局，只能改变摄像机视角！并且落地灯摆放的位置必须合理，要符合真实居家环境的逻辑。Keep the background fully sharp and without bokeh.";
         }
         
+        // Detailed style specifications for Virtual Rooms to ensure architectural and aesthetic fidelity
+        const STYLE_SPECS: Record<string, string> = {
+          "极简风": "ARCHITECTURAL STYLE: Extreme Minimalism. Use seamless micro-cement (微水泥) for walls and floors with a matte, velvet-like finish. NO baseboards or visible joints. Integrate hidden linear lighting (嵌入式线性灯). Furniture must be architectural and geometric. Palette: Stark whites and soft greys with extreme negative space.",
+          "现代简约": "ARCHITECTURAL STYLE: High-End Modernism. Features large-format porcelain tiles and polished stone textures. Include sleek metal accents (black or brushed steel) and designer Italian-style furniture. Walls should be perfectly smooth with premium matte paint. Palette: Sophisticated charcoal, cool greys, and crisp whites.",
+          "北欧风": "ARCHITECTURAL STYLE: Scandinavian Cozy (Hygge). Use light oak (浅色橡木) wide-plank flooring. Walls are warm white plaster. Furniture features organic wood shapes and soft linen fabrics. Include large windows with soft daylight and sheer curtains. Palette: Oatmeal, sage, and warm wood tones.",
+          "新中式": "ARCHITECTURAL STYLE: Contemporary Zen (New Chinese). Incorporate dark walnut (胡桃木) structural frames and rice paper or silk screen textures. Include symmetrical furniture layouts and clean stone accents. Lighting should be atmospheric and focused. Palette: Ink black, deep wood, and warm silk cream.",
+          "奶油风": "ARCHITECTURAL STYLE: Soft Creamy/French Minimalist. Features rounded architectural corners and arched doorways. Use boucle fabrics (羊羔绒) and velvet textures. Surfaces should feel soft and tactile. Palette: Warm sand, oatmeal, and milk tea colors with an ambient, soft-focus glow.",
+          "侘寂风": "ARCHITECTURAL STYLE: Authentic Wabi-Sabi. Use rough-textured plaster (等离子泥) and weathered reclaimed wood. Incorporate organic, imperfect stone shapes and ceramic vessels. Focus on shadow play and minimal, low-profile furniture. Palette: Earthy ochre, muted clay, and shadowed greys."
+        };
+
         const roomStylePrompt = isVirtualRoom
-          ? `CRITICAL ROOM STYLE MATCHING: You MUST strictly generate the room according to the textual design specifications below to perfectly capture the essence of "${roomAnalysis.style}". 必须严格按照以下文字描述生成极致完美的【${roomAnalysis.style}】风格样板间，完全符合对应的颜色、家具和布局设定，切记不要偏离指定的风格！
+          ? `CRITICAL ROOM STYLE MATCHING: You MUST strictly generate the room according to the textual design specifications below to perfectly capture the essence of "${roomAnalysis.style}". 必须严格按照以下【设计规范】和【文字描述】生成极致完美的【${roomAnalysis.style}】风格样板间，完全符合对应的颜色、家具和布局设定，切记不要偏离指定的风格！
+
+DESIGN SPECIFICATION FOR THIS STYLE:
+${STYLE_SPECS[roomAnalysis.style] || "Generate a professional, high-end interior matching the requested style."}
+
 The room style and context MUST match:
 - Style: ${roomAnalysis.style}
 - Layout: ${roomAnalysis.layout}
