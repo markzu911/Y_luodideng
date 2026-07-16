@@ -1,4 +1,5 @@
 import { VirtualRoom, PresetLamp } from "./types";
+import newChineseLivingRoom from "./assets/images/new_chinese_living_room_1784189443927.jpg";
 
 export const VIRTUAL_ROOMS: VirtualRoom[] = [
   {
@@ -92,31 +93,31 @@ export const VIRTUAL_ROOMS: VirtualRoom[] = [
   },
   {
     id: "room_3",
-    name: "新中式・雅 (Zen Chinese Style)",
-    style: "清雅含蓄的新中式卧室。温润的胡桃木与原木材质交融，水墨花鸟壁画与写意字画点缀其间，搭配透光的方格屏风与陶罐枯枝，营造出东方独有的诗意与宁静禅意。",
-    imageUrl: "https://images.unsplash.com/photo-1615529182904-14819c35db37?auto=format&fit=crop&w=1200&q=80",
-    imageUrlFar: "https://images.unsplash.com/photo-1615529182904-14819c35db37?auto=format&fit=crop&w=1200&q=80",
-    imageUrlMid: "https://images.unsplash.com/photo-1615529182904-14819c35db37?auto=format&fit=crop&w=1200&q=80",
-    imageUrlClose: "https://images.unsplash.com/photo-1615529182904-14819c35db37?auto=format&fit=crop&w=1200&q=80",
+    name: "新中式・雅 (Warm Oriental Zen)",
+    style: "新中式",
+    imageUrl: newChineseLivingRoom,
+    imageUrlFar: newChineseLivingRoom,
+    imageUrlMid: newChineseLivingRoom,
+    imageUrlClose: newChineseLivingRoom,
     analysis: {
-      style: "新中式禅意雅室 (Zen Chinese Bedroom)",
-      layout: "清雅空灵的东方雅室，背景为素雅的宣纸色墙面，点缀以花鸟水墨画或书法字画，两侧搭配透光的中式方格木屏风，通透且充满诗意",
+      style: "新中式",
+      layout: "温馨高雅的新中式客厅。温暖的原木地板与墙面木饰面交相辉映，精美镂空木格栅与梅花挂画点缀其中，在优雅天花板暗藏灯带的烘托下，营造出极致温馨与沉静的现代东方美学。",
       furniture: [
-        "温润实木/胡桃木新中式双人床 (Walnut/solid wood Zen Chinese bed)",
-        "丝滑棉麻混纺素色/浅灰床品 (Silk and linen blend neutral bedding)",
-        "复古黄铜做旧拉手实木床头柜 (Solid wood nightstand with antique brass handles)",
-        "中式经典方格木制透光屏风 (Traditional Chinese wooden grid screen)",
-        "粗陶复古花瓶与中式枯枝/干花艺术插花 (Rustic pottery vase with dry branches/ikebana)",
-        "墙面梅兰竹菊/写意水墨挂画 (Traditional Chinese ink wash painting of nature)"
+        "中式古典低矮实木罗汉床/贵妃榻 (Low-profile solid-wood daybed)",
+        "高弹舒适米白色榻面与圆柱靠枕 (Plush cream mattress and clean bolster cushions)",
+        "简约中式实木茶几与休闲藤编高背椅 (Minimalist wood coffee table & rattan armchairs)",
+        "多层通透镂空木格栅屏风柜 (Hollow wood lattice screen cabinet)",
+        "传统手绘写意红梅花轴挂画 (Scroll painting of blooming red plum blossoms)",
+        "古朴陶制插花瓶与典雅盆栽绿植 (Rustic pottery vase and potted green plants)"
       ],
       colors: [
-        "沉稳胡桃木色 (Deep walnut wood)",
-        "宣纸米白 (Rice paper off-white)",
-        "水墨雅灰 (Ink wash grey)",
-        "古铜金 (Antique bronze gold)"
+        "温润原木黄 (Natural warm oak wood)",
+        "典雅胡桃褐 (Deep premium walnut)",
+        "宣纸暖米白 (Oatmeal cream white)",
+        "写意红梅色 (Blooming plum blossom red)"
       ],
-      recommendation: "推荐选择带有宣纸、棉麻透光灯罩或细竹编织的落地灯，放置于实木案几旁或屏风前。通过灯罩漫反射出温和的光晕，能极好地烘托东方美学中含蓄内敛的禅意氛围。",
-      lightSuggestion: "强烈推荐 2700K 暖黄灯光。偏暖的光线能让胡桃木的纹理更显深沉温润，同时让水墨画和枯枝插花在光影中展现出古朴幽静的东方韵味。"
+      recommendation: "极力推荐搭配古典黄铜色、宣纸材质或带天然藤编元素的东方禅意落地灯。适合放置在实木榻侧后方或藤编休闲椅旁，与木质格栅和梅花挂画共同勾勒出古朴优雅的氛围感画卷。",
+      lightSuggestion: "强烈建议选择 2700K-3000K 暖黄光。温润柔和的光晕能够完美唤醒原木家具的天然木纹质感，同时与天花板的暗藏暖光带交织互补，渲染出空灵而极具温度的东方居家禅境。"
     }
   },
   {
