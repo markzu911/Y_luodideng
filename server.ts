@@ -412,15 +412,26 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
           ? "5. PERSONA / HUMAN PRESENCE: You MUST include a realistic human model (e.g., a person reading, relaxing, or enjoying the space) to enhance the living atmosphere. The human figure should seamlessly blend into the scene and interact naturally with the lighting and environment. 必须要包含一个真实的人物模型（比如正在阅读或休息的人）。" 
           : "5. PERSONA / HUMAN PRESENCE: DO NOT include any human figures or models in the scene. Provide a pure architectural and furniture visualization. 绝对不要在画面中出现任何人物模型。";
 
-        const prompt = `A professional, beautiful, and ultra-high-resolution interior design photograph.
-Your task is to generate a beautiful, normal, and perfectly balanced room that EXACTLY MATCHES the visual style, vibe, and architectural elements of the reference room image, and seamlessly integrate the provided floor lamp into it.
+        const isVirtualRoom = roomImage && roomImage.startsWith("http");
 
-CRITICAL ROOM STYLE MATCHING: You MUST preserve the exact interior design style provided in the reference room image (e.g., Wabi-Sabi, Modern Cream, Minimalist, etc.). Do NOT invent a different room style! The generated room MUST feel like the exact same space as the reference image, just with the lamp added.
+        const roomStylePrompt = isVirtualRoom
+          ? `CRITICAL ROOM STYLE MATCHING: You MUST preserve the exact interior design style, colors, and architectural elements provided in the Reference Room Image. The reference image represents the EXACT virtual room we want. Do NOT invent a different room style! You MUST strictly generate the room according to the reference image and the textual design specifications below to perfectly capture the essence of "${roomAnalysis.style}". 必须严格按照【参考房间图片】以及以下文字描述生成，完全还原参考图片中的【${roomAnalysis.style}】风格、颜色、材质和氛围，切记绝对不要偏离参考图片的风格！
 The room style and context MUST match:
 - Style: ${roomAnalysis.style}
 - Layout: ${roomAnalysis.layout}
 - Furniture: ${roomAnalysis.furniture.join(", ")}
-- Colors: ${roomAnalysis.colors.join(", ")}
+- Colors: ${roomAnalysis.colors.join(", ")}`
+          : `CRITICAL ROOM STYLE MATCHING: You MUST preserve the exact interior design style provided in the reference room image (e.g., Wabi-Sabi, Modern Cream, Minimalist, etc.). Do NOT invent a different room style! The generated room MUST feel like the exact same space as the reference image, just with the lamp added.
+The room style and context MUST match:
+- Style: ${roomAnalysis.style}
+- Layout: ${roomAnalysis.layout}
+- Furniture: ${roomAnalysis.furniture.join(", ")}
+- Colors: ${roomAnalysis.colors.join(", ")}`;
+
+        const prompt = `A professional, beautiful, and ultra-high-resolution interior design photograph.
+Your task is to generate a beautiful, normal, and perfectly balanced room that integrates the provided floor lamp into it.
+
+${roomStylePrompt}
 
 The floor lamp style, color, and materials MUST perfectly match the reference lamp image:
 - Style: ${lampAnalysis.style}
