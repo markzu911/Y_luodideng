@@ -1,34 +1,35 @@
 import { VirtualRoom, PresetLamp } from "./types";
 import newChineseLivingRoom from "./assets/images/new_chinese_living_room_1784189443927.jpg";
+import minimalistBedroom from "./assets/images/minimalist_bedroom_1_1784190838516.jpg";
 
 export const VIRTUAL_ROOMS: VirtualRoom[] = [
   {
     id: "room_7",
     name: "极简风・夜 (Minimalist Night)",
-    style: "极致高级感极简卧室。以深灰、玄武黑与纯白为基调，搭配悬吊几何线型灯饰与低矮悬浮矮床，超大落地窗将森林绿意引入室内，呈现静谧纯粹的暗黑极简主义。",
-    imageUrl: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80",
-    imageUrlFar: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80",
-    imageUrlMid: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80",
-    imageUrlClose: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80",
+    style: "极简风",
+    imageUrl: minimalistBedroom,
+    imageUrlFar: minimalistBedroom,
+    imageUrlMid: minimalistBedroom,
+    imageUrlClose: minimalistBedroom,
     analysis: {
-      style: "暗黑奢雅极简卧室 (Luxury Minimalist Dark Bedroom)",
-      layout: "极其奢雅静谧的深灰色极简卧室。床头背景为整面无缝哑光碳黑护墙板，一侧配有垂悬的几何线型吊灯，右侧通透的落地玻璃窗连接开阔的自然景观",
+      style: "极简风",
+      layout: "极致静谧的深灰色奢雅极简卧室。床头背景为整面高端哑光碳黑色护墙板，下方暗藏柔和线性黄光带，天花板暖色反光灯带静静倾泻。侧方为超大落地景观玻璃窗，搭配纯白沙帘与深灰布艺窗帘，营造高级奢华且极其安宁的庇护感。",
       furniture: [
-        "低矮悬浮式深炭灰极简真皮双人床 (Low-profile floating dark charcoal leather bed)",
-        "高饱满纯白羽绒枕与哑光高密灰度床品 (Sleek white bedding with charcoal grey duvet)",
-        "悬浮式哑光黑色实木抽屉床头柜 (Floating matte black wood bedside nightstand)",
-        "极简暗灰色短毛圈绒低饱和地毯 (Dark charcoal textured low-pile carpet)",
-        "现代圆形矮墩皮革踏步椅 (Low circular dark grey leather pouffe ottoman)",
-        "无主灯隐藏式线性磁吸轨道射灯 (Minimalist recessed magnetic linear downlights)"
+        "低矮悬浮式深炭灰极简皮艺床 (Low-profile modern dark-gray platform bed)",
+        "纯白饱满羽绒枕与高级哑光灰色被褥床品 (Crisp white pillows with matte gray duvet bedding)",
+        "床头垂悬的极细黑色几何吊灯 (Slender black geometric pendant light)",
+        "极简无把手灰色悬挑抽屉柜 (Sleek handleless gray cantilever drawer cabinet)",
+        "深灰色质感天然羊毛短毛地毯 (Textured dark gray wool area rug)",
+        "极简圆饼灰色低矮坐墩 (Low minimalist circular gray pouf ottoman)"
       ],
       colors: [
-        "玄武碳黑 (Matte charcoal black)",
-        "微水泥极简灰 (Microcement gray)",
-        "极净哑白 (Crisp pristine white)",
-        "森林冷绿 (Cool forest green)"
+        "哑光碳黑 (Matte Obsidian Black)",
+        "高级灰 (Premium Slate Gray)",
+        "极净哑白 (Pristine Soft White)",
+        "微光暖金 (Warm Ambient Gold)"
       ],
-      recommendation: "推荐选择黑色哑光或精致拉丝金属等线条极度利落的落地灯。非常适合放置于悬浮床头柜旁、或者大面积落地窗前，利用纤细的直线轮廓与背景的超大玻璃或黑灰墙壁产生极致的形式张力。",
-      lightSuggestion: "强烈建议选择 3000K-3500K 暖白光或温和中性光。隐藏在床背或天花板凹槽内的线性洗墙光和落地灯的漫反射光交相辉映，能在漆黑深邃中营造出极具高级感和理性温度的雕塑光影。"
+      recommendation: "极力推荐搭配外形极致硬朗、线条极度利落的哑光黑色金属或拉丝黄铜材质落地灯。放置在床头柜/柜子旁或窗边，利用纤细的直线轮廓与深黑背景及玻璃景观产生强烈的几何艺术张力。",
+      lightSuggestion: "强烈建议配合 3000K-3500K 暖白光或中性光。柔和的漫反射光晕能完美点亮深灰色皮艺床的天然纹理，同时与墙板背后的线性LED暖色洗墙灯带和天花板暗藏灯带交织相融，在纯粹深邃中渲染出极致的高级住宅质感与空间温度。"
     }
   },
   {
