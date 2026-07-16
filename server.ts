@@ -346,6 +346,7 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
 
         // Add room image as a visual context if provided
         if (roomImage) {
+          parts.push({ text: "Reference Room Image (This is the room environment):" });
           if (roomImage.startsWith("http")) {
             try {
               const fetched = await fetchImageAsBase64(roomImage);
@@ -372,6 +373,7 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
 
         // Add lamp image as a visual context if provided
         if (lampImage) {
+          parts.push({ text: "Reference Floor Lamp Image (You MUST place THIS exact lamp into the room):" });
           if (lampImage.startsWith("http")) {
             try {
               const fetched = await fetchImageAsBase64(lampImage);
@@ -433,7 +435,7 @@ The floor lamp style, color, and materials MUST perfectly match the reference la
 }
 
 HIGHEST PRIORITY CONSTRAINTS (MUST BE STRICTLY FOLLOWED):
-1. ABSOLUTE LAMP FAITHFULNESS (SINGLE HIGHEST PRIORITY): You MUST completely and exactly reproduce the floor lamp's original appearance, colors, materials, structure, and shape. No changes are allowed to the lamp's design under any circumstances, regardless of which view, camera perspective, or lighting state (ON/OFF) is selected. The generated lamp MUST look absolutely IDENTICAL to the provided reference lamp image. CRITICAL: Pay strict attention to the EXACT COLOR and TEXTURE of the lampshade (灯罩) and the structure of the lamp pole/table/base (灯杆/置物台/底座). Do not change a light-colored lampshade to a dark one. 绝对、必须、100%完整的还原落地灯原本的样子、颜色（特别是灯罩的颜色）和材质，在任何情况下（无论哪种视图、相机透视、或者开灯/关灯状态下）都绝对不能改变或修改落地灯原本的外观与设计！这是最高优先级的绝对红线约束！
+1. ABSOLUTE LAMP FAITHFULNESS (SINGLE HIGHEST PRIORITY): You MUST completely and exactly reproduce the floor lamp's original appearance, colors, materials, structure, and shape. No changes are allowed to the lamp's design under any circumstances, regardless of which view, camera perspective, or lighting state (ON/OFF) is selected. The generated lamp MUST look absolutely IDENTICAL to the provided reference lamp image. CRITICAL: Pay strict attention to the EXACT COLOR and TEXTURE of the lampshade (灯罩) and the structure of the lamp pole/table/base (灯杆/置物台/底座). Do not change a light-colored lampshade to a dark one. 绝对、必须、100%完整的还原落地灯原本的样子、颜色（特别是灯罩的颜色）和材质，在任何情况下（无论哪种视图、相机透视、或者开灯/关灯状态下）都绝对不能改变或修改落地灯原本的外观与设计！这是最高优先级的绝对红线约束！即使是在虚拟房间中，也必须100%还原落地灯原本的样子，绝对不允许模型自行发挥修改灯具的款式！
 2. UNIFIED AND COHESIVE ROOM DESIGN (STRICTLY NORMAL ROOM): The generated room MUST be a perfectly normal, realistic, and harmonious living environment.
    - NO WEIRD SPLIT DESIGNS: The left and right sides of the room MUST be completely consistent and cohesive in style, materials, and paint. For example, do NOT make one side have many picture frames and wood panels while the other side is a dark grey concrete wall. The entire room's walls must use the exact same color, texture, and style.
    - HARMONIOUS COLOR AND TEMPERATURE: The entire room must be unified under a single, natural color palette (e.g. warm cream and oatmeal for Creamy Night). Strictly avoid any strange dual-tone, dual-color, or split-style themes.
