@@ -148,7 +148,6 @@ export default function App() {
   // Generation Parameters State
   const [params, setParams] = useState<GenerationParams>({
     viewType: "far",
-    needModel: false,
     quality: "1K",
     ratio: "4:3",
     lightState: "on",
@@ -1255,27 +1254,6 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Parameter 2: Need Model (是否需要模特) */}
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <span className="text-xs font-extrabold text-[#2C2623]">生活氛围渲染 (是否需要模特)</span>
-                </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setParams({ ...params, needModel: false })}
-                    className={`px-4 py-2 rounded-xl border text-xs font-bold transition-all ${!params.needModel ? "bg-white border-[#967C55] ring-2 ring-[#967C55]/10 shadow-sm text-[#967C55]" : "bg-white/40 border-[#EBE8DF] text-[#7A7061]"}`}
-                  >
-                    不需要 (纯场景)
-                  </button>
-                  <button
-                    onClick={() => setParams({ ...params, needModel: true })}
-                    className={`px-4 py-2 rounded-xl border text-xs font-bold transition-all ${params.needModel ? "bg-white border-[#967C55] ring-2 ring-[#967C55]/10 shadow-sm text-[#967C55]" : "bg-white/40 border-[#EBE8DF] text-[#7A7061]"}`}
-                  >
-                    需要 (置入剪影)
-                  </button>
-                </div>
-              </div>
-
               <div className="flex gap-4">
                 {/* Parameter 3: Resolution (清晰度) */}
                 <div className="flex-1 space-y-2">
@@ -1307,7 +1285,10 @@ export default function App() {
                   <div className="flex gap-2">
                     {[
                       { id: "4:3", name: "4:3", desc: "横构图" },
-                      { id: "3:4", name: "3:4", desc: "竖构图" }
+                      { id: "3:4", name: "3:4", desc: "竖构图" },
+                      { id: "1:1", name: "1:1", desc: "正方形" },
+                      { id: "16:9", name: "16:9", desc: "宽屏" },
+                      { id: "9:16", name: "9:16", desc: "竖屏" }
                     ].map((r) => (
                       <button
                         key={r.id}
@@ -1421,7 +1402,7 @@ export default function App() {
                 <div 
                   className="relative overflow-hidden rounded-3xl bg-[#1C1715] shadow-2xl border border-black/10 select-none w-full max-w-[620px] group cursor-pointer"
                   style={{
-                    aspectRatio: params.ratio === "4:3" ? "4/3" : "3/4"
+                    aspectRatio: params.ratio.replace(':', '/')
                   }}
                   onClick={() => {
                     if (generatedSceneUrl) {
@@ -1558,7 +1539,7 @@ export default function App() {
 
       {/* Floating History Gallery (Bottom Left) */}
       <AnimatePresence>
-        {generationHistory.length > 0 && (step === 3 || step === 4) && (
+        {generationHistory.length > 0 && step === 4 && (
           <motion.div 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}

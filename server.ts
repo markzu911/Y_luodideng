@@ -346,8 +346,8 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
 
         const isVirtualRoom = roomImage && roomImage.startsWith("http");
 
-        // Add room image as a visual context if provided
-        if (roomImage) {
+        // Add room image as a visual context if provided AND it's not a virtual room placeholder
+        if (roomImage && !isVirtualRoom) {
           parts.push({ text: "Reference Room Image (This is the room environment to place the lamp into):" });
           if (roomImage.startsWith("http")) {
             try {
@@ -410,12 +410,8 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
           perspectiveGuidance = "4. VIEW AND PERSPECTIVE (CLOSE VIEW): MUST show an intimate, tight close-up (特写) perspective focusing on the floor lamp in the room. CRITICAL: While the camera angle CAN VARY to show the best perspective, you MUST NOT change the room's original furniture layout. The placement of the lamp must be reasonable and logical within the existing layout (e.g. next to a sofa or bed). 即使是近景（特写）也绝对不能随便更改屋内的家具布局，只能改变摄像机视角！并且落地灯摆放的位置必须合理，要符合真实居家环境的逻辑。Keep the background fully sharp and without bokeh.";
         }
         
-        const humanGuidance = params.needModel 
-          ? "5. PERSONA / HUMAN PRESENCE: You MUST include a realistic human model (e.g., a person reading, relaxing, or enjoying the space) to enhance the living atmosphere. The human figure should seamlessly blend into the scene and interact naturally with the lighting and environment. 必须要包含一个真实的人物模型（比如正在阅读或休息的人）。" 
-          : "5. PERSONA / HUMAN PRESENCE: DO NOT include any human figures or models in the scene. Provide a pure architectural and furniture visualization. 绝对不要在画面中出现任何人物模型。";
-
         const roomStylePrompt = isVirtualRoom
-          ? `CRITICAL ROOM STYLE MATCHING: You MUST preserve the exact interior design style, colors, and architectural elements provided in the Reference Room Image. The reference image represents the EXACT virtual room we want. Do NOT invent a different room style! You MUST strictly generate the room according to the reference image and the textual design specifications below to perfectly capture the essence of "${roomAnalysis.style}". 必须严格按照【参考房间图片】以及以下文字描述生成，完全还原参考图片中的【${roomAnalysis.style}】风格、颜色、材质和氛围，切记绝对不要偏离参考图片的风格！
+          ? `CRITICAL ROOM STYLE MATCHING: You MUST strictly generate the room according to the textual design specifications below to perfectly capture the essence of "${roomAnalysis.style}". 必须严格按照以下文字描述生成极致完美的【${roomAnalysis.style}】风格样板间，完全符合对应的颜色、家具和布局设定，切记不要偏离指定的风格！
 The room style and context MUST match:
 - Style: ${roomAnalysis.style}
 - Layout: ${roomAnalysis.layout}
@@ -454,8 +450,7 @@ HIGHEST PRIORITY CONSTRAINTS (MUST BE STRICTLY FOLLOWED):
    - NORMAL ARCHITECTURAL STRUCTURE: Do NOT alter the room's basic architectural structure or add random columns or walls. Keep the layout clean, symmetric, comfortable, and realistic.
    - 必须是一个完全正常、统一、和谐的高端真实居家房间！绝对不能出现左右设计不一致、墙壁材质/颜色割裂（例如左边是暖色挂画墙而右边是灰色水泥墙）、或者光线冷暖对立等诡异的分屏/分裂设计。整个房间的所有墙壁、天花板和地板必须保持材质与色彩的完全一致和连贯，整体色调要统一、温馨、柔和，呈现出高端、对称和自然的居家氛围。
 3. PLACEMENT RULE: If the room is a bedroom, YOU MUST PLACE THE LAMP NEXT TO THE HEAD OF THE BED OR NIGHTSTAND (床头/床头柜旁). IT IS STRICTLY FORBIDDEN to place it at the foot of the bed (床尾). If the room is a living room, place the floor lamp directly beside or behind (侧后方/侧边) EXISTING furniture like a chaise longue (贵妃榻) or bean bag/lazy sofa (懒人沙发). NEVER place the lamp in front of any sofa. NEVER place the lamp in the aisle/walkway between two sofas. If no such furniture is present, place it on the side-rear (侧后方) or side (侧边) of the main sofa closer to the balcony or window. The placement must be logical and physically realistic. 如果是在卧室，必须、一定、绝对要摆放在床头或床头柜旁边！绝对不能摆放在床尾！绝对不能摆放在房间中间的过道上！如果是客厅，绝对不能将落地灯摆放在沙发的正前方遮挡视线或影响使用，可以摆放在沙发的侧后方或侧边（参考真实居家环境）。
-${perspectiveGuidance}
-${humanGuidance}`;
+${perspectiveGuidance}`;
 
         parts.push({ text: prompt });
 
@@ -466,7 +461,7 @@ ${humanGuidance}`;
           },
           config: {
             imageConfig: {
-              aspectRatio: params.ratio === "3:4" ? "3:4" : "4:3",
+              aspectRatio: params.ratio || "4:3",
             },
           },
         });
@@ -723,10 +718,6 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
         perspectiveGuidance = "4. VIEW AND PERSPECTIVE (CLOSE VIEW): MUST show an intimate, tight close-up (特写) perspective focusing on the floor lamp in the room. CRITICAL: While the camera angle CAN VARY to show the best perspective, you MUST NOT change the room's original furniture layout. The placement of the lamp must be reasonable and logical within the existing layout (e.g. next to a sofa or bed). 即使是近景（特写）也绝对不能随便更改屋内的家具布局，只能改变摄像机视角！并且落地灯摆放的位置必须合理，要符合真实居家环境的逻辑。Keep the background fully sharp and without bokeh.";
       }
       
-      const humanGuidance = params.needModel 
-        ? "5. PERSONA / HUMAN PRESENCE: You MUST include a realistic human model (e.g., a person reading, relaxing, or enjoying the space) to enhance the living atmosphere. The human figure should seamlessly blend into the scene and interact naturally with the lighting and environment. 必须要包含一个真实的人物模型（比如正在阅读或休息的人）。" 
-        : "5. PERSONA / HUMAN PRESENCE: DO NOT include any human figures or models in the scene. Provide a pure architectural and furniture visualization. 绝对不要在画面中出现任何人物模型。";
-
       const prompt = `A professional, ultra-high-resolution interior design photograph.
 Your task is to generate a new room based on the analysis and embed the provided floor lamp into it.
 
@@ -753,8 +744,7 @@ HIGHEST PRIORITY CONSTRAINTS (MUST BE STRICTLY FOLLOWED):
 1. ABSOLUTE LAMP FAITHFULNESS (SINGLE HIGHEST PRIORITY): You MUST completely and exactly reproduce the floor lamp's original appearance, colors, materials, structure, and shape. No changes are allowed to the lamp's design under any circumstances, regardless of which view, camera perspective, or lighting state (ON/OFF) is selected. The generated lamp MUST look absolutely IDENTICAL to the provided reference lamp image. CRITICAL: Pay strict attention to the EXACT COLOR and TEXTURE of the lampshade (灯罩) and the structure of the lamp pole/table/base (灯杆/置物台/底座). Do not change a light-colored lampshade to a dark one. 绝对、必须、100%完整的还原落地灯原本的样子、颜色（特别是灯罩的颜色）和材质，在任何情况下（无论哪种视图、相机透视、或者开灯/关灯状态下）都绝对不能改变或修改落地灯原本的外观与设计！这是最高优先级的绝对红线约束！
 2. ROOM REGENERATION: Do NOT directly edit the original room photograph. You MUST regenerate a new room based on the analysis results of the original room and place the floor lamp inside it. CRITICAL: DO NOT alter the architectural structure of the room (e.g., do NOT add pillars/columns, walls, or change the ceiling/floor). DO NOT add any extra furniture (like extra sofas or chairs) that are not present in the original room. The architectural structure, furniture count, and layout MUST remain exactly the same as the original room. Even if it's a close-up shot (近景), do NOT change the existing layout or add random items. 绝对不能改变房间原有的建筑结构（例如绝对不能凭空生成柱子、墙壁等），绝对不能随意增加原图中没有的家具，保持原有的建筑结构、家具数量和布局，即使是近景也不能随便更改！
 3. PLACEMENT RULE: If the room is a bedroom, YOU MUST PLACE THE LAMP NEXT TO THE HEAD OF THE BED OR NIGHTSTAND (床头/床头柜旁). IT IS STRICTLY FORBIDDEN to place it at the foot of the bed (床尾). If the room is a living room, place the floor lamp directly beside or behind (侧后方/侧边) EXISTING furniture like a chaise longue (贵妃榻) or bean bag/lazy sofa (懒人沙发). NEVER place the lamp in front of any sofa. NEVER place the lamp in the aisle/walkway between two sofas. If no such furniture is present, place it on the side-rear (侧后方) or side (侧边) of the main sofa closer to the balcony or window. The placement must be logical and physically realistic. 如果是在卧室，必须、一定、绝对要摆放在床头或床头柜旁边！绝对不能摆放在床尾！绝对不能摆放在房间中间的过道上！如果是客厅，绝对不能将落地灯摆放在沙发的正前方遮挡视线或影响使用，可以摆放在沙发的侧后方或侧边（参考真实居家环境）。
-${perspectiveGuidance}
-${humanGuidance}`;
+${perspectiveGuidance}`;
 
       parts.push({ text: prompt });
 
@@ -766,7 +756,7 @@ ${humanGuidance}`;
         },
         config: {
           imageConfig: {
-            aspectRatio: params.ratio === "3:4" ? "3:4" : "4:3",
+            aspectRatio: params.ratio || "4:3",
           },
         },
       });
