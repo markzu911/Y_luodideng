@@ -88,6 +88,115 @@ async function startServer() {
     }
   });
 
+  app.post("/api/chat-intent", async (req, res) => {
+    try {
+      const { text, currentRoomId, currentLampId, currentParams } = req.body;
+      if (!text) {
+        return res.status(400).json({ error: "Missing text" });
+      }
+
+      const apiKey = process.env.GEMINI_API_KEY || process.env.API_KEY;
+      if (!apiKey) {
+        return res.status(400).json({ 
+          error: "GEMINI_API_KEY 或 API_KEY 环境变量未配置。请前往 Settings (设置) 菜单添加名为 GEMINI_API_KEY 的密钥，值填写您的 Gemini API Key。" 
+        });
+      }
+
+      const client = new GoogleGenAI({
+        apiKey,
+        httpOptions: {
+          headers: {
+            'User-Agent': 'aistudio-build',
+          }
+        }
+      });
+
+      const systemInstruction = `你是一个高保真落地灯试摆与智能光影融合App的AI设计总监助理。
+你的目标是：
+1. 深入理解用户在各种交互阶段输入的自然语言，而不仅仅是看关键字。
+2. 提取用户想要进行的操作意图（Intent）以及相关参数。
+3. 给出语气温馨、充满设计美学和艺术感、富有感染力、亲切而不机械的中文回复（aiResponse）。
+
+当前可用的房间 (VIRTUAL_ROOMS):
+- "room_7": "极简风・夜" (对应关键词：极简、纯白、微水泥、留白、冷调等)
+- "room_1": "现代简约・夜" (对应关键词：现代、简约、客厅、灰色等)
+- "room_2": "北欧风・夜" (对应关键词：北欧、原木、卧室、温馨、松弛等)
+- "room_3": "新中式・暮" (对应关键词：中式、禅意、胡桃木、水墨、屏风等)
+- "room_4": "奶油风・夜" (对应关键词：奶油风、燕麦奶、温柔、法式、浪漫等)
+- "room_5": "侘寂风・夜" (对应关键词：侘寂、陶罐、寂静、水泥、枯枝等)
+
+当前可用的预设落地灯 (PRESET_LAMPS):
+- "lamp_1": "经典包豪斯大理石抛物钓鱼灯" (对应关键词：钓鱼灯、抛物线、不锈钢、金属、大理石、包豪斯、经典等)
+- "lamp_2": "日式野口勇和纸褶皱灯笼灯" (对应关键词：和纸灯、纸质灯、灯笼、野口勇、褶皱等)
+- "lamp_3": "北欧极简黄铜重力平衡立柱灯" (对应关键词：立柱、黄铜、金色、玻璃球、极简黄铜等)
+- "lamp_4": "美式复古三头哑光工业射灯" (对应关键词：工业风、射灯、复古、轨道灯、多头等)
+
+当前系统的交互状态：
+- 当前已选房间ID: "${currentRoomId || "未选择"}"
+- 当前已选落地灯ID: "${currentLampId || "未选择"}"
+- 当前渲染参数: ${JSON.stringify(currentParams || {})}
+
+你要返回以下 JSON 格式的解析结果，不要返回任何其他内容，也不要用 markdown \`\`\` 包裹：
+{
+  "intent": "select_room" | "select_lamp" | "toggle_light" | "set_view" | "generate_scene" | "general_chat" | "unknown",
+  "extractedData": {
+    "roomId": "room_7" | "room_1" | "room_2" | "room_3" | "room_4" | "room_5" | null,
+    "lampId": "lamp_1" | "lamp_2" | "lamp_3" | "lamp_4" | null,
+    "lightState": "on" | "off" | null,
+    "viewType": "far" | "mid" | "close" | null,
+    "needModel": true | false | null
+  },
+  "aiResponse": "在这里填写您对用户消息的回复。回复要求：使用第一人称‘我’代表光影助理，结合光线、材质、氛围感，写出极其高级有感染力的中文话语。说明您做了什么调整，并引导用户下一步。字数在100字左右为宜。"
+}
+
+指令解析逻辑示例（极其重要）：
+- 如果用户说 "想要一种温柔奶糯的感觉"，你应当理解这是想要切换到奶油风，intent="select_room"，extractedData.roomId="room_4"。
+- 如果用户说 "那个日本设计师折纸做的灯叫什么？帮我选那一个吧"，你应当理解这是想要切换到野口勇纸灯，intent="select_lamp"，extractedData.lampId="lamp_2"。
+- 如果用户说 "视角稍微拉远，我想看个全貌"，extractedData.viewType="far"。
+- 如果用户说 "我想把灯灭掉/点亮"，extractedData.lightState="off" 或 "on"。
+- 如果用户说 "开始摆放"、"去渲染吧"、"生成图片"、"我想看看最后效果"，这代表开始融合成图，intent="generate_scene"。
+- 如果用户说 "这盏灯有什么特别的？"，intent="general_chat"，你可以在 aiResponse 中对落地灯（如果有已选落地灯）进行专业的设计科普。
+- 如果用户进行了多项调整（例如 "换成卧室背景，并把灯打开"），你应当同时提取 extractedData.roomId="room_2" 和 extractedData.lightState="on"！
+
+记住，请绝对不要输出任何 markdown 格式！只返回一个可以用 JSON.parse 直接解析的纯 JSON 字符串！`;
+
+      const response = await client.models.generateContent({
+        model: "gemini-3.5-flash",
+        contents: [
+          { text: systemInstruction },
+          { text: `用户最新的输入：\n"${text}"` }
+        ],
+        config: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: Type.OBJECT,
+            properties: {
+              intent: { type: Type.STRING },
+              extractedData: {
+                type: Type.OBJECT,
+                properties: {
+                  roomId: { type: Type.STRING },
+                  lampId: { type: Type.STRING },
+                  lightState: { type: Type.STRING },
+                  viewType: { type: Type.STRING },
+                  needModel: { type: Type.BOOLEAN }
+                }
+              },
+              aiResponse: { type: Type.STRING }
+            },
+            required: ["intent", "extractedData", "aiResponse"]
+          }
+        }
+      });
+
+      const textRes = response.text?.trim() || "{}";
+      res.json(JSON.parse(textRes));
+    } catch (error: any) {
+      console.error("Error in /api/chat-intent:", error);
+      res.status(500).json({ error: error.message || "Failed to parse chat intent" });
+    }
+  });
+
   app.post("/api/gemini", async (req, res) => {
     try {
       const { model, payload } = req.body;

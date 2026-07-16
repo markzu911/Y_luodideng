@@ -2,105 +2,105 @@ import { VirtualRoom, PresetLamp } from "./types";
 
 export const VIRTUAL_ROOMS: VirtualRoom[] = [
   {
-    id: "room_1",
-    name: "现代简约 (Modern)",
-    style: "配色纯净，线条利落，注重功能性与空间感的平衡。通常包含极简布艺沙发与几何感地板。",
-    imageUrl: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80",
-    imageUrlFar: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80",
-    imageUrlMid: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80",
-    imageUrlClose: "https://images.unsplash.com/photo-1600210492486-724fe5c67fb0?auto=format&fit=crop&w=1200&q=80",
+    id: "room_7",
+    name: "极简风・夜 (Minimalist Night)",
+    style: "夜幕下的极致留白与极简美学。错落的暗影与纯粹的几何体块相遇，完美承载极简落地灯雕塑般的艺术光影。",
+    imageUrl: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80",
+    imageUrlFar: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80",
+    imageUrlMid: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80",
+    imageUrlClose: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80",
     analysis: {
-      style: "现代简约 (Modern)",
-      layout: "开放式极简客厅，空间感充足，线条利落",
-      furniture: ["极简布艺沙发", "几何形茶几", "无主灯设计天花", "浅色木纹地板"],
-      colors: ["纯净白", "低调灰", "原木色"],
-      recommendation: "建议将落地灯摆放在沙发转角处，或者电视墙的角落，通过几何线条的灯具呼应极简风格，同时作为局部阅读或氛围照明。",
-      lightSuggestion: "推荐使用 4000K 自然白光，凸显现代简约的利落感和通透感。"
+      style: "极简风・夜 (Minimalist Night)",
+      layout: "纯净留白的夜间起居空间，大面积柔和阴影，线条利落纯粹",
+      furniture: ["极简落地单人椅", "圆柱形清水混凝土边几", "纯色羊毛地毯"],
+      colors: ["哑光白", "微水泥灰", "玄武黑"],
+      recommendation: "极为纯粹的微光测试场。适合将造型极度纤细的线型或几何体块落地灯置于墙角或单椅旁，利用墙面漫反射创造雕塑般的高级艺术感。",
+      lightSuggestion: "强烈建议选择 3000K-3500K 暖白光或温和中性光，在维持空间高冷与空灵韵味的同时，注入一抹恰到好处的理性温度。"
+    }
+  },
+  {
+    id: "room_1",
+    name: "现代简约・夜 (Modern Night)",
+    style: "夜幕下的极简空间，线条利落，光影沉淀。暗淡的背景完美衬托局部照明，凸显极致的现代空间美学。",
+    imageUrl: "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=1200&q=80",
+    imageUrlFar: "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=1200&q=80",
+    imageUrlMid: "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=1200&q=80",
+    imageUrlClose: "https://images.unsplash.com/photo-1507089947368-19c1da9775ae?auto=format&fit=crop&w=1200&q=80",
+    analysis: {
+      style: "现代简约・夜 (Modern Night)",
+      layout: "开放式极简夜间客厅，暗调高级灰底座，利落线条",
+      furniture: ["极简黑色/深灰沙发", "黑色岩板茶几", "暗藏式防眩射灯", "微水泥地板"],
+      colors: ["炭黑", "深灰", "琥珀金"],
+      recommendation: "建议将几何感强的线条落地灯摆放在沙发一角，用明暗切割空间，光束直射或折射于墙面，彰显现代摩登质感。",
+      lightSuggestion: "推荐使用 3500K - 4000K 暖白光或中性光，在夜色中既维持干练利落，又平添一抹理性温度。"
     }
   },
   {
     id: "room_2",
-    name: "北欧风 (Nordic)",
-    style: "大量使用原木与浅灰色调，强调自然采光，营造通透温润的北欧森林居家感。",
-    imageUrl: "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&w=1200&q=80",
-    imageUrlFar: "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&w=1200&q=80",
-    imageUrlMid: "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&w=1200&q=80",
-    imageUrlClose: "https://images.unsplash.com/photo-1598928506311-c55ded91a20c?auto=format&fit=crop&w=1200&q=80",
+    name: "北欧风・夜 (Nordic Night)",
+    style: "温暖而松弛的北欧冬夜。室外寒夜漫漫，室内原木与布艺在柔和微光下散发着极度温暖治愈的居家拥抱感。",
+    imageUrl: "https://images.unsplash.com/photo-1540518614846-7eded433c457?auto=format&fit=crop&w=1200&q=80",
+    imageUrlFar: "https://images.unsplash.com/photo-1540518614846-7eded433c457?auto=format&fit=crop&w=1200&q=80",
+    imageUrlMid: "https://images.unsplash.com/photo-1540518614846-7eded433c457?auto=format&fit=crop&w=1200&q=80",
+    imageUrlClose: "https://images.unsplash.com/photo-1540518614846-7eded433c457?auto=format&fit=crop&w=1200&q=80",
     analysis: {
-      style: "北欧风 (Nordic)",
-      layout: "舒适温润的休息区，大面积自然采光",
-      furniture: ["原木边框沙发", "棉麻质感抱枕", "浅灰色地毯", "绿植盆栽"],
-      colors: ["橡木原色", "浅灰色", "米白色", "自然绿"],
-      recommendation: "建议将落地灯置于沙发旁或靠近绿植的位置，木质或白色烤漆的灯具最能融入北欧氛围，提供舒适的阅读光线。",
-      lightSuggestion: "推荐 3000K 暖白光，增强北欧风格中温馨、自然的居家包裹感。"
+      style: "北欧风・夜 (Nordic Night)",
+      layout: "温馨治愈的北欧木质卧室兼起居角，具有极佳包裹感",
+      furniture: ["原木矮床与桌几", "粗针针织毛毯", "浅麦色棉麻织物", "治愈感小盆栽"],
+      colors: ["原木色", "米白", "暖灰", "松石绿"],
+      recommendation: "把暖光落地灯安放在矮几或单人沙发旁。经典的百褶、帆布或白瓷落地灯最契合其慵懒随意的北欧漫步气息。",
+      lightSuggestion: "首选 2700K 暖黄光，这是深夜驱散寒意、注入家庭温馨的最佳光源色温。"
     }
   },
   {
     id: "room_3",
-    name: "新中式 (New Chinese)",
-    style: "传统元素与现代审美的结合，沉稳的实木框架与留白造景，在考究的细节中展现东方雅致的生活品味。",
-    imageUrl: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80",
-    imageUrlFar: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80",
-    imageUrlMid: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80",
-    imageUrlClose: "https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=1200&q=80",
+    name: "新中式・暮 (Zen Chinese Night)",
+    style: "暮色中的东方雅室。暖琥珀微光与沉稳的胡桃木交融，古雅的对称比例和沉静的留白，共同谱写幽静禅意。",
+    imageUrl: "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1200&q=80",
+    imageUrlFar: "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1200&q=80",
+    imageUrlMid: "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1200&q=80",
+    imageUrlClose: "https://images.unsplash.com/photo-1505691938895-1758d7feb511?auto=format&fit=crop&w=1200&q=80",
     analysis: {
-      style: "新中式 (New Chinese)",
-      layout: "端庄雅致的会客空间，注重对称与留白",
-      furniture: ["新中式实木圈椅", "大理石与木材结合茶几", "山水意境屏风", "棉麻坐垫"],
-      colors: ["胡桃木色", "米黄色", "水墨灰", "暗红色点缀"],
-      recommendation: "建议落地灯放置在单人座椅或罗汉床后侧，可选择带有宣纸、蚕丝或木质元素的灯具，利用柔和透光性烘托东方禅意。",
-      lightSuggestion: "推荐使用 2700K - 3000K 暖光，完美渲染实木的温润色泽与留白造景的雅致。"
+      style: "新中式・暮 (Zen Chinese Night)",
+      layout: "清雅空灵的静夜雅室，胡桃木色家具与宣纸/屏风光影辉映",
+      furniture: ["极简中式案几", "棉麻坐垫矮榻", "写意泼墨背景屏风", "青竹插花罐"],
+      colors: ["深胡桃色", "水墨灰", "杏仁黄", "熟栗色"],
+      recommendation: "可选择竹木架、宣纸灯罩的落地灯饰，置于案几侧方或古画之侧，利用材质的二次透光烘托东方山水的静谧韵味。",
+      lightSuggestion: "推荐 2700K 暖光，最能唤醒木质深沉的纹理和材质，营造温良谦恭的东方禅境。"
     }
   },
   {
     id: "room_4",
-    name: "奶油风 (Creamy)",
-    style: "米色调法式线条背景，搭配经典的奶白色 Togo 毛绒沙发与波浪落地灯，鱼骨拼地板交织出极致治愈的法式简约美学。",
-    imageUrl: "https://images.unsplash.com/photo-1615529182904-14819c35db37?auto=format&fit=crop&w=1200&q=80",
-    imageUrlFar: "https://images.unsplash.com/photo-1615529182904-14819c35db37?auto=format&fit=crop&w=1200&q=80",
-    imageUrlMid: "https://images.unsplash.com/photo-1615529182904-14819c35db37?auto=format&fit=crop&w=1200&q=80",
-    imageUrlClose: "https://images.unsplash.com/photo-1615529182904-14819c35db37?auto=format&fit=crop&w=1200&q=80",
+    name: "奶油风・夜 (Creamy Night)",
+    style: "夜深时的软糯法式一角。奶油色的石膏线与弧形羊羔绒沙发，在柔暖的暗影中酝酿出极致醇厚的治愈美感。",
+    imageUrl: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1200&q=80",
+    imageUrlFar: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1200&q=80",
+    imageUrlMid: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1200&q=80",
+    imageUrlClose: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?auto=format&fit=crop&w=1200&q=80",
     analysis: {
-      style: "奶油风 (Creamy)",
-      layout: "温馨治愈的起居室，法式石膏线背景搭配鱼骨拼地板",
-      furniture: ["奶白色毛绒沙发", "法式石膏线墙板", "软糯羊羔绒地毯", "弧线形边几"],
-      colors: ["奶油白", "暖沙色", "微醺粉", "浅木色"],
-      recommendation: "建议选用造型圆润、波浪形或毛绒材质的落地灯，放置在沙发左侧或角落，与空间的治愈感和弧线元素完美融合。",
-      lightSuggestion: "强烈建议 2700K 暖色温，能够最大化烘托奶油风独有的温柔软糯质感，营造出极度放松的氛围。"
+      style: "奶油风・夜 (Creamy Night)",
+      layout: "温馨浪漫的奶茶色深夜起居角，墙面带有精致微水泥或石膏浮雕纹理",
+      furniture: ["奶白色毛绒沙发", "圆弧线条边几", "高蓬松度毛毛地毯", "精巧小陶瓶"],
+      colors: ["燕麦奶色", "暖米黄", "太妃糖棕"],
+      recommendation: "选择云朵、荷叶边或圆润气泡造型的温和落地灯，摆在羊羔绒沙发一侧，温柔得像一碗热牛奶在深夜微温。",
+      lightSuggestion: "首推 2700K 暖黄灯光，不仅让墙板线条呈现柔美的渐变阴影，更是给整个空间洒满梦幻滤镜。"
     }
   },
   {
     id: "room_5",
-    name: "侘寂风 (Wabi-sabi)",
-    style: "微水泥质感墙面，原始风格的原木长桌，点缀枯木枝桠，在留白中感悟自然的静谧与禅意。",
-    imageUrl: "https://images.unsplash.com/photo-1540932239986-30128078f3c5?auto=format&fit=crop&w=1200&q=80",
-    imageUrlFar: "https://images.unsplash.com/photo-1540932239986-30128078f3c5?auto=format&fit=crop&w=1200&q=80",
-    imageUrlMid: "https://images.unsplash.com/photo-1540932239986-30128078f3c5?auto=format&fit=crop&w=1200&q=80",
-    imageUrlClose: "https://images.unsplash.com/photo-1540932239986-30128078f3c5?auto=format&fit=crop&w=1200&q=80",
+    name: "侘寂风・夜 (Wabi-sabi Night)",
+    style: "暗夜无声，寂静回归。斑驳的微水泥墙面、沉重的陶罐枯枝，在月色与一抹落地灯的残光下诠释时光雕琢的永恒美。",
+    imageUrl: "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=1200&q=80",
+    imageUrlFar: "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=1200&q=80",
+    imageUrlMid: "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=1200&q=80",
+    imageUrlClose: "https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=1200&q=80",
     analysis: {
-      style: "侘寂风 (Wabi-sabi)",
-      layout: "极简而充满侘寂禅意的静谧空间，注重材质原始质感",
-      furniture: ["微水泥墙面", "风化质感原木长桌", "亚麻质感布艺", "枯木陶罐造景"],
-      colors: ["微水泥灰", "做旧原木色", "米灰色", "大地色系"],
-      recommendation: "和纸灯笼或陶土底座的落地灯是绝佳选择，建议直接置于低矮的坐垫旁或角落，以漫反射光晕点亮局部的粗粝纹理。",
-      lightSuggestion: "推荐极暖的 2200K - 2700K 烛光色温，昏暗而温暖的光线更能带出侘寂风独有的时间沉淀感与静谧美。"
-    }
-  },
-  {
-    id: "room_6",
-    name: "轻奢风 (Light Luxury)",
-    style: "精致的大理石与金属线条交相辉映，高饱和度的绒面靠背椅，打造摩登优雅的现代都市豪宅质感。",
-    imageUrl: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1200&q=80",
-    imageUrlFar: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1200&q=80",
-    imageUrlMid: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1200&q=80",
-    imageUrlClose: "https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=1200&q=80",
-    analysis: {
-      style: "轻奢风 (Light Luxury)",
-      layout: "摩登都市豪宅感客厅，注重材质对比与精致细节",
-      furniture: ["高饱和度丝绒沙发", "大理石金属拼接茶几", "黄铜线条墙面装饰", "水晶玻璃摆件"],
-      colors: ["大理石白", "香槟金", "祖母绿/宝石蓝", "高级黑"],
-      recommendation: "可选择带有黄铜、大理石或水晶元素的纤细落地灯，放置在丝绒沙发旁作为金属质感的呼应点亮空间，提升整体奢华度。",
-      lightSuggestion: "建议选择 3500K - 4000K 中性光，既能让金属光泽熠熠生辉，又不会使大理石的冷感显得过分冰凉，取得完美平衡。"
+      style: "侘寂风・夜 (Wabi-sabi Night)",
+      layout: "极简孤寂的静夜角落，斑驳粗粝的陶罐与孤傲枯木立于黑暗中",
+      furniture: ["风化粗陶单人椅", "粗糙抹灰微水泥墙", "无规则造型枯枝", "亚麻蒲团"],
+      colors: ["岩石灰", "枯草色", "炭焦黑"],
+      recommendation: "极力推荐将一盏和纸灯笼或陶土底座的低矮落地灯搁置在蒲团或陶罐旁，以孤灯残影的漫反射微光局部擦亮不完美的残缺之美。",
+      lightSuggestion: "推荐极暖昏暗的 2200K - 2500K 烛光色温，让阴影在粗糙墙上拉长，把寂静质朴的修辞发挥到极致。"
     }
   }
 ];

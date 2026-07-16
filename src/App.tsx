@@ -8,6 +8,7 @@ import {
 import { motion, AnimatePresence } from "motion/react";
 import { VIRTUAL_ROOMS, PRESET_LAMPS } from "./data";
 import { RoomAnalysis, LampAnalysis, VirtualRoom, PresetLamp, GenerationParams } from "./types";
+import AgentMode from "./components/AgentMode";
 
 // Helper to compress an uploaded image using HTML5 Canvas (max dimension 1600px, quality 0.85, output format image/jpeg)
 const compressImage = (file: File, maxDimension = 1600, quality = 0.85): Promise<string> => {
@@ -55,6 +56,8 @@ const compressImage = (file: File, maxDimension = 1600, quality = 0.85): Promise
 export default function App() {
   // Current step state: 1, 2, 3, 4
   const [step, setStep] = useState<number>(1);
+  // Current App Mode: "select" (模式选择), "agent" (智能体模式) or "expert" (专家模式)
+  const [appMode, setAppMode] = useState<"select" | "agent" | "expert">("select");
 
   // SaaS Integration State
   const [userId, setUserId] = useState<string>(() => {
@@ -577,35 +580,46 @@ export default function App() {
           </div>
         </div>
 
-        {/* Dynamic Stepper */}
-        <div className="hidden lg:flex items-center space-x-2.5 text-xs font-semibold">
-          {[
-            { num: 1, label: "场景分析" },
-            { num: 2, label: "灯具匹配" },
-            { num: 3, label: "生成参数" },
-            { num: 4, label: "试摆预览" }
-          ].map((s, idx) => (
-            <React.Fragment key={s.num}>
-              {idx > 0 && <ChevronRight className="w-3.5 h-3.5 text-[#C4BDB0]" />}
-              <div className={`flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl border transition-all duration-300 ${
-                step === s.num 
-                  ? "bg-[#967C55] text-white border-[#967C55] shadow-sm font-extrabold" 
-                  : step > s.num 
-                    ? "bg-white text-[#967C55] border-[#967C55]/30 font-bold" 
-                    : "bg-[#FAF9F5]/40 text-[#8C8375] border-[#EBE8DF]"
-              }`}>
-                <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold ${
+        {/* Dynamic Stepper / Agent Status */}
+        {appMode === "expert" ? (
+          <div className="hidden lg:flex items-center space-x-2.5 text-xs font-semibold">
+            {[
+              { num: 1, label: "场景分析" },
+              { num: 2, label: "灯具匹配" },
+              { num: 3, label: "生成参数" },
+              { num: 4, label: "试摆预览" }
+            ].map((s, idx) => (
+              <React.Fragment key={s.num}>
+                {idx > 0 && <ChevronRight className="w-3.5 h-3.5 text-[#C4BDB0]" />}
+                <div className={`flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl border transition-all duration-300 ${
                   step === s.num 
-                    ? "bg-white/20 text-white" 
+                    ? "bg-[#967C55] text-white border-[#967C55] shadow-sm font-extrabold" 
                     : step > s.num 
-                      ? "bg-[#967C55]/10 text-[#967C55]" 
-                      : "bg-[#EBE8DF] text-[#8C8375]"
-                }`}>{s.num}</span>
-                <span>{s.label}</span>
-              </div>
-            </React.Fragment>
-          ))}
-        </div>
+                      ? "bg-white text-[#967C55] border-[#967C55]/30 font-bold" 
+                      : "bg-[#FAF9F5]/40 text-[#8C8375] border-[#EBE8DF]"
+                }`}>
+                  <span className={`w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                    step === s.num 
+                      ? "bg-white/20 text-white" 
+                      : step > s.num 
+                        ? "bg-[#967C55]/10 text-[#967C55]" 
+                        : "bg-[#EBE8DF] text-[#8C8375]"
+                  }`}>{s.num}</span>
+                  <span>{s.label}</span>
+                </div>
+              </React.Fragment>
+            ))}
+          </div>
+        ) : appMode === "agent" ? (
+          <div className="hidden lg:flex items-center space-x-2 bg-[#967C55]/10 border border-[#967C55]/20 px-3.5 py-1.5 rounded-xl">
+            <Sparkles className="w-3.5 h-3.5 text-[#967C55] animate-pulse" />
+            <span className="text-xs font-extrabold text-[#967C55]">AI 智能体对话导航</span>
+          </div>
+        ) : (
+          <div className="hidden lg:flex items-center space-x-2 bg-[#F2EFE9] border border-[#E4DFD5] px-3.5 py-1.5 rounded-xl">
+            <span className="text-xs font-bold text-[#7A7061]">请先选择体验模式</span>
+          </div>
+        )}
 
         {/* Credit Badge */}
         <div className="flex items-center space-x-2 bg-[#F2EFE9] border border-[#E4DFD5] px-3 py-1.5 rounded-xl">
@@ -621,6 +635,172 @@ export default function App() {
       {/* Main Content Stage */}
       <main className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-10">
         
+        {appMode === "select" ? (
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4 }}
+            className="max-w-4xl mx-auto py-12 px-4 text-center"
+          >
+            {/* Top Badge */}
+            <div className="inline-flex items-center space-x-2 bg-[#967C55]/10 text-[#967C55] px-4 py-1.5 rounded-full text-xs font-black tracking-widest uppercase mb-6 border border-[#967C55]/20 shadow-sm">
+              <Sparkles className="w-3.5 h-3.5 text-[#967C55] animate-pulse" />
+              <span>智能试铺系统 V2.5</span>
+            </div>
+
+            {/* Title & Subtitle */}
+            <h2 className="text-3xl md:text-4xl font-black text-[#1C1715] tracking-tight mb-4">
+              开启您的 AI 极速试铺之旅
+            </h2>
+            <p className="text-sm text-[#7A7061] max-w-2xl mx-auto leading-relaxed mb-12">
+              无论您是希望得到贴心的智能设计助理引导，还是渴望在全功能的专业面板上精细调校，我们都为您提供了专属的使用方案。
+            </p>
+
+            {/* Grid of Choices */}
+            <div className="grid md:grid-cols-2 gap-8 max-w-3xl mx-auto">
+              {/* Agent Mode Card */}
+              <motion.div
+                whileHover={{ y: -4, scale: 1.01 }}
+                className="bg-white border border-[#EBE8DF] rounded-3xl p-8 text-left shadow-sm hover:shadow-xl hover:border-[#967C55]/40 transition-all duration-300 flex flex-col justify-between group relative overflow-hidden"
+              >
+                {/* Decorative Background Blob */}
+                <div className="absolute -top-12 -right-12 w-28 h-28 bg-[#967C55]/5 rounded-full blur-2xl group-hover:bg-[#967C55]/10 transition-colors" />
+
+                <div>
+                  <div className="w-12 h-12 rounded-2xl bg-[#967C55]/10 text-[#967C55] flex items-center justify-center mb-6 border border-[#967C55]/10">
+                    <Sparkles className="w-6 h-6" />
+                  </div>
+                  
+                  <div className="flex items-center space-x-2.5 mb-3.5">
+                    <h3 className="text-lg font-black text-[#1C1715]">智能体模式</h3>
+                    <span className="bg-[#EBE8DF] text-[#7A7061] text-[10px] font-extrabold px-2 py-0.5 rounded-md uppercase tracking-wider">
+                      推荐新手
+                    </span>
+                  </div>
+
+                  <p className="text-xs text-[#7A7061] leading-relaxed mb-8">
+                    对话式交互，像和专业软装设计师聊天一样。AI 将一步步引导您选择房间场景、提取材质特征、全景光影拟合、直接在聊天框内返回生图效果。
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => setAppMode("agent")}
+                  className="w-full py-3.5 bg-[#967C55] hover:bg-[#836C47] text-white rounded-2xl text-xs font-black transition-colors flex items-center justify-center space-x-2 shadow-sm cursor-pointer"
+                >
+                  <Sparkles className="w-4 h-4" />
+                  <span>开启智能对话引导</span>
+                </button>
+              </motion.div>
+
+              {/* Expert Mode Card */}
+              <motion.div
+                whileHover={{ y: -4, scale: 1.01 }}
+                className="bg-white border border-[#EBE8DF] rounded-3xl p-8 text-left shadow-sm hover:shadow-xl hover:border-[#967C55]/40 transition-all duration-300 flex flex-col justify-between group relative overflow-hidden"
+              >
+                {/* Decorative Background Blob */}
+                <div className="absolute -top-12 -right-12 w-28 h-28 bg-[#8C8375]/5 rounded-full blur-2xl group-hover:bg-[#8C8375]/10 transition-colors" />
+
+                <div>
+                  <div className="w-12 h-12 rounded-2xl bg-[#F2EFE9] text-[#7A7061] flex items-center justify-center mb-6 border border-[#E4DFD5]">
+                    <Sliders className="w-6 h-6" />
+                  </div>
+                  
+                  <div className="flex items-center space-x-2.5 mb-3.5">
+                    <h3 className="text-lg font-black text-[#1C1715]">专家工作台</h3>
+                    <span className="bg-[#967C55]/10 text-[#967C55] text-[10px] font-extrabold px-2 py-0.5 rounded-md uppercase tracking-wider">
+                      高阶微调
+                    </span>
+                  </div>
+
+                  <p className="text-xs text-[#7A7061] leading-relaxed mb-8">
+                    经典分步流程。提供高可控性的光影/漫反射/比例匹配/人模参数调节，支持多图层切换对比、局部放大及原图下载。
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => setAppMode("expert")}
+                  className="w-full py-3.5 bg-white hover:bg-[#FAF9F5] text-[#2C2623] border border-[#EBE8DF] hover:border-[#967C55]/50 rounded-2xl text-xs font-black transition-all flex items-center justify-center space-x-2 shadow-sm cursor-pointer"
+                >
+                  <Sliders className="w-4 h-4 text-[#967C55]" />
+                  <span>进入工程师工作台</span>
+                </button>
+              </motion.div>
+            </div>
+          </motion.div>
+        ) : (
+          <>
+            {/* Mode Selector Toggle Switcher & Navigation Controls */}
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-8 max-w-7xl mx-auto border-b border-[#EBE8DF]/60 pb-6">
+              <button
+                onClick={() => setAppMode("select")}
+                className="px-4 py-2.5 rounded-xl bg-white border border-[#EBE8DF] text-xs font-bold text-[#7A7061] hover:text-[#1C1715] hover:bg-[#FAF9F5] transition-all flex items-center space-x-2 shadow-sm hover:border-[#967C55]/40"
+              >
+                <ChevronLeft className="w-4 h-4 text-[#967C55]" />
+                <span>返回主页模式选择</span>
+              </button>
+
+              <div className="bg-[#EBE8DF]/60 p-1.5 rounded-2xl inline-flex shadow-inner border border-[#EBE8DF]">
+                <button
+                  onClick={() => setAppMode("agent")}
+                  className={`px-6 py-2.5 rounded-xl text-xs font-black tracking-wide uppercase transition-all flex items-center space-x-2 ${
+                    appMode === "agent" 
+                      ? "bg-[#967C55] text-white shadow-md font-black" 
+                      : "text-[#7A7061] hover:text-[#1C1715] font-extrabold"
+                  }`}
+                >
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>智能体模式 (Agent Mode)</span>
+                </button>
+                <button
+                  onClick={() => setAppMode("expert")}
+                  className={`px-6 py-2.5 rounded-xl text-xs font-black tracking-wide uppercase transition-all flex items-center space-x-2 ${
+                    appMode === "expert" 
+                      ? "bg-[#967C55] text-white shadow-md font-black" 
+                      : "text-[#7A7061] hover:text-[#1C1715] font-extrabold"
+                  }`}
+                >
+                  <Sliders className="w-3.5 h-3.5" />
+                  <span>专家模式 (Expert Mode)</span>
+                </button>
+              </div>
+
+              {/* Invisible spacer to center switcher on desktop */}
+              <div className="w-[155px] hidden md:block" />
+            </div>
+
+        {appMode === "agent" ? (
+          <AgentMode
+            userId={userId}
+            toolId={toolId}
+            userIntegral={userIntegral}
+            toolRequiredIntegral={toolRequiredIntegral}
+            userInfo={userInfo}
+            fetchLaunchInfo={fetchLaunchInfo}
+            selectedVirtualRoom={selectedVirtualRoom}
+            setSelectedVirtualRoom={setSelectedVirtualRoom}
+            uploadedRoomBase64={uploadedRoomBase64}
+            setUploadedRoomBase64={setUploadedRoomBase64}
+            roomAnalysis={roomAnalysis}
+            setRoomAnalysis={setRoomAnalysis}
+            isRoomAnalyzing={isRoomAnalyzing}
+            setIsRoomAnalyzing={setIsRoomAnalyzing}
+            selectedPresetLamp={selectedPresetLamp}
+            setSelectedPresetLamp={setSelectedPresetLamp}
+            uploadedLampBase64={uploadedLampBase64}
+            setUploadedLampBase64={setUploadedLampBase64}
+            lampAnalysis={lampAnalysis}
+            setLampAnalysis={setLampAnalysis}
+            isLampAnalyzing={isLampAnalyzing}
+            setIsLampAnalyzing={setIsLampAnalyzing}
+            params={params}
+            setParams={setParams}
+            generatedSceneUrl={generatedSceneUrl}
+            setGeneratedSceneUrl={setGeneratedSceneUrl}
+            generationHistory={generationHistory}
+            setGenerationHistory={setGenerationHistory}
+          />
+        ) : (
+          <>
         {/* Step 1: Upload or Choose Scene */}
         {step === 1 && (
           <motion.div 
@@ -1313,6 +1493,10 @@ export default function App() {
 
             </div>
           </motion.div>
+        )}
+          </>
+        )}
+          </>
         )}
 
       </main>
