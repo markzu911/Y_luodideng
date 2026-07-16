@@ -567,9 +567,9 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF9F5] text-[#2C2623] font-sans antialiased selection:bg-[#E5DCC5] selection:text-[#2C2623]">
+    <div className="h-screen w-screen flex flex-col bg-[#FAF9F5] text-[#2C2623] font-sans antialiased selection:bg-[#E5DCC5] selection:text-[#2C2623] overflow-hidden">
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-white/85 backdrop-blur-md border-b border-[#EBE8DF] px-4 md:px-8 py-3.5 flex items-center justify-between">
+      <header className="shrink-0 z-40 bg-white/85 backdrop-blur-md border-b border-[#EBE8DF] px-4 md:px-8 py-3.5 flex items-center justify-between">
         <div className="flex items-center space-x-3" id="app-logo">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#967C55] to-[#D4C2A3] flex items-center justify-center text-white shadow-sm">
             <Lightbulb className="w-5 h-5" />
@@ -633,7 +633,7 @@ export default function App() {
       </header>
 
       {/* Main Content Stage */}
-      <main className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-10">
+      <main className={`flex-1 w-full max-w-7xl mx-auto px-4 md:px-6 py-4 flex flex-col min-h-0 ${appMode === "select" ? "overflow-y-auto" : "overflow-hidden"}`}>
         
         {appMode === "select" ? (
           <motion.div
@@ -724,7 +724,7 @@ export default function App() {
         ) : (
           <>
             {/* Mode Selector Toggle Switcher & Navigation Controls */}
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-8 max-w-7xl mx-auto border-b border-[#EBE8DF]/60 pb-6">
+            <div className="shrink-0 flex flex-col md:flex-row items-center justify-between gap-4 mb-4 max-w-7xl w-full mx-auto border-b border-[#EBE8DF]/60 pb-4">
               <button
                 onClick={() => setAppMode("select")}
                 className="px-4 py-2.5 rounded-xl bg-white border border-[#EBE8DF] text-xs font-bold text-[#7A7061] hover:text-[#1C1715] hover:bg-[#FAF9F5] transition-all flex items-center space-x-2 shadow-sm hover:border-[#967C55]/40"
@@ -794,7 +794,7 @@ export default function App() {
             setGenerationHistory={setGenerationHistory}
           />
         ) : (
-          <>
+          <div className="flex-1 overflow-y-auto min-h-0 pr-1 pb-16 scrollbar-thin scrollbar-thumb-gray-200">
         {/* Step 1: Upload or Choose Scene */}
         {step === 1 && (
           <motion.div 
@@ -1488,7 +1488,7 @@ export default function App() {
             </div>
           </motion.div>
         )}
-          </>
+          </div>
         )}
           </>
         )}
@@ -1603,9 +1603,9 @@ export default function App() {
       </AnimatePresence>
 
       {/* Footer */}
-      <footer className="mt-20 border-t border-[#EBE8DF] py-6 text-center text-xs text-[#8C8375] space-y-2 bg-white/60">
+      <footer className="shrink-0 border-t border-[#EBE8DF] py-2 text-center text-[10px] text-[#8C8375] space-y-0.5 bg-white/60">
         <p>© 2026 智能落地灯光影试摆设计工作室. 保留所有权利。</p>
-        <p className="text-[10px] uppercase tracking-widest font-bold text-[#C4BDB0]">设计精度: 100% | 智能渲染引擎: 二点五版本</p>
+        <p className="text-[9px] uppercase tracking-widest font-bold text-[#C4BDB0]">设计精度: 100% | 智能渲染引擎: 二点五版本</p>
       </footer>
     </div>
   );
