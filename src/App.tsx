@@ -72,6 +72,9 @@ export default function App() {
   const [toolRequiredIntegral, setToolRequiredIntegral] = useState<number>(0);
   const [userInfo, setUserInfo] = useState<{ name: string; enterprise: string; integral: number } | null>(null);
 
+  const [isVerifyingCredits, setIsVerifyingCredits] = useState<boolean>(false);
+  const [isResultImageLoading, setIsResultImageLoading] = useState<boolean>(true);
+
   const isOutOfCredits = userIntegral !== null && userIntegral < toolRequiredIntegral;
 
   // Helper to convert base64 image data to a Blob
@@ -316,6 +319,7 @@ export default function App() {
   // Trigger high tech rendering progress in Step 3
   const handleStartGeneration = async () => {
     setGenerationError(null);
+    setIsVerifyingCredits(true);
 
     // 1. Verify user's points (2nd endpoint: verify)
     try {
@@ -328,17 +332,21 @@ export default function App() {
       if (!verifyRes.ok || !verifyData.success) {
         const errorMsg = verifyData.message || "您的体验额度不足，无法启动生成。";
         setGenerationError(errorMsg);
+        setIsVerifyingCredits(false);
         return;
       }
     } catch (err: any) {
       console.error("Points verification failed:", err);
       setGenerationError("额度校验失败，请稍后重试。");
+      setIsVerifyingCredits(false);
       return;
     }
 
+    setIsVerifyingCredits(false);
     setIsGeneratingScene(true);
     setGenerationProgress(0);
     setGeneratedSceneUrl(null);
+    setIsResultImageLoading(true);
 
     const messages = [
       "正在提取房间空间三维设计美学结构...",
@@ -790,8 +798,9 @@ export default function App() {
               ))}
             </div>
 
-            {/* Step 1: Upload or Choose Scene */}
-        {step === 1 && (
+            <AnimatePresence mode="wait">
+              {/* Step 1: Upload or Choose Scene */}
+              {step === 1 && (
           <motion.div 
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
@@ -1361,13 +1370,22 @@ export default function App() {
               <button
                 id="btn-generate-scene"
                 onClick={handleStartGeneration}
-                disabled={isOutOfCredits}
+                disabled={isOutOfCredits || isVerifyingCredits}
                 className={`px-6 py-2.5 rounded-xl text-white text-xs font-extrabold flex items-center space-x-1.5 shadow-md hover:shadow-lg transition-all ${
-                  isOutOfCredits ? "bg-[#D6CFC1] cursor-not-allowed hover:shadow-none" : "bg-[#967C55] hover:bg-[#836C47]"
+                  (isOutOfCredits || isVerifyingCredits) ? "bg-[#D6CFC1] cursor-not-allowed hover:shadow-none animate-pulse" : "bg-[#967C55] hover:bg-[#836C47]"
                 }`}
               >
-                <Sparkles className="w-3.5 h-3.5 text-amber-200" />
-                <span>生成试摆效果</span>
+                {isVerifyingCredits ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
+                    <span>正在准备生成环境...</span>
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-3.5 h-3.5 text-amber-200" />
+                    <span>生成试摆效果</span>
+                  </>
+                )}
               </button>
             </div>
           </motion.div>
@@ -1434,9 +1452,24 @@ export default function App() {
                       <img 
                         src={generatedSceneUrl} 
                         alt="AI Seamless Spatial Fusion" 
-                        className="absolute inset-0 w-full h-full object-cover select-none transition-transform duration-700 group-hover:scale-105"
+                        onLoad={() => setIsResultImageLoading(false)}
+                        className={`absolute inset-0 w-full h-full object-cover select-none transition-all duration-700 ${
+                          isResultImageLoading ? "opacity-0 scale-98" : "opacity-100 scale-100 group-hover:scale-105"
+                        }`}
                         referrerPolicy="no-referrer"
                       />
+
+                      {isResultImageLoading && (
+                        <div className="absolute inset-0 flex flex-col items-center justify-center bg-[#1C1715] z-10 space-y-3">
+                          <div className="relative">
+                            <Loader2 className="w-8 h-8 text-[#967C55] animate-spin" />
+                            <Sparkles className="w-4 h-4 text-amber-300 absolute top-2 left-2 animate-pulse" />
+                          </div>
+                          <p className="text-[#FAF9F5]/75 text-[11px] font-bold tracking-wider animate-pulse">
+                            高清空间光影无缝重构中...
+                          </p>
+                        </div>
+                      )}
                       
                       <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
                         <div className="bg-black/60 backdrop-blur-md rounded-full p-3 text-white flex items-center space-x-2">
@@ -1466,8 +1499,9 @@ export default function App() {
               </div>
 
             </div>
-          </motion.div>
-        )}
+              </motion.div>
+            )}
+          </AnimatePresence>
           </div>
         )}
           </>

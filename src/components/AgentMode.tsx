@@ -95,6 +95,7 @@ export default function AgentMode({
 
   const [inputMessage, setInputMessage] = useState<string>("");
   const [isRendering, setIsRendering] = useState<boolean>(false);
+  const [isVerifyingCredits, setIsVerifyingCredits] = useState<boolean>(false);
   const [renderingProgress, setRenderingProgress] = useState<number>(0);
   const [renderingText, setRenderingText] = useState<string>("");
   const [isChatAnalyzing, setIsChatAnalyzing] = useState<boolean>(false);
@@ -446,6 +447,7 @@ export default function AgentMode({
 
   // Perform Generation with points verification
   const handleGenerate = async () => {
+    setIsVerifyingCredits(true);
     // 1. Verify user's points (2nd endpoint: verify)
     try {
       const verifyRes = await fetch("/api/tool/verify", {
@@ -463,6 +465,7 @@ export default function AgentMode({
           timestamp: new Date(),
           isError: true
         });
+        setIsVerifyingCredits(false);
         return;
       }
     } catch (err: any) {
@@ -474,9 +477,11 @@ export default function AgentMode({
         timestamp: new Date(),
         isError: true
       });
+      setIsVerifyingCredits(false);
       return;
     }
 
+    setIsVerifyingCredits(false);
     // Initialize rendering state inside Agent Window
     setIsRendering(true);
     setRenderingProgress(0);
@@ -1269,13 +1274,22 @@ export default function AgentMode({
                         </div>
                         <button
                           onClick={handleGenerate}
-                          disabled={isRendering || isOutOfCredits}
+                          disabled={isRendering || isOutOfCredits || isVerifyingCredits}
                           className={`w-full sm:w-auto px-6 py-2.5 rounded-xl text-white text-xs font-extrabold flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all ${
-                            isOutOfCredits ? "bg-[#D6CFC1] cursor-not-allowed hover:shadow-none" : "bg-[#967C55] hover:bg-[#836C47]"
+                            (isOutOfCredits || isVerifyingCredits) ? "bg-[#D6CFC1] cursor-not-allowed hover:shadow-none animate-pulse" : "bg-[#967C55] hover:bg-[#836C47]"
                           }`}
                         >
-                          <Sparkles className="w-3.5 h-3.5 text-amber-200" />
-                          <span>一键智能试摆合成 🚀</span>
+                          {isVerifyingCredits ? (
+                            <>
+                              <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
+                              <span>正在准备合成环境...</span>
+                            </>
+                          ) : (
+                            <>
+                              <Sparkles className="w-3.5 h-3.5 text-amber-200" />
+                              <span>一键智能试摆合成 🚀</span>
+                            </>
+                          )}
                         </button>
                       </div>
 
