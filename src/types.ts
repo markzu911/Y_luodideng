@@ -37,7 +37,7 @@ export interface PresetLamp {
 }
 
 export interface GenerationParams {
-  viewType: 'far' | 'mid' | 'close'; // 远景, 中近景, 近景
+  viewType: 'far' | 'mid' | 'close'; // 远景, 中景, 近景
   quality: '1K' | '2K' | '4K'; // 清晰度
   ratio: '4:3' | '3:4' | '1:1' | '16:9' | '9:16'; // 比例
   lightState: 'on' | 'off'; // 开灯, 关灯

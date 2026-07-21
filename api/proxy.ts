@@ -285,11 +285,11 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
         // Detailed prompt
         let perspectiveGuidance = "";
         if (params.viewType === "far") {
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (FAR VIEW): MUST show a wide-angle, full-shot (远景) perspective displaying the entire room layout and the integrated floor lamp in the context of the whole space. CRITICAL: Follow the PLACEMENT RULE strictly. Even in a far view, if it's a bedroom, the lamp MUST be near the head of the bed (床头), NOT the foot (床尾). Showcase the realistic effect of the lamp integrated into the room.";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (FAR VIEW / 全景/远景): MUST show a wide-angle perspective. The camera is positioned far back to capture a wide area of the room. It should show the full floor lamp from top to bottom, along with large pieces of furniture (like the entire sofa, side table) and the surrounding environment (like curtains) to establish the overall space and layout.";
         } else if (params.viewType === "mid") {
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MID VIEW): MUST show a medium close-up (中近景) perspective focused on the key furniture (such as the sofa/bedside corner) and the integrated floor lamp. CRITICAL: Follow the PLACEMENT RULE strictly. If it's a bedroom, the lamp MUST be near the head of the bed (床头).";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MID VIEW / 中景): MUST show a medium shot perspective. The camera is noticeably closer than the far view. It should frame the upper half or three-quarters of the floor lamp and its immediate adjacent furniture (e.g., a table corner, part of a sofa). It focuses on the local zone where the lamp is placed, bringing the viewer closer to the lighting effect while still showing some environmental context.";
         } else if (params.viewType === "close") {
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (CLOSE VIEW): MUST show an intimate, tight close-up (特写) perspective focusing on the floor lamp in the room. CRITICAL: While the camera angle CAN VARY to show the best perspective, you MUST NOT change the room's original furniture layout. The placement of the lamp must be reasonable and logical within the existing layout (e.g. next to a sofa or bed). 即使是近景（特写）也绝对不能随便更改屋内的家具布局，只能改变摄像机视角！并且落地灯摆放的位置必须合理，要符合真实居家环境的逻辑。Keep the background fully sharp and without bokeh.";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (CLOSE VIEW / 近景/特写): MUST show a tight close-up perspective. The camera is very close, focusing primarily on the lampshade and the light it emits. The lampshade should dominate the frame, with only a small amount of immediate background context visible (like the top of a table or a nearby vase). The lower half of the lamp stand and large furniture pieces should be excluded from the frame.";
         }
 
         const humanGuidance = params.needModel
