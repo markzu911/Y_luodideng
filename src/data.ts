@@ -6,10 +6,6 @@ import pastoralCozyBedroom from "./assets/images/pastoral_cozy_bedroom_178419159
 import frenchCreamyBedroom from "./assets/images/french_creamy_bedroom_1784191800925.jpg";
 import wabiSabiQuietLivingRoom from "./assets/images/wabi_sabi_quiet_living_room_1784192087112.jpg";
 
-import zenLampFar from "./assets/images/zen_lamp_far_1784624402192.jpg";
-import zenLampMid from "./assets/images/zen_lamp_mid_1784624416207.jpg";
-import zenLampClose from "./assets/images/zen_lamp_close_1784624426881.jpg";
-
 export const VIRTUAL_ROOMS: VirtualRoom[] = [
   {
     id: "room_7",
@@ -166,9 +162,9 @@ export const VIRTUAL_ROOMS: VirtualRoom[] = [
     name: "寂宅风 (Wabi-Sabi)",
     style: "侘寂风",
     imageUrl: wabiSabiQuietLivingRoom,
-    imageUrlFar: zenLampFar,
-    imageUrlMid: zenLampMid,
-    imageUrlClose: zenLampClose,
+    imageUrlFar: wabiSabiQuietLivingRoom,
+    imageUrlMid: wabiSabiQuietLivingRoom,
+    imageUrlClose: wabiSabiQuietLivingRoom,
     analysis: {
       style: "侘寂风",
       layout: "空灵宁静的暖调微水泥寂宅风客厅。墙面采用温润质朴的天然沙色陶土微水泥涂料，温润宽幅实木地板自然铺展。右侧一整面超大落地玻璃门引入静谧的绿色林景并滤入朦胧的光影。左侧对称置有温润的胡桃木高书架与极简木几，中间点缀一盏充满科技与复古温情融汇的悬挑发光小火炉，营造出大隐于市的极致宁静感。",
@@ -202,7 +198,6 @@ export const PRESET_LAMPS: PresetLamp[] = [
     imageUrl: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=500&q=80",
     analysis: {
       style: "经典包豪斯拱形钓鱼落地灯",
-      structure: "抛物线大弧度灯杆（撑杆），圆顶半球形金属灯罩，圆形扁平实心大理石底座。",
       materials: ["高标拉丝不锈钢灯臂", "天然卡拉拉白大理石底座", "抛光电镀金属球形灯罩"],
       color: "不锈钢银",
       lightType: "抛物线大半径下射式局部照明",
@@ -218,7 +213,6 @@ export const PRESET_LAMPS: PresetLamp[] = [
     imageUrl: "https://images.unsplash.com/photo-1540932239986-30128078f3c5?auto=format&fit=crop&w=500&q=80",
     analysis: {
       style: "侘寂日式和纸艺术落地灯",
-      structure: "不规则球形纸质灯罩，三根细长的金属立柱作为撑杆与底座。",
       materials: ["手工宣纸 褶皱灯罩", "哑光碳素钢三叉支架", "竹节编制内骨架"],
       color: "暖白色和纸 + 黑色细支架",
       lightType: "360°全向漫反射朦胧光晕",
@@ -234,7 +228,6 @@ export const PRESET_LAMPS: PresetLamp[] = [
     imageUrl: "https://images.unsplash.com/photo-1513506003901-1e6a229e2d15?auto=format&fit=crop&w=500&q=80",
     analysis: {
       style: "北欧后现代几何极简灯",
-      structure: "圆球形乳白玻璃灯罩，一根纤细笔直的金属立柱（撑杆），一个小巧的圆形金属底座。",
       materials: ["拉丝电镀黄铜立柱", "手工吹制乳白色玻璃球罩", "实心黄铜防倒重力底座"],
       color: "高贵黄铜金 + 乳白色玻璃",
       lightType: "乳白玻璃防眩光温和散光",
@@ -250,7 +243,6 @@ export const PRESET_LAMPS: PresetLamp[] = [
     imageUrl: "https://images.unsplash.com/photo-1534349762230-e09ec482c05b?auto=format&fit=crop&w=500&q=80",
     analysis: {
       style: "美式工业复古多头轨道灯",
-      structure: "一根笔直的垂直立柱（撑杆），立柱上带有三个独立可旋转的锥形小射灯灯罩，一个圆形平整底座。",
       materials: ["重工业哑光黑碳钢主体", "复古铜质调节旋钮", "网格防爆金属网"],
       color: "哑光磨砂黑",
       lightType: "多角度独立旋转强光射灯",

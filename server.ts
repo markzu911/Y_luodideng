@@ -332,6 +332,7 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
 You must return the analysis in a clean JSON format matching this exact schema:
 {
   "style": "The design style of this floor lamp (e.g., Nordic Minimalist, Bauhaus Arc, Mid-Century Modern, Industrial Globe, Paper Lantern)",
+  "structure": "Detailed description of the complex physical structures and shapes. BE EXPLICIT about integrated functional components (e.g., base with built-in drawer/shelf/table, curved/articulated poles, tripod legs, unique base shapes).",
   "materials": ["Materials used, e.g., Matte Black Metal, Brushed Brass, Rice Paper, Marble base"],
   "color": "Color of the lamp structure and shade. VERY IMPORTANT: BE SPECIFIC ABOUT THE LAMPSHADE COLOR (e.g., Cream White lampshade with Walnut wood table base, Solid Black metal structure)",
   "lightType": "The type of lighting it provides (e.g., Arc direct reading light, Ambient diffuse light, Upward indirect lighting)",
@@ -348,6 +349,7 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
               type: Type.OBJECT,
               properties: {
                 style: { type: Type.STRING },
+                structure: { type: Type.STRING },
                 materials: {
                   type: Type.ARRAY,
                   items: { type: Type.STRING }
@@ -358,7 +360,7 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
                 cozyIndex: { type: Type.INTEGER },
                 placementTip: { type: Type.STRING }
               },
-              required: ["style", "materials", "color", "lightType", "lightWarmth", "cozyIndex", "placementTip"]
+              required: ["style", "structure", "materials", "color", "lightType", "lightWarmth", "cozyIndex", "placementTip"]
             }
           }
         });
@@ -479,8 +481,9 @@ Your task is to generate a beautiful, normal, and perfectly balanced room that i
 
 ${roomStylePrompt}
 
-The floor lamp style, color, and materials MUST perfectly match the reference lamp image:
+The floor lamp style, color, materials, and physical structure MUST perfectly match the reference lamp image:
 - Style: ${lampAnalysis.style}
+- Structure & Shape: ${lampAnalysis.structure}
 - Materials & Finish: ${lampAnalysis.materials.join(", ")} in ${lampAnalysis.color}
 - Lighting: ${params.lightState === "on" 
   ? `CRITICAL (LIGHT IS ON): The floor lamp is TURNED ON. Emitted light MUST be rendered with maximum physical realism as follows:
@@ -699,10 +702,11 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
             },
           },
           {
-    text: `You are an expert product and lighting designer. Analyze this floor lamp image. VERY IMPORTANT: You MUST reply in Chinese (简体中文) for all string values.
+            text: `You are an expert product and lighting designer. Analyze this floor lamp image. VERY IMPORTANT: You MUST reply in Chinese (简体中文) for all string values.
 You must return the analysis in a clean JSON format matching this exact schema:
 {
   "style": "The design style of this floor lamp (e.g., Nordic Minimalist, Bauhaus Arc, Mid-Century Modern, Industrial Globe, Paper Lantern)",
+  "structure": "Detailed description of the complex physical structures and shapes. BE EXPLICIT about integrated functional components (e.g., base with built-in drawer/shelf/table, curved/articulated poles, tripod legs, unique base shapes).",
   "materials": ["Materials used, e.g., Matte Black Metal, Brushed Brass, Rice Paper, Marble base"],
   "color": "Color of the lamp structure and shade. VERY IMPORTANT: BE SPECIFIC ABOUT THE LAMPSHADE COLOR (e.g., Cream White lampshade with Walnut wood table base, Solid Black metal structure)",
   "lightType": "The type of lighting it provides (e.g., Arc direct reading light, Ambient diffuse light, Upward indirect lighting)",
@@ -719,6 +723,7 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
             type: Type.OBJECT,
             properties: {
               style: { type: Type.STRING },
+              structure: { type: Type.STRING },
               materials: {
                 type: Type.ARRAY,
                 items: { type: Type.STRING }
@@ -729,7 +734,7 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
               cozyIndex: { type: Type.INTEGER },
               placementTip: { type: Type.STRING }
             },
-            required: ["style", "materials", "color", "lightType", "lightWarmth", "cozyIndex", "placementTip"]
+            required: ["style", "structure", "materials", "color", "lightType", "lightWarmth", "cozyIndex", "placementTip"]
           }
         }
       });
@@ -843,8 +848,9 @@ The room style and context MUST match:
 - Furniture: ${roomAnalysis.furniture.join(", ")}
 - Colors: ${roomAnalysis.colors.join(", ")}
 
-The floor lamp style, color, and materials MUST perfectly match the reference lamp image:
+The floor lamp style, color, materials, and physical structure MUST perfectly match the reference lamp image:
 - Style: ${lampAnalysis.style}
+- Structure & Shape: ${lampAnalysis.structure}
 - Materials & Finish: ${lampAnalysis.materials.join(", ")} in ${lampAnalysis.color}
 - Lighting: ${params.lightState === "on" 
   ? `CRITICAL (LIGHT IS ON): The floor lamp is TURNED ON. Emitted light MUST be rendered with maximum physical realism as follows:

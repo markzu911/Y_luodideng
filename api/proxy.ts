@@ -124,7 +124,7 @@ You must return the analysis in a clean JSON format matching this exact schema:
 {
   "style": "Overall interior design style (e.g., Modern Minimalist, Nordic Cozy, Industrial Loft, Creamy, Mid-Century Modern)",
   "layout": "Room layout description (e.g., Spacious living room with an L-shaped sofa, Cozy bedroom corner)",
-  "furniture": ["List of major furniture pieces detected with their relative sizes/proportions, e.g., large 3-seater sofa, queen-size double bed, small round coffee table, tall indoor plant"],
+  "furniture": ["List of major furniture pieces detected, e.g., sofa, coffee table, plant"],
   "colors": ["Dominant color tones, e.g., Warm Beige, Charcoal Gray, Light Wood"],
   "recommendation": "Specific aesthetic and functional recommendation on where to place a floor lamp (e.g., Place next to the sofa corner to create a reading nook, Position in the empty corner behind the accent chair)",
   "lightSuggestion": "Suggestion for the floor lamp light parameters (e.g., Warm light (2700K-3000K) to complement the cozy fabric textures, Natural white (4000K) to enhance the clean minimalist lines)"
@@ -180,13 +180,11 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
             },
             {
               text: `You are an expert product and lighting designer. Analyze this floor lamp image. VERY IMPORTANT: You MUST reply in Chinese (简体中文) for all string values.
-CRITICAL INSTRUCTION: You MUST carefully analyze all three specific components of the lamp: 1. The Base (底座), 2. The Pole/Stand (撑杆), and 3. The Shade/Lamp Head (灯罩/灯头). Missing any of these three parts is unacceptable.
 You must return the analysis in a clean JSON format matching this exact schema:
 {
   "style": "The design style of this floor lamp (e.g., Nordic Minimalist, Bauhaus Arc, Mid-Century Modern, Industrial Globe, Paper Lantern)",
-  "structure": "Detailed description of the lamp's physical shape and unique features (e.g., scalloped shade, curved swan-neck pole, base integrated with a 2-drawer side table)",
-  "materials": ["Materials used for all three parts (Base, Pole, Shade), e.g., Marble base, Matte Black Metal pole, Rice Paper shade"],
-  "color": "Color of all three parts. VERY IMPORTANT: Describe the color for the base, pole, and shade separately. (e.g., Cream White lampshade, Walnut wood pole, Solid Black metal base)",
+  "materials": ["Materials used, e.g., Matte Black Metal, Brushed Brass, Rice Paper, Marble base"],
+  "color": "Color of the lamp structure and shade. VERY IMPORTANT: BE SPECIFIC ABOUT THE LAMPSHADE COLOR (e.g., Cream White lampshade with Walnut wood table base, Solid Black metal structure)",
   "lightType": "The type of lighting it provides (e.g., Arc direct reading light, Ambient diffuse light, Upward indirect lighting)",
   "lightWarmth": "Default or recommended light warmth (e.g., Warm Warmth (2700K), Neutral White (4000K))",
   "cozyIndex": 8, // A cozy index score from 1 to 10
@@ -201,7 +199,6 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
               type: Type.OBJECT,
               properties: {
                 style: { type: Type.STRING },
-                structure: { type: Type.STRING },
                 materials: {
                   type: Type.ARRAY,
                   items: { type: Type.STRING }
@@ -212,7 +209,7 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
                 cozyIndex: { type: Type.INTEGER },
                 placementTip: { type: Type.STRING }
               },
-              required: ["style", "structure", "materials", "color", "lightType", "lightWarmth", "cozyIndex", "placementTip"]
+              required: ["style", "materials", "color", "lightType", "lightWarmth", "cozyIndex", "placementTip"]
             }
           }
         });
@@ -288,11 +285,11 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
         // Detailed prompt
         let perspectiveGuidance = "";
         if (params.viewType === "far") {
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (FAR VIEW / 远景/全景): EXTREME WIDE ANGLE. The camera MUST be positioned as far back as possible to capture the entire room floor-to-ceiling. It MUST show the full room layout, multiple pieces of furniture (e.g., entire sofa, coffee table, windows), and the complete floor lamp from base to shade. This is a wide architectural shot establishing the overall space. CRITICAL: Keep the entire background fully sharp and clear without any bokeh or depth-of-field blur. 整个背景必须完全清晰，绝对不能有景深虚化！";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (FAR VIEW): MUST show a wide-angle, full-shot (远景) perspective displaying the entire room layout and the integrated floor lamp in the context of the whole space. The camera is positioned far back to capture the maximum area of the room. CRITICAL: Follow the PLACEMENT RULE strictly. Even in a far view, if it's a bedroom, the lamp MUST be near the head of the bed (床头), NOT the foot (床尾). Showcase the realistic effect of the lamp integrated into the room.";
         } else if (params.viewType === "mid") {
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MID VIEW / 中景): MEDIUM SHOT. The camera is positioned at an intermediate distance. It MUST be noticeably closer than the 'Far View' but farther back than a 'Close-up'. It should frame ONLY the local seating/bedside zone (e.g., just the floor lamp and one side of the sofa, or the nightstand). DO NOT show the entire room. DO NOT show just the lampshade. Show the lamp and its immediate context. CRITICAL: Keep the entire background fully sharp and clear without any bokeh or depth-of-field blur. 整个背景必须完全清晰，绝对不能有景深虚化！";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MID VIEW): MUST show a medium shot (中景) perspective. The camera should be noticeably closer than the far view, but further back than a close-up. It should frame a specific zone (like the seating area or the bed area) rather than the whole room, focusing on the key furniture (such as the sofa/bedside corner) and the integrated floor lamp. CRITICAL: Follow the PLACEMENT RULE strictly. If it's a bedroom, the lamp MUST be near the head of the bed (床头).";
         } else if (params.viewType === "close") {
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (CLOSE VIEW / 近景/特写): MACRO/TIGHT CLOSE-UP. The camera is very close, focusing entirely on the upper section of the floor lamp (the lampshade and light source). The lampshade MUST dominate the frame. Large furniture pieces should be excluded or only slightly visible at the very edges. CRITICAL: Keep the entire background fully sharp and clear without any bokeh or depth-of-field blur. DO NOT add any fake walls, partitions, or pillars in the foreground or background to block the view; preserve the original depth of the room. 整个背景必须完全清晰，绝对不能有景深虚化！绝对不要在画面中凭空生成一堵墙或隔断来遮挡视线，必须保持原有的房间纵深！";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (CLOSE VIEW): MUST show an intimate, tight close-up (近景/特写) perspective. The camera is very close, focusing almost entirely on the floor lamp and its immediate adjacent surface. CRITICAL: While the camera angle CAN VARY to show the best perspective, you MUST NOT change the room's original furniture layout. The placement of the lamp must be reasonable and logical within the existing layout (e.g. next to a sofa or bed). 即使是近景（特写）也绝对不能随便更改屋内的家具布局，只能改变摄像机视角！并且落地灯摆放的位置必须合理，要符合真实居家环境的逻辑。Keep the background fully sharp and without bokeh.";
         }
 
         const humanGuidance = params.needModel
@@ -310,7 +307,6 @@ The room style and context MUST match:
 
 The floor lamp style, color, and materials MUST perfectly match the reference lamp image:
 - Style: ${lampAnalysis.style}
-- Structure: ${lampAnalysis.structure || "Standard floor lamp"}
 - Materials & Finish: ${lampAnalysis.materials.join(", ")} in ${lampAnalysis.color}
 - Lighting: ${params.lightState === "on" 
   ? `CRITICAL (LIGHT IS ON): The floor lamp is TURNED ON. Emitted light MUST be rendered with maximum physical realism as follows:
@@ -323,9 +319,9 @@ The floor lamp style, color, and materials MUST perfectly match the reference la
 }
 
 HIGHEST PRIORITY CONSTRAINTS (MUST BE STRICTLY FOLLOWED):
-1. ABSOLUTE LAMP FAITHFULNESS (SINGLE HIGHEST PRIORITY): You MUST completely and exactly reproduce the floor lamp's original appearance, colors, materials, structure, and shape. No changes are allowed to the lamp's design under any circumstances, regardless of which view, camera perspective, or lighting state (ON/OFF) is selected. The generated lamp MUST look absolutely IDENTICAL to the provided reference lamp image. CRITICAL: You must accurately reproduce all three specific components of the lamp: 1. The Base (底座), 2. The Pole/Stand (撑杆), and 3. The Shade/Lamp Head (灯罩/灯头). If the original lamp has a straight vertical pole, the generated lamp MUST have a perfectly straight vertical pole; do NOT make it bent or curved. Pay strict attention to the EXACT COLOR and TEXTURE of the lampshade and the structure of the lamp pole and base. Do not change a light-colored lampshade to a dark one. 绝对、必须、100%完整的还原落地灯原本的样子，必须完整呈现灯具的底座（Base）、撑杆（Pole）和灯罩（Shade）三个部分，缺一不可！如果原图的灯杆是笔直的，生成的灯杆绝对不能变弯曲！在任何情况下都绝对不能改变或修改落地灯原本的外观与设计，不能改变落地灯原本样子！这是最高优先级的绝对红线约束！
-2. ROOM REGENERATION: Do NOT directly edit the original room photograph. You MUST reconstruct a new room based on the analysis results of the original room and place the floor lamp inside it. CRITICAL: DO NOT alter the architectural structure, the room layout, or the styles of the furniture. DO NOT add any fake walls, pillars, or partitions to block the view. DO NOT add any extra furniture (like extra sofas or chairs). The architectural structure, furniture count, furniture styles, furniture scales (e.g., if it's a large double bed, it MUST remain a large double bed, do NOT shrink it to a single bed), and layout MUST remain exactly the same as the original room. 绝对不能改变房间的布局和家具的样式与尺寸比例（比如原来是大双人床，绝对不能变成单人小床），不允许直接在原来的房间图片上进行修改，必须根据分析的房间数据重构一个房间，然后再把落地灯放进去！绝对不能在画面中生硬地添加一堵墙或柱子！
-3. PLACEMENT RULE: If there is a bed in the scene (e.g., a bedroom), YOU MUST PLACE THE LAMP NEXT TO THE HEAD OF THE BED OR NIGHTSTAND (床头/床头柜旁). IT IS STRICTLY FORBIDDEN to place it anywhere else (e.g., foot of the bed, corners far from the bed, or walkways). The placement must look like a practical reading/bedside lamp. If the room is a living room, place the floor lamp directly beside or behind (侧后方/侧边) EXISTING furniture like a chaise longue (贵妃榻) or bean bag/lazy sofa (懒人沙发). NEVER place the lamp in front of any sofa. NEVER place the lamp in the aisle/walkway between two sofas. If no such furniture is present, place it on the side-rear (侧后方) or side (侧边) of the main sofa closer to the balcony or window. The placement must be logical and physically realistic. 只要场景中有床，落地灯一定要、必须放到床头或床头柜旁边的合理位置，绝对不能放在房间的其他任何地方（如床尾、远离床的墙角、过道等）！如果是客厅，绝对不能将落地灯摆放在沙发的正前方遮挡视线或影响使用，可以摆放在沙发的侧后方或侧边（参考真实居家环境）。
+1. ABSOLUTE LAMP FAITHFULNESS (SINGLE HIGHEST PRIORITY): You MUST completely and exactly reproduce the floor lamp's original appearance, colors, materials, structure, and shape. No changes are allowed to the lamp's design under any circumstances, regardless of which view, camera perspective, or lighting state (ON/OFF) is selected. The generated lamp MUST look absolutely IDENTICAL to the provided reference lamp image. CRITICAL: Pay strict attention to the EXACT COLOR and TEXTURE of the lampshade (灯罩) and the structure of the lamp pole/table/base (灯杆/置物台/底座). Do not change a light-colored lampshade to a dark one. 绝对、必须、100%完整的还原落地灯原本的样子、颜色（特别是灯罩的颜色）和材质，在任何情况下（无论哪种视图、相机透视、或者开灯/关灯状态下）都绝对不能改变或修改落地灯原本的外观与设计！这是最高优先级的绝对红线约束！
+2. ROOM REGENERATION: Do NOT directly edit the original room photograph. You MUST regenerate a new room based on the analysis results of the original room and place the floor lamp inside it. CRITICAL: DO NOT alter the architectural structure of the room (e.g., do NOT add pillars/columns, walls, or change the ceiling/floor). DO NOT add any extra furniture (like extra sofas or chairs) that are not present in the original room. The architectural structure, furniture count, and layout MUST remain exactly the same as the original room. Even if it's a close-up shot (近景), do NOT change the existing layout or add random items. 绝对不能改变房间原有的建筑结构（例如绝对不能凭空生成柱子、墙壁等），绝对不能随意增加原图中没有的家具，保持原有的建筑结构、家具数量和布局，即使是近景也不能随便更改！
+3. PLACEMENT RULE: If the room is a bedroom, YOU MUST PLACE THE LAMP NEXT TO THE HEAD OF THE BED OR NIGHTSTAND (床头/床头柜旁). IT IS STRICTLY FORBIDDEN to place it at the foot of the bed (床尾). If the room is a living room, place the floor lamp directly beside or behind (侧后方/侧边) EXISTING furniture like a chaise longue (贵妃榻) or bean bag/lazy sofa (懒人沙发). NEVER place the lamp in front of any sofa. NEVER place the lamp in the aisle/walkway between two sofas. If no such furniture is present, place it on the side-rear (侧后方) or side (侧边) of the main sofa closer to the balcony or window. The placement must be logical and physically realistic. 如果是在卧室，必须、一定、绝对要摆放在床头或床头柜旁边！绝对不能摆放在床尾！绝对不能摆放在房间中间的过道上！如果是客厅，绝对不能将落地灯摆放在沙发的正前方遮挡视线或影响使用，可以摆放在沙发的侧后方或侧边（参考真实居家环境）。
 ${perspectiveGuidance}
 ${humanGuidance}`;
 

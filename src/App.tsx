@@ -1162,13 +1162,19 @@ export default function App() {
                       </div>
                     </div>
 
-                    {/* Lamp Style */}
-                    <div className="bg-[#FAF9F5] border border-[#EBE8DF] rounded-2xl p-3 space-y-1">
-                      <div className="flex items-center space-x-1.5 text-[10px] font-bold text-[#967C55]">
-                        <Sparkles className="w-3.5 h-3.5" />
-                        <span>灯具风格归类</span>
+                    {/* Lamp Style and Structure */}
+                    <div className="bg-[#FAF9F5] border border-[#EBE8DF] rounded-2xl p-3 space-y-2">
+                      <div>
+                        <div className="flex items-center space-x-1.5 text-[10px] font-bold text-[#967C55]">
+                          <Sparkles className="w-3.5 h-3.5" />
+                          <span>灯具风格归类</span>
+                        </div>
+                        <p className="text-xs font-bold text-[#2C2623]">{lampAnalysis.style}</p>
                       </div>
-                      <p className="text-xs font-bold text-[#2C2623]">{lampAnalysis.style}</p>
+                      <div className="pt-2 border-t border-[#EBE8DF]">
+                        <span className="text-[10px] font-semibold text-[#8C8375]">物理结构特征</span>
+                        <p className="text-xs text-[#2C2623] mt-1">{lampAnalysis.structure}</p>
+                      </div>
                     </div>
 
                     {/* Cozy Dial (Radial Indicator approximation) */}
