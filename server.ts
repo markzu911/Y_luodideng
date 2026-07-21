@@ -3,11 +3,44 @@ import path from "path";
 import { createServer as createViteServer } from "vite";
 import { GoogleGenAI, Type } from "@google/genai";
 import dotenv from "dotenv";
+import fs from "fs";
 
 dotenv.config();
 
 async function fetchImageAsBase64(url: string): Promise<{ data: string; mimeType: string }> {
   try {
+    // 1. If it's already a data URI (base64)
+    if (url.startsWith("data:image/")) {
+      const split = url.split(",");
+      const mimeType = url.split(";")[0].split(":")[1] || "image/jpeg";
+      return { data: split[1], mimeType };
+    }
+
+    // 2. Resolve local file paths if it's a relative path or points to the localhost domain
+    let cleanPath = url;
+    if (url.startsWith("http")) {
+      try {
+        const parsedUrl = new URL(url);
+        cleanPath = parsedUrl.pathname;
+      } catch (e) {
+        // Fallback to fetching directly if URL parsing fails
+      }
+    }
+
+    if (cleanPath.startsWith("/")) {
+      cleanPath = cleanPath.substring(1);
+    }
+
+    const localPath = path.join(process.cwd(), cleanPath);
+    if (fs.existsSync(localPath)) {
+      const buffer = fs.readFileSync(localPath);
+      const ext = path.extname(localPath).toLowerCase();
+      const mimeType = ext === ".png" ? "image/png" : "image/jpeg";
+      const base64 = buffer.toString("base64");
+      return { data: base64, mimeType };
+    }
+
+    // 3. Remote URL fetching
     const response = await fetch(url);
     if (!response.ok) throw new Error(`Failed to fetch image from URL: ${url}`);
     const arrayBuf = await response.arrayBuffer();
@@ -15,7 +48,7 @@ async function fetchImageAsBase64(url: string): Promise<{ data: string; mimeType
     const base64 = Buffer.from(arrayBuf).toString("base64");
     return { data: base64, mimeType: contentType };
   } catch (error) {
-    console.error("Error fetching image URL:", error);
+    console.error("Error fetching image URL:", error, url);
     throw error;
   }
 }
@@ -379,39 +412,28 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
 
         const parts: any[] = [];
 
-        const isVirtualRoom = roomImage && roomImage.startsWith("http");
-
-        // Add room image as a visual context if provided AND it's not a virtual room placeholder
-        if (roomImage && !isVirtualRoom) {
+        // ALWAYS add the room image as a visual context if provided, so that Gemini knows the exact room layout and structure to preserve!
+        if (roomImage) {
           parts.push({ text: "Reference Room Image (This is the room environment to place the lamp into):" });
-          if (roomImage.startsWith("http")) {
-            try {
-              const fetched = await fetchImageAsBase64(roomImage);
-              parts.push({
-                inlineData: {
-                  data: fetched.data,
-                  mimeType: fetched.mimeType,
-                }
-              });
-            } catch (e) {
-              console.error("Failed to fetch room image URL, ignoring inlineData context:", e);
-            }
-          } else if (roomImage.includes("base64,")) {
-            const split = roomImage.split(",");
-            const mime = roomImage.split(";")[0].split(":")[1] || "image/jpeg";
+          try {
+            const fetched = await fetchImageAsBase64(roomImage);
             parts.push({
               inlineData: {
-                data: split[1],
-                mimeType: mime,
+                data: fetched.data,
+                mimeType: fetched.mimeType,
               }
             });
+          } catch (e) {
+            console.error("Failed to fetch room image URL, ignoring inlineData context:", e);
           }
         }
+
+        const isVirtualRoom = roomImage && roomImage.includes("/assets/");
 
         // Add lamp image as a visual context if provided
         if (lampImage) {
           parts.push({ text: "Reference Floor Lamp Image (You MUST place THIS exact lamp into the room):" });
-          if (lampImage.startsWith("http")) {
+          if (lampImage.startsWith("http") || lampImage.startsWith("data:") || lampImage.includes("/assets/")) {
             try {
               const fetched = await fetchImageAsBase64(lampImage);
               parts.push({
@@ -423,26 +445,17 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
             } catch (e) {
               console.error("Failed to fetch lamp image URL, ignoring inlineData context:", e);
             }
-          } else if (lampImage.includes("base64,")) {
-            const split = lampImage.split(",");
-            const mime = lampImage.split(";")[0].split(":")[1] || "image/png";
-            parts.push({
-              inlineData: {
-                data: split[1],
-                mimeType: mime,
-              }
-            });
           }
         }
 
         // Detailed prompt for image editing/blending
         let perspectiveGuidance = "";
         if (params.viewType === "far") {
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (FAR VIEW / 全景/远景): This MUST be a spacious, wide-angle full-shot (远景) displaying the entire room layout. The camera MUST be placed very far back to show the complete spatial context of the interior. Show the full length of the bed (from headboard to footboard), the entire large sofa, the complete flooring stretching across the floor, the ceiling, the windows, and multiple furniture groups in the background. The floor lamp should be a small-to-medium element beautifully integrated within the large environment. CRITICAL: Follow the PLACEMENT RULE strictly. Even in a far view, the lamp MUST be placed logically near the head of the bed (床头) or next to the sofa corner, not randomly. The composition must highlight the grandeur of the whole space.";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (FAR VIEW / 全景/远景): This MUST be a spacious, wide-angle full-shot (远景) displaying the entire room layout exactly matching the Reference Room Image. The camera MUST be placed far back to show the complete spatial context of the interior, keeping all background elements, walls, windows, and furniture arrangement 100% identical to the reference room. The floor lamp should be a small-to-medium element beautifully integrated within the large environment. CRITICAL: Follow the PLACEMENT RULE strictly.";
         } else if (params.viewType === "mid") {
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MID VIEW / 中景/中近景): This MUST be a tightly cropped, intimate medium shot (中景) focusing strictly on the specific furniture group and corner (such as just the bedside table and the pillow/head of the bed, or just one side of the sofa corner) where the floor lamp stands. You MUST zoom in significantly. DO NOT show the entire bed or the entire sofa; they MUST be cropped out at the edges of the frame. DO NOT show the ceiling, the floor walkways, or the far walls of the opposite side of the room. The floor lamp MUST be the prominent focal point, occupying a large vertical portion of the frame (at least 60-70% of the image height) so its details are crystal clear. This is a classic medium shot, completely distinct from a wide room shot.";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MID VIEW / 中景/中近景): This MUST be a medium shot (中景) focusing strictly on the specific furniture group and corner where the floor lamp stands, matching the Reference Room Image's exact layout and style. You MUST zoom in towards the lamp, keeping all visible surrounding elements (like the bedside table, the bed, the wall, or the sofa) completely identical in design, color, structure, and materials to the reference room. Do NOT alter, add, or change any furniture details or layout; simply show them in a closer perspective. The floor lamp MUST be the prominent focal point, occupying a large vertical portion of the frame.";
         } else if (params.viewType === "close") {
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (CLOSE VIEW / 近景/特写): This MUST be a close-up (特写) focusing heavily and strictly on the floor lamp body and lampshade. Only show the lamp itself and the immediate surface next to it (e.g., just the top of the bedside table or the texture of the sofa fabric directly touching it). The lamp must dominate the frame. The rest of the room is completely cropped out. Keep the background fully sharp and do not change the furniture layout, but zoom in extremely close to the lamp to show the delicate materials, finish, and the immediate glow of the bulb. Keep the background fully sharp and without bokeh.";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (CLOSE VIEW / 近景/特写): This MUST be a close-up (特写) focusing heavily and strictly on the floor lamp body and lampshade. Show the lamp itself and the immediate surface next to it (e.g., the bedside table, the headboard, or the sofa fabric) exactly matching the Reference Room Image's design, style, materials, and structure without any alteration. Keep the background layout and structure 100% identical to the reference room, just zoomed in extremely close to the lamp to show the delicate materials, finish, and the glow. DO NOT invent new furniture shapes or change the background walls.";
         }
         
         // Detailed style specifications for Virtual Rooms to ensure architectural and aesthetic fidelity
@@ -494,11 +507,10 @@ The floor lamp style, color, and materials MUST perfectly match the reference la
 
 HIGHEST PRIORITY CONSTRAINTS (MUST BE STRICTLY FOLLOWED):
 1. ABSOLUTE LAMP FAITHFULNESS (SINGLE HIGHEST PRIORITY): You MUST completely and exactly reproduce the floor lamp's original appearance, colors, materials, structure, and shape. No changes are allowed to the lamp's design under any circumstances, regardless of which view, camera perspective, or lighting state (ON/OFF) is selected. The generated lamp MUST look absolutely IDENTICAL to the provided reference lamp image. CRITICAL: Pay strict attention to the EXACT COLOR and TEXTURE of the lampshade (灯罩) and the structure of the lamp pole/table/base (灯杆/置物台/底座). Do not change a light-colored lampshade to a dark one. 绝对、必须、100%完整的还原落地灯原本的样子、颜色（特别是灯罩的颜色）和材质，在任何情况下（无论哪种视图、相机透视、或者开灯/关灯状态下）都绝对不能改变或修改落地灯原本的外观与设计！所有生成的图片都必须绝对一致地保持落地灯的样子，必须完全、无损地还原用户上传的落地灯的结构、长相、材质和色彩，绝不允许对落地灯的外形、灯罩形态、灯柱细节进行任何简化、改动或二次创作！这是最高优先级的绝对红线约束！即使是在虚拟房间中，也必须100%还原落地灯原本的样子，绝对不允许模型自行发挥修改灯具的款式！
-2. UNIFIED AND COHESIVE ROOM DESIGN (STRICTLY NORMAL ROOM): The generated room MUST be a perfectly normal, realistic, and harmonious living environment.
+2. UNIFIED AND COHESIVE ROOM DESIGN (STRICTLY PRESERVE ROOM LAYOUT): The generated room MUST maintain the 100% exact layout, architectural structure, and design of the Reference Room Image. You are strictly forbidden from altering the furniture shapes, colors, wall textures, window frames, or layouts shown in the Reference Room Image. All details must remain perfectly identical across all views (far, mid, close). 绝对不能在生图时改变参考房间的基本布局、硬装构造、软装家具样式、背景墙、地板以及整体结构！无论是远景、中景还是近景，都必须保持参考房间的100%一致性，决不允许生图模型重新设计或自行篡改房间中的床、沙发、柜子、窗帘或饰品！这是最高优先级的布局保真约束！
    - NO WEIRD SPLIT DESIGNS: The left and right sides of the room MUST be completely consistent and cohesive in style, materials, and paint. For example, do NOT make one side have many picture frames and wood panels while the other side is a dark grey concrete wall. The entire room's walls must use the exact same color, texture, and style.
    - HARMONIOUS COLOR AND TEMPERATURE: The entire room must be unified under a single, natural color palette (e.g. warm cream and oatmeal for Creamy Night). Strictly avoid any strange dual-tone, dual-color, or split-style themes.
    - NORMAL ARCHITECTURAL STRUCTURE: Do NOT alter the room's basic architectural structure or add random columns or walls. Keep the layout clean, symmetric, comfortable, and realistic.
-   - 必须是一个完全正常、统一、和谐的高端真实居家房间！绝对不能出现左右设计不一致、墙壁材质/颜色割裂（例如左边是暖色挂画墙而右边是灰色水泥墙）、或者光线冷暖对立等诡异的分屏/分裂设计。整个房间的所有墙壁、天花板和地板必须保持材质与色彩的完全一致和连贯，整体色调要统一、温馨、柔和，呈现出高端、对称和自然的居家氛围。
 3. PLACEMENT RULE: If the room is a bedroom, YOU MUST PLACE THE LAMP NEXT TO THE HEAD OF THE BED OR NIGHTSTAND (床头/床头柜旁). IT IS STRICTLY FORBIDDEN to place it at the foot of the bed (床尾). If the room is a living room, place the floor lamp directly beside or behind (侧后方/侧边) EXISTING furniture like a chaise longue (贵妃榻) or bean bag/lazy sofa (懒人沙发). NEVER place the lamp in front of any sofa. NEVER place the lamp in the aisle/walkway between two sofas. If no such furniture is present, place it on the side-rear (侧后方) or side (侧边) of the main sofa closer to the balcony or window. The placement must be logical and physically realistic. 如果是在卧室，必须、一定、绝对要摆放在床头或床头柜旁边！绝对不能摆放在床尾！绝对不能摆放在房间中间的过道上！如果是客厅，绝对不能将落地灯摆放在沙发的正前方遮挡视线或影响使用，可以摆放在沙发的侧后方或侧边（参考真实居家环境）。
 ${perspectiveGuidance}`;
 
