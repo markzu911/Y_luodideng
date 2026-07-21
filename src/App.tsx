@@ -8,50 +8,8 @@ import {
 import { motion, AnimatePresence } from "motion/react";
 import { VIRTUAL_ROOMS, PRESET_LAMPS } from "./data";
 import { RoomAnalysis, LampAnalysis, VirtualRoom, PresetLamp, GenerationParams } from "./types";
+import { compressImage } from "./lib/image-utils";
 import AgentMode from "./components/AgentMode";
-
-// Helper to compress an uploaded image using HTML5 Canvas (max dimension 1600px, quality 0.85, output format image/jpeg)
-const compressImage = (file: File, maxDimension = 1600, quality = 0.85): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = (event) => {
-      const img = new Image();
-      img.src = event.target?.result as string;
-      img.onload = () => {
-        const canvas = document.createElement("canvas");
-        let width = img.width;
-        let height = img.height;
-
-        // Scale proportionally if any dimension exceeds maxDimension
-        if (width > maxDimension || height > maxDimension) {
-          if (width > height) {
-            height = Math.round((height * maxDimension) / width);
-            width = maxDimension;
-          } else {
-            width = Math.round((width * maxDimension) / height);
-            height = maxDimension;
-          }
-        }
-
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext("2d");
-        if (!ctx) {
-          reject(new Error("Could not get 2D canvas context"));
-          return;
-        }
-
-        ctx.drawImage(img, 0, 0, width, height);
-        // Output as image/jpeg to compress effectively
-        const compressedBase64 = canvas.toDataURL("image/jpeg", quality);
-        resolve(compressedBase64);
-      };
-      img.onerror = (err) => reject(err);
-    };
-    reader.onerror = (err) => reject(err);
-  });
-};
 
 export default function App() {
   // Current step state: 1, 2, 3, 4
@@ -938,7 +896,7 @@ export default function App() {
                         </div>
                         <div>
                           <p className="text-base font-bold text-[#2C2623]">{isRoomAnalyzing ? "分析中..." : "点击或拖拽上传房间场景图"}</p>
-                          <p className="text-xs text-[#8C8375] mt-1.5">{isRoomAnalyzing ? "请稍候" : "支持常见图片格式（如 JPG, PNG, WebP），最大支持 20MB"}</p>
+                          <p className="text-xs text-[#8C8375] mt-1.5">{isRoomAnalyzing ? "请稍候" : "支持常见图片格式（如 JPG, PNG, WebP），最大支持 20MB（通过前端压缩上传）"}</p>
                         </div>
                       </div>
                     )}
@@ -1180,7 +1138,7 @@ export default function App() {
                       </div>
                       <div>
                         <p className="text-base font-bold text-[#2C2623]">{isLampAnalyzing ? "分析中..." : "点击或拖拽上传落地灯背景图"}</p>
-                        <p className="text-xs text-[#8C8375] mt-1.5">{isLampAnalyzing ? "请稍候" : "支持常见图片格式（如 JPG, PNG, WebP），最大支持 20MB"}</p>
+                        <p className="text-xs text-[#8C8375] mt-1.5">{isLampAnalyzing ? "请稍候" : "支持常见图片格式（如 JPG, PNG, WebP），最大支持 20MB（通过前端压缩上传）"}</p>
                       </div>
                     </div>
                   )}

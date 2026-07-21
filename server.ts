@@ -25,8 +25,8 @@ async function startServer() {
   const PORT = 3000;
 
   // Crucial: increase json body size limit for large base64 images
-  app.use(express.json({ limit: "50mb" }));
-  app.use(express.urlencoded({ limit: "50mb", extended: true }));
+  app.use(express.json({ limit: "20mb" }));
+  app.use(express.urlencoded({ limit: "20mb", extended: true }));
 
   // Initialize Gemini client lazily
   let ai: GoogleGenAI | null = null;

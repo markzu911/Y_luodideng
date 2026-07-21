@@ -6,6 +6,7 @@ import {
 import { motion, AnimatePresence } from "motion/react";
 import { VIRTUAL_ROOMS, PRESET_LAMPS } from "../data";
 import { VirtualRoom, PresetLamp, GenerationParams, RoomAnalysis, LampAnalysis } from "../types";
+import { compressImage } from "../lib/image-utils";
 
 export interface ChatMessage {
   id: string;
@@ -134,47 +135,6 @@ export default function AgentMode({
       ia[i] = byteString.charCodeAt(i);
     }
     return new Blob([ab], { type: mime });
-  };
-
-  // Image compression utility
-  const compressImage = (file: File, maxDimension = 1600, quality = 0.85): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = (event) => {
-        const img = new Image();
-        img.src = event.target?.result as string;
-        img.onload = () => {
-          const canvas = document.createElement("canvas");
-          let width = img.width;
-          let height = img.height;
-
-          if (width > maxDimension || height > maxDimension) {
-            if (width > height) {
-              height = Math.round((height * maxDimension) / width);
-              width = maxDimension;
-            } else {
-              width = Math.round((width * maxDimension) / height);
-              height = maxDimension;
-            }
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext("2d");
-          if (!ctx) {
-            reject(new Error("Could not get 2D canvas context"));
-            return;
-          }
-
-          ctx.drawImage(img, 0, 0, width, height);
-          const compressedBase64 = canvas.toDataURL("image/jpeg", quality);
-          resolve(compressedBase64);
-        };
-        img.onerror = (err) => reject(err);
-      };
-      reader.onerror = (err) => reject(err);
-    });
   };
 
   const getSceneBackground = () => {
