@@ -6,6 +6,10 @@ import pastoralCozyBedroom from "./assets/images/pastoral_cozy_bedroom_178419159
 import frenchCreamyBedroom from "./assets/images/french_creamy_bedroom_1784191800925.jpg";
 import wabiSabiQuietLivingRoom from "./assets/images/wabi_sabi_quiet_living_room_1784192087112.jpg";
 
+import zenLampFar from "./assets/images/zen_lamp_far_1784624402192.jpg";
+import zenLampMid from "./assets/images/zen_lamp_mid_1784624416207.jpg";
+import zenLampClose from "./assets/images/zen_lamp_close_1784624426881.jpg";
+
 export const VIRTUAL_ROOMS: VirtualRoom[] = [
   {
     id: "room_7",
@@ -162,9 +166,9 @@ export const VIRTUAL_ROOMS: VirtualRoom[] = [
     name: "寂宅风 (Wabi-Sabi)",
     style: "侘寂风",
     imageUrl: wabiSabiQuietLivingRoom,
-    imageUrlFar: wabiSabiQuietLivingRoom,
-    imageUrlMid: wabiSabiQuietLivingRoom,
-    imageUrlClose: wabiSabiQuietLivingRoom,
+    imageUrlFar: zenLampFar,
+    imageUrlMid: zenLampMid,
+    imageUrlClose: zenLampClose,
     analysis: {
       style: "侘寂风",
       layout: "空灵宁静的暖调微水泥寂宅风客厅。墙面采用温润质朴的天然沙色陶土微水泥涂料，温润宽幅实木地板自然铺展。右侧一整面超大落地玻璃门引入静谧的绿色林景并滤入朦胧的光影。左侧对称置有温润的胡桃木高书架与极简木几，中间点缀一盏充满科技与复古温情融汇的悬挑发光小火炉，营造出大隐于市的极致宁静感。",
