@@ -117,13 +117,20 @@ async function startServer() {
 2. 提取用户想要进行的操作意图（Intent）以及相关参数。
 3. 给出语气温馨、充满设计美学和艺术感、富有感染力、亲切而不机械的中文回复（aiResponse）。
 
-【最核心规则 - 落地灯只能由用户上传】：
+【最核心规则 1 - 落地灯只能由用户上传】：
 本项目中已经彻底去除了所有的预设落地灯！无论用户处于任何模式，落地灯均【没有任何内置预设】，完全依靠用户自行上传。
 在与用户沟通时：
 - 绝对不要推荐任何特定的内置落地灯（如钓鱼灯、野口勇灯等），也不要暗示系统有内置选项。
 - 极其温柔、有礼、专业地告知用户：系统为了给您最广阔的个性化定制自由度，支持您上传任何心仪的落地灯照片进行一键融入。请点击界面上的 “📤 上传我的落地灯” 按钮，上传您的落地灯抠图或实拍图。
 
-当前可用的房间 (VIRTUAL_ROOMS):
+【最核心规则 2 - 自定义虚拟房间（用户不限于系统规定，可自由命名/定义房间风格）】：
+如果用户在对话中提出了想要使用特定的房间背景风格，但这个风格不在下方 VIRTUAL_ROOMS 的预设中（例如“我想看美式书房”、“搞一个日式榻榻米房间”、“赛博朋克风电竞房”、“北欧阳光卧室”等）：
+- 必须将 extractedData.roomId 设定为 "custom"。
+- 必须在 extractedData.customRoomName 字段填入该自定义房间的具体名称（如“美式复古书房”）。
+- 必须在 extractedData.customRoomAnalysis 字段中，为用户梦寐以求的场景设计出专属的专业设计报告。所有字段值必须使用简体中文，格式与 RoomAnalysis 相同。
+- 助理的 aiResponse 应该极其有文学修辞和美学张力，告诉用户你已经为他们专属高保真定制并准备好了这一专属自定义虚拟房间场景，下一步可以进行灯具试摆！
+
+当前可用的预设房间 (VIRTUAL_ROOMS):
 - "room_7": "极简风・夜" (对应关键词：极简、纯白、微水泥、留白、冷调等)
 - "room_1": "现代简约・夜" (对应关键词：现代、简约、客厅、灰色等)
 - "room_2": "北欧风・夜" (对应关键词：北欧、原木、卧室、温馨、松弛等)
@@ -140,16 +147,26 @@ async function startServer() {
 {
   "intent": "select_room" | "toggle_light" | "set_view" | "generate_scene" | "general_chat" | "unknown",
   "extractedData": {
-    "roomId": "room_7" | "room_1" | "room_2" | "room_3" | "room_4" | "room_5" | null,
+    "roomId": "room_7" | "room_1" | "room_2" | "room_3" | "room_4" | "room_5" | "custom" | null,
+    "customRoomName": string | null (如果用户想自定义系统预设中没有的虚拟房间名称，在此字段填入用户描述的房间名称/风格),
+    "customRoomAnalysis": {
+      "style": string,
+      "layout": string,
+      "furniture": string[],
+      "colors": string[],
+      "recommendation": string,
+      "lightSuggestion": string
+    } | null,
     "lightState": "on" | "off" | null,
     "viewType": "far" | "mid" | "close" | null,
     "needModel": true | false | null
   },
-  "aiResponse": "在这里填写您对用户消息的回复。回复要求：使用第一人称‘我’代表光影助理，结合光线、材质、氛围感，写出极其高级有艺术审美和感染力的中文话语。说明您做了什么调整，并在尚未上传灯具时极其温柔且明确地引导用户点击【上传我的落地灯】按钮。字数在100字左右。"
+  "aiResponse": "在这里填写您对用户消息的回复。回复要求：使用第一人称‘我’代表光影助理，结合光线、材质、氛围感，写出极其高级有艺术审美 and 感染力的中文话语。说明您做了什么调整，并在尚未上传灯具时极其温柔且明确地引导用户点击【上传我的落地灯】按钮。字数在100字左右。"
 }
 
 指令解析逻辑示例（极其重要）：
 - 如果用户说 "想要一种温柔奶糯的感觉"，你应当理解这是想要切换到奶油风，intent="select_room"，extractedData.roomId="room_4"。
+- 如果用户说 "我想用美式复古书房作为背景"，由于这不是预设房间，你应当将 intent="select_room"，extractedData.roomId="custom"，extractedData.customRoomName="美式复古书房"，并在 extractedData.customRoomAnalysis 里面自动生成高品质的美式复古书房空间美学方案！
 - 如果用户说 "视角稍微拉远，我想看个全貌"，extractedData.viewType="far"。
 - 如果用户说 "我想把灯灭掉/点亮"，extractedData.lightState="off" 或 "on"。
 - 如果用户说 "开始摆放"、"去渲染吧"、"生成图片"、"我想看看最后效果"，这代表开始融合成图，intent="generate_scene"。
@@ -174,6 +191,24 @@ async function startServer() {
                 type: Type.OBJECT,
                 properties: {
                   roomId: { type: Type.STRING },
+                  customRoomName: { type: Type.STRING },
+                  customRoomAnalysis: {
+                    type: Type.OBJECT,
+                    properties: {
+                      style: { type: Type.STRING },
+                      layout: { type: Type.STRING },
+                      furniture: {
+                        type: Type.ARRAY,
+                        items: { type: Type.STRING }
+                      },
+                      colors: {
+                        type: Type.ARRAY,
+                        items: { type: Type.STRING }
+                      },
+                      recommendation: { type: Type.STRING },
+                      lightSuggestion: { type: Type.STRING }
+                    }
+                  },
                   lightState: { type: Type.STRING },
                   viewType: { type: Type.STRING },
                   needModel: { type: Type.BOOLEAN }
@@ -576,6 +611,72 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
     } catch (error: any) {
       console.error("Error analyzing room:", error);
       res.status(500).json({ error: error.message || "Failed to analyze room" });
+    }
+  });
+
+  app.post("/api/custom-room-analysis", async (req, res) => {
+    try {
+      const { roomName } = req.body;
+      if (!roomName) {
+        return res.status(400).json({ error: "Missing custom room name" });
+      }
+
+      const client = getGeminiClient();
+      
+      const response = await client.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: [
+          {
+            text: `You are an expert interior designer. A user wants to try on a floor lamp in a custom virtual room named "${roomName}".
+Generate a highly detailed and cohesive interior design specification (room analysis) for this specific room style.
+The generated room MUST perfectly match the aesthetic described by the room name "${roomName}".
+
+You MUST reply in Chinese (简体中文) for all string values.
+You must return the analysis in a clean JSON format matching this exact schema:
+{
+  "style": "Specific style name matching user intent, e.g., 极简包豪斯风, 赛博朋克电竞房, 复古美式书房",
+  "layout": "Detailed room layout description designed for this style, highlighting light, materials, space feel, e.g., 精致庄重的美式复古书房。四周环绕深色实木通顶书柜，散发淡淡墨香。中央摆放一张雕花胡桃木大书桌...",
+  "furniture": ["List of 6-8 key highly stylized furniture pieces suited for this style in Chinese"],
+  "colors": ["4 dominant color tones matching this style in Chinese"],
+  "recommendation": "Specific aesthetic and functional recommendation on where to place a floor lamp (e.g., Position next to the leather reading chair, or by the desk to create a warm study corner)",
+  "lightSuggestion": "Suggestion for the floor lamp light parameters (e.g., Warm amber light (2500K-2700K) to enhance the vintage wood warmth, or Neon cyan/magenta to elevate the cyber glow)"
+}
+Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json.`
+          }
+        ],
+        config: {
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: Type.OBJECT,
+            properties: {
+              style: { type: Type.STRING },
+              layout: { type: Type.STRING },
+              furniture: {
+                type: Type.ARRAY,
+                items: { type: Type.STRING }
+              },
+              colors: {
+                type: Type.ARRAY,
+                items: { type: Type.STRING }
+              },
+              recommendation: { type: Type.STRING },
+              lightSuggestion: { type: Type.STRING }
+            },
+            required: ["style", "layout", "furniture", "colors", "recommendation", "lightSuggestion"]
+          }
+        }
+      });
+
+      const text = response.text;
+      if (!text) {
+        throw new Error("No response text from Gemini");
+      }
+
+      const parsed = JSON.parse(text);
+      res.json(parsed);
+    } catch (error: any) {
+      console.error("Error generating custom room analysis:", error);
+      res.status(500).json({ error: error.message || "Failed to generate custom room analysis" });
     }
   });
 

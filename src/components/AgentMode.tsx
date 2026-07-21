@@ -100,6 +100,9 @@ export default function AgentMode({
   const [renderingText, setRenderingText] = useState<string>("");
   const [isChatAnalyzing, setIsChatAnalyzing] = useState<boolean>(false);
 
+  const [customRoomInput, setCustomRoomInput] = useState<string>("");
+  const [isCustomRoomCreating, setIsCustomRoomCreating] = useState<boolean>(false);
+
   const isOutOfCredits = userIntegral !== null && userIntegral < toolRequiredIntegral;
 
   const chatEndRef = useRef<HTMLDivElement>(null);
@@ -226,6 +229,68 @@ export default function AgentMode({
         type: "lamp-select"
       });
     }, 600);
+  };
+
+  const handleCreateCustomRoom = async (roomNameText: string) => {
+    const trimmed = roomNameText.trim();
+    if (!trimmed) return;
+
+    setIsCustomRoomCreating(true);
+    try {
+      const res = await fetch("/api/custom-room-analysis", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ roomName: trimmed })
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to generate custom room style");
+      }
+
+      const analysis = await res.json();
+      const customRoom = {
+        id: "custom_" + Date.now(),
+        name: `自定义: ${trimmed}`,
+        style: analysis.style,
+        imageUrl: "",
+        analysis: analysis
+      };
+
+      setSelectedVirtualRoom(customRoom);
+      setUploadedRoomBase64(null);
+      setRoomAnalysis(analysis);
+
+      // Append user confirmation
+      appendMessage({
+        id: `usr-custom-rm-${Date.now()}`,
+        sender: "user",
+        text: `我已选择自定义虚拟房间：${trimmed}`,
+        timestamp: new Date()
+      });
+
+      // Append assistant confirmation
+      setTimeout(() => {
+        appendMessage({
+          id: `ai-custom-rm-${Date.now()}`,
+          sender: "ai",
+          text: `✨ **自定义美学空间「${trimmed}」已成功定制！** \n\n🔍 **专属空间美学分析报告**:\n• 空间风格: \`${analysis.style}\`\n• 空间格局: \`${analysis.layout}\`\n• 专属家具配置: \`${analysis.furniture.join("、")}\`\n• 色彩基调: \`${analysis.colors.join("、")}\`\n• 推荐摆放: \`${analysis.recommendation}\`\n\n接下来，请上传您心仪的**落地灯样式**：`,
+          timestamp: new Date(),
+          type: "lamp-select"
+        });
+      }, 600);
+
+      setCustomRoomInput("");
+    } catch (err: any) {
+      console.error(err);
+      appendMessage({
+        id: `ai-custom-rm-err-${Date.now()}`,
+        sender: "ai",
+        text: `⚠️ 抱歉，定制该风格房间失败。请稍后重试。`,
+        timestamp: new Date()
+      });
+    } finally {
+      setIsCustomRoomCreating(false);
+    }
   };
 
   // Handle Room Image Upload inside Chat
@@ -457,11 +522,11 @@ export default function AgentMode({
       });
       const verifyData = await verifyRes.json();
       if (!verifyRes.ok || !verifyData.success) {
-        const errorMsg = verifyData.message || "❌ 体验额度不足，无法执行该操作";
+        const errorMsg = verifyData.message || "❌ 余额不足，无法执行该操作";
         appendMessage({
           id: `err-pts-${Date.now()}`,
           sender: "ai",
-          text: `❌ 体验额度不足，无法执行该操作（当前所需：${toolRequiredIntegral}次，您的额度余额不足）。`,
+          text: `❌ 余额不足，无法执行该操作（当前所需：${toolRequiredIntegral}次，您的余额不足）。`,
           timestamp: new Date(),
           isError: true
         });
@@ -473,7 +538,7 @@ export default function AgentMode({
       appendMessage({
         id: `err-pts-${Date.now()}`,
         sender: "ai",
-        text: `❌ 额度校验遇到异常，请稍后重试。`,
+        text: `❌ 余额校验遇到异常，请稍后重试。`,
         timestamp: new Date(),
         isError: true
       });
@@ -541,7 +606,7 @@ export default function AgentMode({
         const consumeData = await consumeRes.json();
         
         if (!consumeRes.ok || !consumeData.success) {
-          throw new Error(consumeData.message || "额度扣除失败，请重试。");
+          throw new Error(consumeData.message || "余额扣除失败，请重试。");
         }
 
         // Sync points
@@ -798,6 +863,16 @@ export default function AgentMode({
 
   // Chat Text Input submission
   const handleSendMessage = async () => {
+    if (isOutOfCredits) {
+      appendMessage({
+        id: `ai-credits-limit-${Date.now()}`,
+        sender: "ai",
+        text: "抱歉，由于今日的余额已用尽，我暂时无法继续为您提供设计建议。您可以稍后再来寻找灵感，期待与您再次开启美学之旅。",
+        timestamp: new Date()
+      });
+      return;
+    }
+
     const trimmed = inputMessage.trim();
     if (!trimmed) return;
 
@@ -839,12 +914,26 @@ export default function AgentMode({
       if (extractedData) {
         // 1. Room selection
         if (extractedData.roomId) {
-          const room = VIRTUAL_ROOMS.find(r => r.id === extractedData.roomId);
-          if (room) {
-            setSelectedVirtualRoom(room);
+          if (extractedData.roomId === "custom" && extractedData.customRoomName && extractedData.customRoomAnalysis) {
+            const customRoom = {
+              id: "custom_" + Date.now(),
+              name: `自定义: ${extractedData.customRoomName}`,
+              style: extractedData.customRoomAnalysis.style || extractedData.customRoomName,
+              imageUrl: "",
+              analysis: extractedData.customRoomAnalysis
+            };
+            setSelectedVirtualRoom(customRoom);
             setUploadedRoomBase64(null);
-            setRoomAnalysis(room.analysis);
+            setRoomAnalysis(customRoom.analysis);
             roomChanged = true;
+          } else {
+            const room = VIRTUAL_ROOMS.find(r => r.id === extractedData.roomId);
+            if (room) {
+              setSelectedVirtualRoom(room);
+              setUploadedRoomBase64(null);
+              setRoomAnalysis(room.analysis);
+              roomChanged = true;
+            }
           }
         }
 
@@ -1114,6 +1203,43 @@ export default function AgentMode({
                         })}
                       </div>
 
+                      <div className="bg-[#FAF9F5]/40 border border-[#EBE8DF] rounded-2xl p-3.5 space-y-2.5 shadow-inner">
+                        <div className="flex items-center space-x-1.5 text-xs font-bold text-[#5C5346]">
+                          <Sparkles className="w-3.5 h-3.5 text-amber-500 animate-pulse" />
+                          <span>✨ 或者定制专属虚拟房间（自由命名）</span>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <input
+                            type="text"
+                            value={customRoomInput}
+                            onChange={(e) => setCustomRoomInput(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' && !isCustomRoomCreating && !isRoomAnalyzing && customRoomInput.trim()) {
+                                handleCreateCustomRoom(customRoomInput);
+                              }
+                            }}
+                            placeholder="输入您脑海中的任何房间，如「美式复古书房」..."
+                            disabled={isCustomRoomCreating || isRoomAnalyzing}
+                            className="flex-1 bg-white border border-[#EBE8DF] rounded-xl px-3.5 py-2.5 text-xs text-[#2C2623] placeholder-[#A49C8F] focus:outline-none focus:border-[#967C55] focus:ring-2 focus:ring-[#967C55]/10 disabled:opacity-50"
+                          />
+                          <button
+                            onClick={() => handleCreateCustomRoom(customRoomInput)}
+                            disabled={isCustomRoomCreating || isRoomAnalyzing || !customRoomInput.trim()}
+                            className="bg-[#967C55] hover:bg-[#836C47] text-white px-4 py-2.5 rounded-xl text-xs font-extrabold flex items-center justify-center space-x-1.5 transition-all shadow-md disabled:bg-[#D6CFC1] disabled:cursor-not-allowed shrink-0"
+                          >
+                            {isCustomRoomCreating ? (
+                              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                            ) : (
+                              <Check className="w-3.5 h-3.5" />
+                            )}
+                            <span>{isCustomRoomCreating ? "定制中" : "确认"}</span>
+                          </button>
+                        </div>
+                        <p className="text-[10px] text-[#8C8375] leading-normal font-medium">
+                          💡 贴心提示：您可以尽情想象！输入任何您想要的房间名称，AI 将为您智能重构具有该专属风格、家具、色彩基调的高清美学样板空间方案。
+                        </p>
+                      </div>
+
                       <button
                         onClick={() => roomInputRef.current?.click()}
                         disabled={isRoomAnalyzing}
@@ -1268,8 +1394,8 @@ export default function AgentMode({
                           <Sparkles className="w-4 h-4 text-[#967C55]" />
                           <span>
                             {userIntegral !== null 
-                              ? `所需额度: ${toolRequiredIntegral} | 当前可用: ${userIntegral}`
-                              : `所需额度: ${toolRequiredIntegral}`}
+                              ? `所需余额: ${toolRequiredIntegral} | 当前余额: ${userIntegral}`
+                              : `所需余额: ${toolRequiredIntegral}`}
                           </span>
                         </div>
                         <button
@@ -1414,11 +1540,11 @@ export default function AgentMode({
       <div className="shrink-0 p-4 bg-white border-t border-[#EBE8DF] flex flex-col gap-2">
         {isOutOfCredits ? (
           <div className="bg-amber-50 border border-amber-200 text-[#7A5B35] rounded-2xl p-4 text-xs font-bold flex items-start gap-3 shadow-inner">
-            <Info className="w-4 h-4 text-[#967C55] shrink-0 mt-0.5" />
+            <span className="shrink-0 mt-0.5">⚠️</span>
             <div className="space-y-1">
-              <p className="font-extrabold text-[13px] text-[#2C2623]">⚠️ 您的体验额度已用尽</p>
+              <p className="font-extrabold text-[13px] text-[#2C2623]">余额已用尽</p>
               <p className="text-[#8C8375] text-[11px] font-medium leading-relaxed">
-                当前的体验额度余额不足以支持下一次渲染或对话。由于目前额度已全部用完，对话已自动终止。
+                抱歉，由于今日的余额已用尽，我暂时无法继续为您提供设计建议。您可以稍后再来寻找灵感，期待与您再次开启美学之旅。
               </p>
             </div>
           </div>

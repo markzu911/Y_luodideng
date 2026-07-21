@@ -141,6 +141,8 @@ export default function App() {
   const [roomAnalysis, setRoomAnalysis] = useState<RoomAnalysis | null>(null);
   const [isRoomAnalyzing, setIsRoomAnalyzing] = useState<boolean>(false);
   const [roomError, setRoomError] = useState<string | null>(null);
+  const [customRoomInput, setCustomRoomInput] = useState<string>("");
+  const [isCustomRoomCreating, setIsCustomRoomCreating] = useState<boolean>(false);
 
   // Lamp Selection State
   const [lampMode, setLampMode] = useState<"upload" | "preset">("upload");
@@ -200,6 +202,44 @@ export default function App() {
     setSelectedVirtualRoom(room);
     setUploadedRoomBase64(null);
     setRoomAnalysis(room.analysis);
+  };
+
+  const handleCreateCustomRoom = async (roomNameText: string) => {
+    const trimmed = roomNameText.trim();
+    if (!trimmed) return;
+
+    setIsCustomRoomCreating(true);
+    setRoomError(null);
+    try {
+      const res = await fetch("/api/custom-room-analysis", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ roomName: trimmed })
+      });
+
+      if (!res.ok) {
+        throw new Error("Failed to generate custom room style");
+      }
+
+      const analysis = await res.json();
+      const customRoom: VirtualRoom = {
+        id: "custom_" + Date.now(),
+        name: `自定义: ${trimmed}`,
+        style: analysis.style,
+        imageUrl: "",
+        analysis: analysis
+      };
+
+      setSelectedVirtualRoom(customRoom);
+      setUploadedRoomBase64(null);
+      setRoomAnalysis(analysis);
+      setCustomRoomInput("");
+    } catch (err: any) {
+      console.error(err);
+      setRoomError("定制该风格房间失败，请检查您的网络连接并重试。");
+    } finally {
+      setIsCustomRoomCreating(false);
+    }
   };
 
   // Handle preset lamp selection
@@ -330,14 +370,14 @@ export default function App() {
       });
       const verifyData = await verifyRes.json();
       if (!verifyRes.ok || !verifyData.success) {
-        const errorMsg = verifyData.message || "您的体验额度不足，无法启动生成。";
+        const errorMsg = verifyData.message || "您的余额不足，无法启动生成。";
         setGenerationError(errorMsg);
         setIsVerifyingCredits(false);
         return;
       }
     } catch (err: any) {
       console.error("Points verification failed:", err);
-      setGenerationError("额度校验失败，请稍后重试。");
+      setGenerationError("余额校验失败，请稍后重试。");
       setIsVerifyingCredits(false);
       return;
     }
@@ -638,7 +678,7 @@ export default function App() {
           <Sparkles className="w-3.5 h-3.5 text-[#967C55]" />
           <span className="text-xs font-semibold text-[#665D4F]" id="credit-display">
             {userIntegral !== null 
-              ? `${userInfo?.name || "用户"} | 额度: ${userIntegral}`
+              ? `${userInfo?.name || "用户"} | 余额: ${userIntegral}`
               : "高级设计智囊"}
           </span>
         </div>
@@ -904,27 +944,70 @@ export default function App() {
                     )}
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 overflow-y-auto">
-                    {VIRTUAL_ROOMS.map((room) => (
-                      <div
-                        key={room.id}
-                        id={`virtual-room-card-${room.id}`}
-                        onClick={() => handleSelectVirtualRoom(room)}
-                        className={`group relative rounded-3xl overflow-hidden cursor-pointer border-2 transition-all duration-300 p-4 flex flex-col ${selectedVirtualRoom?.id === room.id ? "bg-white border-[#967C55] ring-4 ring-[#967C55]/10 shadow-sm" : "bg-white border-[#EBE8DF] hover:border-[#967C55]/60 hover:shadow-md"}`}
-                      >
-                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-2 transition-colors ${selectedVirtualRoom?.id === room.id ? "bg-[#967C55]/10 text-[#967C55]" : "bg-indigo-50 text-indigo-500 group-hover:bg-indigo-100 group-hover:text-indigo-600"}`}>
-                          <Sparkles className="w-5 h-5" />
-                        </div>
-                        <h4 className="text-sm font-bold text-[#1C1715] mb-1">{room.name}</h4>
-                        <p className="text-[10px] text-[#8C8375] leading-relaxed flex-1 line-clamp-2">{room.style}</p>
-                        
-                        {selectedVirtualRoom?.id === room.id && (
-                          <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-[#967C55] text-white flex items-center justify-center shadow-lg">
-                            <Check className="w-3 h-3 stroke-[3]" />
+                  <div className="flex flex-col h-full min-h-0 space-y-3.5">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 overflow-y-auto max-h-[340px]">
+                      {VIRTUAL_ROOMS.map((room) => (
+                        <div
+                          key={room.id}
+                          id={`virtual-room-card-${room.id}`}
+                          onClick={() => handleSelectVirtualRoom(room)}
+                          className={`group relative rounded-3xl overflow-hidden cursor-pointer border-2 transition-all duration-300 p-4 flex flex-col ${selectedVirtualRoom?.id === room.id ? "bg-white border-[#967C55] ring-4 ring-[#967C55]/10 shadow-sm" : "bg-white border-[#EBE8DF] hover:border-[#967C55]/60 hover:shadow-md"}`}
+                        >
+                          <div className={`w-10 h-10 rounded-xl flex items-center justify-center mb-2 transition-colors ${selectedVirtualRoom?.id === room.id ? "bg-[#967C55]/10 text-[#967C55]" : "bg-[#FAF9F5] text-[#967C55] group-hover:bg-[#967C55]/10 group-hover:text-[#967C55]"}`}>
+                            <Sparkles className="w-5 h-5" />
                           </div>
-                        )}
+                          <h4 className="text-sm font-bold text-[#1C1715] mb-1">{room.name}</h4>
+                          <p className="text-[10px] text-[#8C8375] leading-relaxed flex-1 line-clamp-2">{room.style}</p>
+                          
+                          {selectedVirtualRoom?.id === room.id && (
+                            <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-[#967C55] text-white flex items-center justify-center shadow-lg">
+                              <Check className="w-3 h-3 stroke-[3]" />
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* CUSTOM VIRTUAL ROOM CREATION */}
+                    <div className="bg-[#FAF9F5] border border-[#EBE8DF] rounded-3xl p-4.5 space-y-3 shrink-0 shadow-sm">
+                      <div className="flex items-center space-x-1.5 text-xs font-bold text-[#5C5346]">
+                        <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
+                        <span>✨ 定制脑海中的专属虚拟空间（自由命名风格）</span>
                       </div>
-                    ))}
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="text"
+                          value={customRoomInput}
+                          onChange={(e) => setCustomRoomInput(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' && !isCustomRoomCreating && customRoomInput.trim()) {
+                              handleCreateCustomRoom(customRoomInput);
+                            }
+                          }}
+                          placeholder="输入任意房间风格，如：美式复古书房、赛博朋克电竞房..."
+                          disabled={isCustomRoomCreating}
+                          className="flex-1 bg-white border border-[#EBE8DF] rounded-2xl px-4 py-3 text-xs text-[#2C2623] placeholder-[#A49C8F] focus:outline-none focus:border-[#967C55] focus:ring-2 focus:ring-[#967C55]/10 disabled:opacity-50"
+                        />
+                        <button
+                          onClick={() => handleCreateCustomRoom(customRoomInput)}
+                          disabled={isCustomRoomCreating || !customRoomInput.trim()}
+                          className="bg-[#967C55] hover:bg-[#836C47] text-white px-5 py-3 rounded-2xl text-xs font-extrabold flex items-center justify-center space-x-1.5 transition-all shadow-md disabled:bg-[#D6CFC1] disabled:cursor-not-allowed shrink-0"
+                        >
+                          {isCustomRoomCreating ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <Check className="w-4 h-4" />
+                          )}
+                          <span>{isCustomRoomCreating ? "定制中" : "确认"}</span>
+                        </button>
+                      </div>
+                      {selectedVirtualRoom?.id.toString().startsWith("custom_") && (
+                        <div className="bg-emerald-50 text-emerald-800 border border-emerald-200/50 rounded-xl p-2.5 text-[11px] font-medium flex items-center space-x-1.5">
+                          <Check className="w-3.5 h-3.5 stroke-[2.5]" />
+                          <span>当前已成功定制并选定：<strong>{selectedVirtualRoom.name}</strong></span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
               </div>
@@ -1342,9 +1425,9 @@ export default function App() {
               <div className="shrink-0 bg-amber-50 border border-amber-200 text-[#7A5B35] rounded-xl p-4 text-xs font-bold flex items-start space-x-2.5 mt-2">
                 <Info className="w-4 h-4 text-[#967C55] shrink-0 mt-0.5" />
                 <div className="space-y-1">
-                  <p className="font-extrabold text-[13px] text-[#2C2623]">⚠️ 您的体验额度已用尽</p>
+                  <p className="font-extrabold text-[13px] text-[#2C2623]">⚠️ 余额已用尽</p>
                   <p className="text-[#8C8375] text-[11px] font-medium leading-relaxed">
-                    当前的体验额度余额不足（所需额度：{toolRequiredIntegral}），无法启动生成渲染。
+                    当前的余额已不足以支持下一次的设计渲染。建议您稍后再来，或通过其他方式补充余额。
                   </p>
                 </div>
               </div>
