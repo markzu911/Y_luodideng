@@ -180,11 +180,12 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
             },
             {
               text: `You are an expert product and lighting designer. Analyze this floor lamp image. VERY IMPORTANT: You MUST reply in Chinese (简体中文) for all string values.
+CRITICAL INSTRUCTION: You MUST carefully analyze all three specific components of the lamp: 1. The Base (底座), 2. The Pole/Stand (撑杆), and 3. The Shade/Lamp Head (灯罩/灯头). Missing any of these three parts is unacceptable.
 You must return the analysis in a clean JSON format matching this exact schema:
 {
   "style": "The design style of this floor lamp (e.g., Nordic Minimalist, Bauhaus Arc, Mid-Century Modern, Industrial Globe, Paper Lantern)",
-  "materials": ["Materials used, e.g., Matte Black Metal, Brushed Brass, Rice Paper, Marble base"],
-  "color": "Color of the lamp structure and shade. VERY IMPORTANT: BE SPECIFIC ABOUT THE LAMPSHADE COLOR (e.g., Cream White lampshade with Walnut wood table base, Solid Black metal structure)",
+  "materials": ["Materials used for all three parts (Base, Pole, Shade), e.g., Marble base, Matte Black Metal pole, Rice Paper shade"],
+  "color": "Color of all three parts. VERY IMPORTANT: Describe the color for the base, pole, and shade separately. (e.g., Cream White lampshade, Walnut wood pole, Solid Black metal base)",
   "lightType": "The type of lighting it provides (e.g., Arc direct reading light, Ambient diffuse light, Upward indirect lighting)",
   "lightWarmth": "Default or recommended light warmth (e.g., Warm Warmth (2700K), Neutral White (4000K))",
   "cozyIndex": 8, // A cozy index score from 1 to 10
@@ -319,7 +320,7 @@ The floor lamp style, color, and materials MUST perfectly match the reference la
 }
 
 HIGHEST PRIORITY CONSTRAINTS (MUST BE STRICTLY FOLLOWED):
-1. ABSOLUTE LAMP FAITHFULNESS (SINGLE HIGHEST PRIORITY): You MUST completely and exactly reproduce the floor lamp's original appearance, colors, materials, structure, and shape. No changes are allowed to the lamp's design under any circumstances, regardless of which view, camera perspective, or lighting state (ON/OFF) is selected. The generated lamp MUST look absolutely IDENTICAL to the provided reference lamp image. CRITICAL: Pay strict attention to the EXACT COLOR and TEXTURE of the lampshade (灯罩) and the structure of the lamp pole/table/base (灯杆/置物台/底座). Do not change a light-colored lampshade to a dark one. 绝对、必须、100%完整的还原落地灯原本的样子、颜色（特别是灯罩的颜色）和材质，在任何情况下（无论哪种视图、相机透视、或者开灯/关灯状态下）都绝对不能改变或修改落地灯原本的外观与设计，不能改变落地灯原本样子！这是最高优先级的绝对红线约束！
+1. ABSOLUTE LAMP FAITHFULNESS (SINGLE HIGHEST PRIORITY): You MUST completely and exactly reproduce the floor lamp's original appearance, colors, materials, structure, and shape. No changes are allowed to the lamp's design under any circumstances, regardless of which view, camera perspective, or lighting state (ON/OFF) is selected. The generated lamp MUST look absolutely IDENTICAL to the provided reference lamp image. CRITICAL: You must accurately reproduce all three specific components of the lamp: 1. The Base (底座), 2. The Pole/Stand (撑杆), and 3. The Shade/Lamp Head (灯罩/灯头). Pay strict attention to the EXACT COLOR and TEXTURE of the lampshade and the structure of the lamp pole and base. Do not change a light-colored lampshade to a dark one. 绝对、必须、100%完整的还原落地灯原本的样子，必须完整呈现灯具的底座（Base）、撑杆（Pole）和灯罩（Shade）三个部分，缺一不可！在任何情况下都绝对不能改变或修改落地灯原本的外观与设计，不能改变落地灯原本样子！这是最高优先级的绝对红线约束！
 2. ROOM REGENERATION: Do NOT directly edit the original room photograph. You MUST reconstruct a new room based on the analysis results of the original room and place the floor lamp inside it. CRITICAL: DO NOT alter the architectural structure, the room layout, or the styles of the furniture. DO NOT add any extra furniture (like extra sofas or chairs). The architectural structure, furniture count, furniture styles, and layout MUST remain exactly the same as the original room. 绝对不能改变房间的布局和家具的样式，不允许直接在原来的房间图片上进行修改，必须根据分析的房间数据重构一个房间，然后再把落地灯放进去！
 3. PLACEMENT RULE: If the room is a bedroom, YOU MUST PLACE THE LAMP NEXT TO THE HEAD OF THE BED OR NIGHTSTAND (床头/床头柜旁). IT IS STRICTLY FORBIDDEN to place it at the foot of the bed (床尾). If the room is a living room, place the floor lamp directly beside or behind (侧后方/侧边) EXISTING furniture like a chaise longue (贵妃榻) or bean bag/lazy sofa (懒人沙发). NEVER place the lamp in front of any sofa. NEVER place the lamp in the aisle/walkway between two sofas. If no such furniture is present, place it on the side-rear (侧后方) or side (侧边) of the main sofa closer to the balcony or window. The placement must be logical and physically realistic. 如果是在卧室，必须、一定、绝对要摆放在床头或床头柜旁边！绝对不能摆放在床尾！绝对不能摆放在房间中间的过道上！如果是客厅，绝对不能将落地灯摆放在沙发的正前方遮挡视线或影响使用，可以摆放在沙发的侧后方或侧边（参考真实居家环境）。
 ${perspectiveGuidance}
