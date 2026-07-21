@@ -5,9 +5,6 @@ import scandinavianCozyLivingRoom from "./assets/images/scandinavian_cozy_living
 import pastoralCozyBedroom from "./assets/images/pastoral_cozy_bedroom_1784191593936.jpg";
 import frenchCreamyBedroom from "./assets/images/french_creamy_bedroom_1784191800925.jpg";
 import wabiSabiQuietLivingRoom from "./assets/images/wabi_sabi_quiet_living_room_1784192087112.jpg";
-import vintageRoomFar from "./assets/images/vintage_room_far_1784623113411.jpg";
-import vintageRoomMid from "./assets/images/vintage_room_mid_1784623128020.jpg";
-import vintageRoomExtremeClose from "./assets/images/vintage_room_extreme_close_1784623752724.jpg";
 
 export const VIRTUAL_ROOMS: VirtualRoom[] = [
   {
@@ -188,34 +185,6 @@ export const VIRTUAL_ROOMS: VirtualRoom[] = [
       ],
       recommendation: "极力推荐搭配由天然和纸制成的日式褶皱落地灯或选用带微水泥/粗陶底座的落地灯。适合放置于深炭灰布艺沙发转角，或原木茶几一侧，其透出的柔雅暖光能完美共鸣悬空小火炉的融融暖意，打造极致禅静的居所温度。",
       lightSuggestion: "强烈建议选择 2500K-2700K 昏黄微光，营造围炉夜话的深邃冥想感。微弱的暖光投射在沙色微水泥墙上会拉出修长的自然暗影，与跃动的橙红炉火、远处的树影交相辉映，升华静寂、质朴且深沉的空间格调。"
-    }
-  },
-  {
-    id: "room_6",
-    name: "复古怀旧・夜 (Cozy Vintage Night)",
-    style: "复古风",
-    imageUrl: vintageRoomFar,
-    imageUrlFar: vintageRoomFar,
-    imageUrlMid: vintageRoomMid,
-    imageUrlClose: vintageRoomExtremeClose,
-    analysis: {
-      style: "复古怀旧",
-      layout: "温馨且充满复古气息的深夜客厅角落。黑色的经典真皮沙发在暖光下泛着光泽，旁边是深色的实木茶几。一盏带有百褶灯罩的落地灯作为主光源，散发出柔和、治愈的暖光，照亮了旁边点缀的粉色花束。整体氛围静谧、复古且极具安全感。",
-      furniture: [
-        "黑色经典质感真皮沙发 (Classic black leather tufted sofa)",
-        "复古深红棕色布艺抱枕 (Vintage deep reddish-brown throw pillow)",
-        "深色实木边几/茶几 (Dark solid wood side table)",
-        "白色陶瓷花瓶与粉色芍药/郁金香插花 (White ceramic vase with pink floral arrangement)",
-        "精致的小木质摆件 (Delicate small wooden ornament)"
-      ],
-      colors: [
-        "暗夜黑 (Dark Night Black)",
-        "复古红棕 (Vintage Reddish Brown)",
-        "暖光金 (Warm Golden Light)",
-        "柔和米白 (Soft Cream White)"
-      ],
-      recommendation: "极力推荐搭配同样具有复古元素的灯具，例如百褶布艺灯罩搭配黄铜金属灯杆的落地灯，放置在沙发背后或边几旁，利用其柔和的漫反射光晕，完美烘托真皮沙发与木质家具的质感，营造出极具电影感的空间氛围。",
-      lightSuggestion: "强烈建议选择 2500K-2700K 昏黄暖光。这种色温能最大化展现复古空间的静谧与温馨感，如同烛光般治愈，在深夜中带来极大的包裹感与安全感。"
     }
   }
 ];
