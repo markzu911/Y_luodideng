@@ -1290,9 +1290,9 @@ export default function App() {
                 </div>
                 <div className="flex flex-wrap gap-2">
                   {[
-                    { id: "far", name: "远景图", desc: "展示整个房间全景" },
-                    { id: "mid", name: "中景", desc: "聚焦沙发与拐角" },
-                    { id: "close", name: "近景", desc: "细部特写" }
+                    { id: "far", name: "远景图", desc: "以落地灯为核心的全景" },
+                    { id: "mid", name: "中景", desc: "拉近距离突出主体与周边" },
+                    { id: "close", name: "近景", desc: "落地灯材质与局部细节特写" }
                   ].map((opt) => (
                     <button
                       key={opt.id}
