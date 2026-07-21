@@ -446,6 +446,7 @@ export default function AgentMode({
       console.error(err);
       const fallbackLamp = {
         style: "极简现代落地灯",
+        structure: "标准直杆落地灯结构，包含圆形金属平底座，垂直细直长撑杆，以及顶部圆台形布艺灯罩。",
         materials: ["金属拉丝底座", "高透散光灯罩"],
         color: "雅致黑",
         lightType: "漫反射温柔环境光",

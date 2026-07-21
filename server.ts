@@ -332,7 +332,6 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
 You must return the analysis in a clean JSON format matching this exact schema:
 {
   "style": "The design style of this floor lamp (e.g., Nordic Minimalist, Bauhaus Arc, Mid-Century Modern, Industrial Globe, Paper Lantern)",
-  "structure": "Detailed description of the complex physical structures and shapes. BE EXPLICIT about integrated functional components (e.g., base with built-in drawer/shelf/table, curved/articulated poles, tripod legs, unique base shapes).",
   "materials": ["Materials used, e.g., Matte Black Metal, Brushed Brass, Rice Paper, Marble base"],
   "color": "Color of the lamp structure and shade. VERY IMPORTANT: BE SPECIFIC ABOUT THE LAMPSHADE COLOR (e.g., Cream White lampshade with Walnut wood table base, Solid Black metal structure)",
   "lightType": "The type of lighting it provides (e.g., Arc direct reading light, Ambient diffuse light, Upward indirect lighting)",
@@ -349,7 +348,6 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
               type: Type.OBJECT,
               properties: {
                 style: { type: Type.STRING },
-                structure: { type: Type.STRING },
                 materials: {
                   type: Type.ARRAY,
                   items: { type: Type.STRING }
@@ -360,7 +358,7 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
                 cozyIndex: { type: Type.INTEGER },
                 placementTip: { type: Type.STRING }
               },
-              required: ["style", "structure", "materials", "color", "lightType", "lightWarmth", "cozyIndex", "placementTip"]
+              required: ["style", "materials", "color", "lightType", "lightWarmth", "cozyIndex", "placementTip"]
             }
           }
         });
@@ -440,11 +438,11 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
         // Detailed prompt for image editing/blending
         let perspectiveGuidance = "";
         if (params.viewType === "far") {
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (FAR VIEW): MUST show a wide-angle, full-shot (远景) perspective displaying the entire room layout and the integrated floor lamp in the context of the whole space. CRITICAL: Follow the PLACEMENT RULE strictly. Even in a far view, if it's a bedroom, the lamp MUST be near the head of the bed (床头), NOT the foot (床尾). Showcase the realistic effect of the lamp integrated into the room.";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (FAR VIEW / 全景/远景): This MUST be a spacious, wide-angle full-shot (远景) displaying the entire room layout. The camera MUST be placed very far back to show the complete spatial context of the interior. Show the full length of the bed (from headboard to footboard), the entire large sofa, the complete flooring stretching across the floor, the ceiling, the windows, and multiple furniture groups in the background. The floor lamp should be a small-to-medium element beautifully integrated within the large environment. CRITICAL: Follow the PLACEMENT RULE strictly. Even in a far view, the lamp MUST be placed logically near the head of the bed (床头) or next to the sofa corner, not randomly. The composition must highlight the grandeur of the whole space.";
         } else if (params.viewType === "mid") {
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MID VIEW): MUST show a medium close-up (中近景) perspective focused on the key furniture (such as the sofa/bedside corner) and the integrated floor lamp. CRITICAL: Follow the PLACEMENT RULE strictly. If it's a bedroom, the lamp MUST be near the head of the bed (床头).";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MID VIEW / 中景/中近景): This MUST be a tightly cropped, intimate medium shot (中景) focusing strictly on the specific furniture group and corner (such as just the bedside table and the pillow/head of the bed, or just one side of the sofa corner) where the floor lamp stands. You MUST zoom in significantly. DO NOT show the entire bed or the entire sofa; they MUST be cropped out at the edges of the frame. DO NOT show the ceiling, the floor walkways, or the far walls of the opposite side of the room. The floor lamp MUST be the prominent focal point, occupying a large vertical portion of the frame (at least 60-70% of the image height) so its details are crystal clear. This is a classic medium shot, completely distinct from a wide room shot.";
         } else if (params.viewType === "close") {
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (CLOSE VIEW): MUST show an intimate, tight close-up (特写) perspective focusing on the floor lamp in the room. CRITICAL: While the camera angle CAN VARY to show the best perspective, you MUST NOT change the room's original furniture layout. The placement of the lamp must be reasonable and logical within the existing layout (e.g. next to a sofa or bed). 即使是近景（特写）也绝对不能随便更改屋内的家具布局，只能改变摄像机视角！并且落地灯摆放的位置必须合理，要符合真实居家环境的逻辑。Keep the background fully sharp and without bokeh.";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (CLOSE VIEW / 近景/特写): This MUST be a close-up (特写) focusing heavily and strictly on the floor lamp body and lampshade. Only show the lamp itself and the immediate surface next to it (e.g., just the top of the bedside table or the texture of the sofa fabric directly touching it). The lamp must dominate the frame. The rest of the room is completely cropped out. Keep the background fully sharp and do not change the furniture layout, but zoom in extremely close to the lamp to show the delicate materials, finish, and the immediate glow of the bulb. Keep the background fully sharp and without bokeh.";
         }
         
         // Detailed style specifications for Virtual Rooms to ensure architectural and aesthetic fidelity
@@ -481,9 +479,8 @@ Your task is to generate a beautiful, normal, and perfectly balanced room that i
 
 ${roomStylePrompt}
 
-The floor lamp style, color, materials, and physical structure MUST perfectly match the reference lamp image:
+The floor lamp style, color, and materials MUST perfectly match the reference lamp image:
 - Style: ${lampAnalysis.style}
-- Structure & Shape: ${lampAnalysis.structure}
 - Materials & Finish: ${lampAnalysis.materials.join(", ")} in ${lampAnalysis.color}
 - Lighting: ${params.lightState === "on" 
   ? `CRITICAL (LIGHT IS ON): The floor lamp is TURNED ON. Emitted light MUST be rendered with maximum physical realism as follows:
@@ -702,11 +699,10 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
             },
           },
           {
-            text: `You are an expert product and lighting designer. Analyze this floor lamp image. VERY IMPORTANT: You MUST reply in Chinese (简体中文) for all string values.
+    text: `You are an expert product and lighting designer. Analyze this floor lamp image. VERY IMPORTANT: You MUST reply in Chinese (简体中文) for all string values.
 You must return the analysis in a clean JSON format matching this exact schema:
 {
   "style": "The design style of this floor lamp (e.g., Nordic Minimalist, Bauhaus Arc, Mid-Century Modern, Industrial Globe, Paper Lantern)",
-  "structure": "Detailed description of the complex physical structures and shapes. BE EXPLICIT about integrated functional components (e.g., base with built-in drawer/shelf/table, curved/articulated poles, tripod legs, unique base shapes).",
   "materials": ["Materials used, e.g., Matte Black Metal, Brushed Brass, Rice Paper, Marble base"],
   "color": "Color of the lamp structure and shade. VERY IMPORTANT: BE SPECIFIC ABOUT THE LAMPSHADE COLOR (e.g., Cream White lampshade with Walnut wood table base, Solid Black metal structure)",
   "lightType": "The type of lighting it provides (e.g., Arc direct reading light, Ambient diffuse light, Upward indirect lighting)",
@@ -723,7 +719,6 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
             type: Type.OBJECT,
             properties: {
               style: { type: Type.STRING },
-              structure: { type: Type.STRING },
               materials: {
                 type: Type.ARRAY,
                 items: { type: Type.STRING }
@@ -734,7 +729,7 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
               cozyIndex: { type: Type.INTEGER },
               placementTip: { type: Type.STRING }
             },
-            required: ["style", "structure", "materials", "color", "lightType", "lightWarmth", "cozyIndex", "placementTip"]
+            required: ["style", "materials", "color", "lightType", "lightWarmth", "cozyIndex", "placementTip"]
           }
         }
       });
@@ -848,9 +843,8 @@ The room style and context MUST match:
 - Furniture: ${roomAnalysis.furniture.join(", ")}
 - Colors: ${roomAnalysis.colors.join(", ")}
 
-The floor lamp style, color, materials, and physical structure MUST perfectly match the reference lamp image:
+The floor lamp style, color, and materials MUST perfectly match the reference lamp image:
 - Style: ${lampAnalysis.style}
-- Structure & Shape: ${lampAnalysis.structure}
 - Materials & Finish: ${lampAnalysis.materials.join(", ")} in ${lampAnalysis.color}
 - Lighting: ${params.lightState === "on" 
   ? `CRITICAL (LIGHT IS ON): The floor lamp is TURNED ON. Emitted light MUST be rendered with maximum physical realism as follows:
