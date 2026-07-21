@@ -184,6 +184,7 @@ CRITICAL INSTRUCTION: You MUST carefully analyze all three specific components o
 You must return the analysis in a clean JSON format matching this exact schema:
 {
   "style": "The design style of this floor lamp (e.g., Nordic Minimalist, Bauhaus Arc, Mid-Century Modern, Industrial Globe, Paper Lantern)",
+  "structure": "Detailed description of the lamp's physical shape and unique features (e.g., scalloped shade, curved swan-neck pole, base integrated with a 2-drawer side table)",
   "materials": ["Materials used for all three parts (Base, Pole, Shade), e.g., Marble base, Matte Black Metal pole, Rice Paper shade"],
   "color": "Color of all three parts. VERY IMPORTANT: Describe the color for the base, pole, and shade separately. (e.g., Cream White lampshade, Walnut wood pole, Solid Black metal base)",
   "lightType": "The type of lighting it provides (e.g., Arc direct reading light, Ambient diffuse light, Upward indirect lighting)",
@@ -200,6 +201,7 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
               type: Type.OBJECT,
               properties: {
                 style: { type: Type.STRING },
+                structure: { type: Type.STRING },
                 materials: {
                   type: Type.ARRAY,
                   items: { type: Type.STRING }
@@ -210,7 +212,7 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
                 cozyIndex: { type: Type.INTEGER },
                 placementTip: { type: Type.STRING }
               },
-              required: ["style", "materials", "color", "lightType", "lightWarmth", "cozyIndex", "placementTip"]
+              required: ["style", "structure", "materials", "color", "lightType", "lightWarmth", "cozyIndex", "placementTip"]
             }
           }
         });
@@ -308,6 +310,7 @@ The room style and context MUST match:
 
 The floor lamp style, color, and materials MUST perfectly match the reference lamp image:
 - Style: ${lampAnalysis.style}
+- Structure: ${lampAnalysis.structure || "Standard floor lamp"}
 - Materials & Finish: ${lampAnalysis.materials.join(", ")} in ${lampAnalysis.color}
 - Lighting: ${params.lightState === "on" 
   ? `CRITICAL (LIGHT IS ON): The floor lamp is TURNED ON. Emitted light MUST be rendered with maximum physical realism as follows:

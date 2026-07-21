@@ -9,6 +9,7 @@ export interface RoomAnalysis {
 
 export interface LampAnalysis {
   style: string;
+  structure: string;
   materials: string[];
   color: string;
   lightType: string;
