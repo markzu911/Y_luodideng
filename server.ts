@@ -590,13 +590,11 @@ Your task is to generate a new room based on the analysis and embed the provided
 
 ${roomStylePrompt}
 
-THE LAMP TO INTEGRATE:
-Style: ${lampAnalysis.style}
-Structure details: ${lampAnalysis.structure || "N/A"}
-Materials: ${lampMaterialsStr}
-Color: ${lampAnalysis.color}
-Light Type: ${lampAnalysis.lightType}
-Light Warmth: ${lampAnalysis.lightWarmth}
+THE LAMP TO INTEGRATE (LAMP ANALYSIS RESULTS):
+${JSON.stringify(lampAnalysis, null, 2)}
+
+ROOM ANALYSIS RESULTS:
+${JSON.stringify(roomAnalysis, null, 2)}
 
 ${lightPrompt}
 
