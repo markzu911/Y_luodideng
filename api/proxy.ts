@@ -300,8 +300,8 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
           preservationGuidance = "2. FULL-HEIGHT CORNER SHOT (中景/完整视角): All generation requirements and room/lamp preservation constraints are 100% IDENTICAL to far view (远景). Frame the full floor lamp in its cozy room corner next to the sofa or bed, strictly preserving the exact room background, walls, and furniture. ONLY the camera shooting distance is changed to a medium distance (中景距离).";
           perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MID VIEW / 中景视角): Medium-distance interior framing displaying the floor lamp standing in the corner next to the primary furniture from a medium camera distance, maintaining all other far-view generation rules.";
         } else if (params.viewType === "close") {
-          preservationGuidance = "2. CLOSE-UP DETAIL SHOT (近景/特写视角 - 落地灯局部特写与真实房间局部背景): Tight close-up detail shot framing the floor lamp (lampshade, upper pole, lighting texture, pull-chain/switches if present). DO NOT show the entire floor lamp—it MUST be a partial close-up detail shot (不必展示落地灯全貌，专注局部特写). The background MUST strictly be an authentic partial section of the real room environment from IMAGE 1 (e.g. background wall, adjacent tabletop with decor/vase/flowers, or sofa section present in IMAGE 1). Do not introduce any background elements that do not exist in IMAGE 1.";
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (CLOSE VIEW / 近景特写视角): Partial close-up camera perspective showing a close-up feature shot of the floor lamp, with a real partial background section from the user-uploaded room image (IMAGE 1).";
+          preservationGuidance = "2. CLOSE-UP MACRO DETAIL SHOT (近景/特写视角 - 100% 模仿特写参考视角与相机拍摄距离):\n   - CAMERA DISTANCE & CROP LEVEL: TIGHT MACRO CLOSE-UP (近景特写). The camera is zoomed in EXTREMELY CLOSE to the top half / lampshade and upper pole of the floor lamp.\n   - DO NOT SHOW THE ENTIRE LAMP: You MUST crop out the lower half and base of the floor lamp. DO NOT show the bottom base or the floor! The lampshade and upper illuminated pole MUST dominate the central frame, occupying at least 40%-60% of the image height.\n   - REAL ROOM BACKGROUND: The background MUST strictly be an authentic partial crop of the real room environment from IMAGE 1 (e.g. the textured background wall, edge of the sofa/headboard, or a tabletop decor/vase present in IMAGE 1).\n   - DO NOT pull back the camera. DO NOT render a full-room or mid-shot view. Keep the camera distance extremely tight to the lampshade and upper pole!";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MACRO CLOSE-UP VIEW / 近景特写视角): Camera zoomed in very close to the glowing lampshade and upper pole. Bottom of the lamp and floor are cropped out of frame. The lampshade dominates the upper vertical frame.";
         }
 
         const STYLE_SPECS: Record<string, string> = {
@@ -359,7 +359,7 @@ HIGHEST PRIORITY CONSTRAINTS (MUST BE STRICTLY FOLLOWED):
 
 2. ABSOLUTE LAMP FAITHFULNESS & STRUCTURAL INTEGRITY (100% 还原落地灯整体结构与颜色):
    - You MUST completely and exactly reproduce the floor lamp's original appearance, colors, materials, structure, and shape.
-   - PHYSICAL INTEGRITY: The floor lamp (lampshade, pole, built-in tray if any, and bottom base) is ONE SINGLE CONNECTED PHYSICAL OBJECT. The base MUST rest firmly on the floor. DO NOT detach the pole from its base, do not separate the tray, and DO NOT fuse/embed the lamp pole or tray into adjacent nightstands or drawers! The bedside nightstand and sofa are independent items sitting beside the floor lamp.
+   - PHYSICAL INTEGRITY: The floor lamp (lampshade, pole, built-in tray if any, and bottom base) is ONE SINGLE CONNECTED PHYSICAL OBJECT. ${params.viewType === "close" ? "FOR CLOSE-UP VIEW (近景特写): The camera is zoomed in tight on the upper lampshade and pole, so the bottom base and floor are naturally CROPPED OUT of the camera frame." : "The base MUST rest firmly on the floor. DO NOT detach the pole from its base, do not separate the tray, and DO NOT fuse/embed the lamp pole or tray into adjacent nightstands or drawers! The bedside nightstand and sofa are independent items sitting beside the floor lamp."}
 
 3. ROOM LAYOUT CONSISTENCY & LOCALIZED CORNER (房间布局变动限制与局部角落取景):
    - Keep the background walls, wall paneling, curtains, window positions, and furniture style completely consistent and stable.
@@ -373,9 +373,8 @@ HIGHEST PRIORITY CONSTRAINTS (MUST BE STRICTLY FOLLOWED):
 5. CAMERA CENTERING & VIEW-TYPE PERSPECTIVE (相机镜头对焦取景):
    - ${perspectiveGuidance}
 
-6. ZERO BOKEH & DEEP FOCUS (全焦清晰 - 画面真实清晰):
-   - You MUST keep the ENTIRE photograph (lamp, background wall, adjacent furniture, curtains) completely sharp and clear in deep focus.
-   - DO NOT apply unnatural bokeh blur or heavy portrait-style background blur.
+6. FOCUS & DEPTH OF FIELD (对焦与视觉质感):
+   - ${params.viewType === "close" ? "FOR CLOSE-UP VIEW (近景特写): The floor lamp's lampshade and upper pole must be in crisp, razor-sharp focus in the foreground, with the authentic partial room background softly rendering behind it with natural close-up macro photography depth." : "You MUST keep the ENTIRE photograph (lamp, background wall, adjacent furniture, curtains) completely sharp and clear in deep focus. DO NOT apply unnatural bokeh blur or heavy portrait-style background blur."}
 
 ${preservationGuidance}
 
