@@ -3,7 +3,7 @@ import {
   Upload, Sparkles, Sliders, Sun, Download, ChevronRight, 
   Image as ImageIcon, Grid, Trash2, Loader2, Power, 
   Lightbulb, Compass, User, Palette, Check, ArrowLeft,
-  ChevronLeft, Info, HelpCircle, ZoomIn, X
+  ChevronLeft, Info, HelpCircle, ZoomIn, X, Layers
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 import { VIRTUAL_ROOMS, PRESET_LAMPS } from "./data";
@@ -1170,6 +1170,17 @@ export default function App() {
                       </div>
                       <p className="text-xs font-bold text-[#2C2623]">{lampAnalysis.style}</p>
                     </div>
+
+                    {/* Lamp Structure Detail */}
+                    {lampAnalysis.structure && (
+                      <div className="bg-[#FAF9F5] border border-[#EBE8DF] rounded-2xl p-3 space-y-1">
+                        <div className="flex items-center space-x-1.5 text-[10px] font-bold text-[#967C55]">
+                          <Layers className="w-3.5 h-3.5" />
+                          <span>全部件无遗漏结构解析</span>
+                        </div>
+                        <p className="text-[11px] text-[#2C2623] leading-relaxed font-medium">{lampAnalysis.structure}</p>
+                      </div>
+                    )}
 
                     {/* Cozy Dial (Radial Indicator approximation) */}
                     <div className="flex items-center justify-between bg-[#FAF9F5] border border-[#EBE8DF] p-3 rounded-2xl">

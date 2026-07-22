@@ -397,16 +397,27 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
               },
             },
             {
-              text: `You are an expert product and lighting designer. Analyze this floor lamp image. VERY IMPORTANT: You MUST reply in Chinese (简体中文) for all string values.
+              text: `You are an expert product and lighting designer. Perform a 100% EXHAUSTIVE, NON-OMISSIVE, HIGH-PRECISION analysis of this floor lamp image.
+VERY IMPORTANT: You MUST reply in Chinese (简体中文) for all string values.
+
+CRITICAL INSTRUCTIONS FOR FULL COMPONENT ANALYSIS (全部件无遗漏全面细节深度解析):
+You MUST inspect and describe EVERY SINGLE physical component of the lamp in detail. Do NOT omit anything:
+1. Base (底座): Material, shape (round disc/square block/marble slab/integrated bedside table), finish, and stability features.
+2. Pole/Stand & Joints (撑杆与结构件): Pole shape (straight vertical / curved arc / swan-neck / tripod), material, color, height joints, and any mechanical features. EXPLICITLY state if there are NO horizontal swing arms, NO side branches, or NO extra brackets!
+3. Built-in Tray/Shelf (置物台/茶几盘): Does a built-in tray or drawer exist on the pole? Describe its shape (round/square wood tray), height position, drawer count, and material. If NO tray exists, explicitly state "无置物茶几盘".
+4. Shade & Light Head (灯罩/灯头): Lampshade shape (pleated cone / scalloped dome / glass globe / drum / paper lantern), fabric/glass material, pleat pattern, rim color, and light diffusion direction.
+5. Switches & Controls (开关与细节): Note switch mechanisms (e.g., hanging brass pull-chain switch below the shade, foot pedal switch, turn knob) if visible.
+
 You must return the analysis in a clean JSON format matching this exact schema:
 {
-  "style": "The design style of this floor lamp (e.g., Nordic Minimalist, Bauhaus Arc, Mid-Century Modern, Industrial Globe, Paper Lantern)",
-  "materials": ["Materials used, e.g., Matte Black Metal, Brushed Brass, Rice Paper, Marble base"],
-  "color": "Color of the lamp structure and shade. VERY IMPORTANT: BE SPECIFIC ABOUT THE LAMPSHADE COLOR (e.g., Cream White lampshade with Walnut wood table base, Solid Black metal structure)",
-  "lightType": "The type of lighting it provides (e.g., Arc direct reading light, Ambient diffuse light, Upward indirect lighting)",
-  "lightWarmth": "Default or recommended light warmth (e.g., Warm Warmth (2700K), Neutral White (4000K))",
-  "cozyIndex": 8,
-  "placementTip": "A professional tip on how to position and combine this lamp in a residential space (e.g., Angle the arc shade directly over your reading seat; place the marble base behind the sofa back to save space)"
+  "style": "Overall design style (e.g., 现代法式百褶复古风, 北欧极简原木风, 包豪斯黄铜弧形风)",
+  "structure": "Exhaustive component-by-component breakdown (e.g., 包含: 暖白色百褶布艺灯罩、直立式哑光黑色金属杆、悬挂式黄铜拉线开关、中部固定圆形胡桃木置物茶几盘、底部圆形黑色平整底座。严禁增加任何摇臂或侧向延伸杆。)",
+  "materials": ["Exhaustive list of all materials used in base, pole, tray, shade, and switch"],
+  "color": "Exact color breakdown for each individual component (e.g., 暖白布艺灯罩、哑光黑灯杆、胡桃木色茶几盘、黑色金属底座)",
+  "lightType": "Lighting classification (e.g., 360°柔和漫反射环境光、下照式舒适阅读光)",
+  "lightWarmth": "Light warmth recommendation (e.g., 2700K-3000K 温馨暖光)",
+  "cozyIndex": 9,
+  "placementTip": "A professional tip on how to position and style this lamp in a room"
 }
 Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json.`,
             },
@@ -417,6 +428,7 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
               type: Type.OBJECT,
               properties: {
                 style: { type: Type.STRING },
+                structure: { type: Type.STRING },
                 materials: {
                   type: Type.ARRAY,
                   items: { type: Type.STRING }
@@ -427,7 +439,7 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
                 cozyIndex: { type: Type.INTEGER },
                 placementTip: { type: Type.STRING }
               },
-              required: ["style", "materials", "color", "lightType", "lightWarmth", "cozyIndex", "placementTip"]
+              required: ["style", "structure", "materials", "color", "lightType", "lightWarmth", "cozyIndex", "placementTip"]
             }
           }
         });
@@ -538,6 +550,7 @@ ${roomStylePrompt}
 
 THE LAMP TO INTEGRATE:
 Style: ${lampAnalysis.style}
+Structure details: ${lampAnalysis.structure || "N/A"}
 Materials: ${lampAnalysis.materials.join(", ")}
 Color: ${lampAnalysis.color}
 Light Type: ${lampAnalysis.lightType}
@@ -546,22 +559,30 @@ Light Warmth: ${lampAnalysis.lightWarmth}
 ${lightPrompt}
 
 HIGHEST PRIORITY CONSTRAINTS (MUST BE STRICTLY FOLLOWED):
-1. ABSOLUTE LAMP FAITHFULNESS & STRUCTURAL INTEGRITY (100% 还原落地灯与绝对一体化结构):
-   - You MUST completely and exactly reproduce the floor lamp's original appearance, colors, materials, structure, and shape.
-   - PHYSICAL INTEGRITY: The floor lamp (lampshade, pole, built-in tray/shelf, and bottom base) is ONE SINGLE CONNECTED PHYSICAL OBJECT. The base MUST rest firmly on the floor. STRICTLY FORBIDDEN: DO NOT detach the lamp pole from its base, do not separate the built-in tray, and DO NOT fuse/embed the lamp pole or tray into adjacent nightstands or drawers! The bedside nightstand and sofa are independent items sitting beside the floor lamp.
+1. NO UNREQUESTED OR HALLUCINATED LAMP PARTS (严禁出现台灯原本没有的任何部件 - 绝对精细100%还原):
+   - You MUST reproduce ONLY the exact physical parts visible in the reference floor lamp image and described in the lamp analysis structure: ${lampAnalysis.structure || "N/A"}.
+   - STRICTLY FORBIDDEN: DO NOT add any unrequested horizontal swing arms, side brackets, extra poles, secondary lampshades, pull-chains (unless present in original), extra trays, or hardware extensions that do NOT exist in the original lamp image.
+   - IF the original floor lamp pole is a straight vertical rod, it MUST remain a single clean vertical rod. DO NOT generate any horizontal side arms protruding outwards.
+   - IF the original floor lamp does NOT have a built-in tray/table, DO NOT add a tray. IF it HAS a tray, preserve its exact shape, height, and color.
 
-2. ROOM LAYOUT CONSISTENCY & LOCALIZED CORNER (房间布局变动限制与局部角落取景):
+2. ABSOLUTE LAMP FAITHFULNESS & STRUCTURAL INTEGRITY (100% 还原落地灯整体结构与颜色):
+   - You MUST completely and exactly reproduce the floor lamp's original appearance, colors, materials, structure, and shape.
+   - PHYSICAL INTEGRITY: The floor lamp (lampshade, pole, built-in tray if any, and bottom base) is ONE SINGLE CONNECTED PHYSICAL OBJECT. The base MUST rest firmly on the floor. DO NOT detach the pole from its base, do not separate the tray, and DO NOT fuse/embed the lamp pole or tray into adjacent nightstands or drawers! The bedside nightstand and sofa are independent items sitting beside the floor lamp.
+
+3. ROOM LAYOUT CONSISTENCY & LOCALIZED CORNER (房间布局变动限制与局部角落取景):
    - Keep the background walls, wall paneling, curtains, window positions, and furniture style completely consistent and stable.
    - You are STRICTLY FORBIDDEN from generating a wide-angle full-room shot showing an entire room, huge open space, or random new room layouts. Focus strictly on the localized nook/corner where the lamp is placed.
 
-3. AUTHENTIC & REALISTIC LAMP PLACEMENT (落地灯必须真实合理地摆放在角落):
-   - Place the floor lamp in a 100% natural, practical indoor corner: directly beside the headboard/nightstand in a bedroom, or beside/behind the sofa arm in a living room.
-   - NEVER place the lamp in the open center of the room floor or in front of a sofa/bed.
+4. STRICT LAMP PLACEMENT RULES - NO LAMP AT FOOT OF BED (落地灯摆放位置严禁放在床尾！必须放在床头侧边):
+   - CRITICAL: STRICTLY FORBIDDEN to place the floor lamp at the foot of the bed, end of the bed, or beside the bed-end bench (绝对禁止把落地灯放在床尾、床脚处或床尾凳旁！).
+   - Bedroom placement: The floor lamp MUST be placed ONLY at the headboard corner / beside the bedside nightstand (只能放在床头、床头柜旁的墙角).
+   - Living room placement: The floor lamp MUST be placed ONLY in the sofa corner / beside the armrest (只能放在沙发角落、沙发扶手旁).
+   - NEVER place the lamp floating in walkways, open room center, or at the foot of the bed.
 
-4. CAMERA CENTERING & VIEW-TYPE PERSPECTIVE (相机镜头对焦取景):
+5. CAMERA CENTERING & VIEW-TYPE PERSPECTIVE (相机镜头对焦取景):
    - ${perspectiveGuidance}
 
-5. ZERO BOKEH & DEEP FOCUS (全焦清晰 - 画面真实清晰):
+6. ZERO BOKEH & DEEP FOCUS (全焦清晰 - 画面真实清晰):
    - You MUST keep the ENTIRE photograph (lamp, background wall, adjacent furniture, curtains) completely sharp and clear in deep focus.
    - DO NOT apply unnatural bokeh blur or heavy portrait-style background blur.
 
