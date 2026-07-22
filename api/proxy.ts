@@ -259,9 +259,11 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
           }
         }
 
+        const isVirtualRoom = roomImage && (roomImage.includes("/assets/") || roomImage.includes("assets/"));
+
         // Add lamp image as context
         if (lampImage) {
-          if (lampImage.startsWith("http")) {
+          if (lampImage.startsWith("http") || lampImage.includes("/assets/")) {
             try {
               const fetched = await fetchImageAsBase64(lampImage);
               parts.push({
@@ -286,14 +288,46 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
         }
 
         // Detailed prompt
+        let preservationGuidance = "";
         let perspectiveGuidance = "";
+
         if (params.viewType === "far") {
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (FAR VIEW / 远景/局部角落景): Show the full height of the floor lamp within its immediate corner setting. The camera MUST focus and crop tightly on this corner alone. DO NOT pull back to show the entire room.";
+          preservationGuidance = "2. LOCALIZED CORNER FULL-HEIGHT SHOT (远景/局部全高景): Frame the complete full height of the floor lamp from its base resting firmly on the floor up to the lampshade in its cozy room corner alongside the sofa or bed. Keep the background sharp and clear without bokeh.";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (FAR VIEW / 远景/局部全高图): The camera frames the full-length vertical structure of the floor lamp (base, pole, tray, shade) in its corner. DO NOT pull back to show a huge open room; crop tightly to the corner where the lamp stands.";
         } else if (params.viewType === "mid") {
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MID VIEW / 中景/中近景): Medium close-up shot focusing directly on the floor lamp body, its shelf/side-table, and the immediate bedside nightstand or sofa corner. The background room is tightly cropped out.";
+          preservationGuidance = "2. MEDIUM SHOT (中景/中近景): Frame the upper-to-mid section of the floor lamp from its built-in tray/shelf up to the lampshade, alongside the sofa arm or bedside nightstand. Keep the background sharp and clear without bokeh.";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MID VIEW / 中景/半身视角): Medium shot focusing on the upper half of the lamp, showcasing the texture of the lampshade, upper pole, and built-in tray in natural context with the adjacent furniture.";
         } else if (params.viewType === "close") {
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (CLOSE VIEW / 近景/特写): Extreme close-up detail shot focusing strictly on the lampshade, upper pole, and soft light bloom. The background furniture is softly blurred or cropped out.";
+          preservationGuidance = "2. EXTREME MACRO CLOSE-UP (近景/特写 - 画面仅展示灯罩与上段灯杆): EXTREME MACRO DETAIL SHOT. The camera MUST zoom in very closely to focus exclusively on the upper lampshade, top pole/bracket, and pull-chain switch. The lampshade MUST dominate 60%-70% of the photo frame. The floor, lamp base, and room ceiling MUST be completely cropped OUT of the frame!";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (CLOSE VIEW / 近景/灯罩长焦特写): Macro photography distance focusing directly on the lampshade and light glow. Look at classic product close-up detail photos: only the upper shade and top rod are visible, with the wall/cabinet right behind it. DO NOT show the bottom base or whole room floor!";
         }
+
+        const STYLE_SPECS: Record<string, string> = {
+          "极简风": "MASTERPIECE ARCHITECTURE: Ultra-high-end elegant warm white minimalist bedroom (暖白极简风卧室) featuring authentic and realistic high-end furniture. MATERIALS: Seamless immaculate warm white plaster headboard wall panels, warm natural light white-washed wood floors, sheer translucent white linen window curtains, thick off-white textured wool area rug. LIGHTING: Built-in ambient linear LED yellow backlight throwing a soft golden glow behind the headboard panel, warm cove ceiling lighting casting a gentle wash downward, and a slender matte-white or minimalist pendant light. NO harsh dark shadows, pure soft-focus lighting. FURNITURE: A realistic, highly comfortable low-profile platform bed with premium light-beige or cream-colored fabric upholstery, styled with fluffy white pillows, pristine cream bedding, and a soft knitted throw blanket. Side table is a sleek, modern round matte-white bedside stand. Large glass landscape windows with light frames showing a peaceful outdoor forest or garden view. VIBE: Warm, serene, bright, extremely peaceful, ultra-luxurious, and clean, photorealistic 8k.",
+          "现代简约": "MASTERPIECE ARCHITECTURE: Contemporary luxury modern interior design. Open floor plan with clean straight lines. MATERIALS: Large-format polished marble or sintered stone slabs, tinted glass partitions, brushed metal, premium Italian leather sofas. COLORS: Monochromatic scale of charcoal, slate gray, pure white, and subtle metallic accents. LIGHTING: Cinematic recessed spotlights, high-end residential. VIBE: Sophisticated, expensive, understated luxury, hyper-detailed 3d render style.",
+          "北欧风": "MASTERPIECE ARCHITECTURE: Sun-drenched warm cozy Scandinavian living room (北欧风温润客餐厅) featuring authentic and realistic high-end residential furniture. MATERIALS: Light natural white oak solid wood floors, flawless warm soft-white plastered walls, sheer translucent flowing white curtains, thick high-density off-white or oat-beige textured wool area rug. LIGHTING: Abundant bright diffused natural daylight streaming from large glass sliding patio doors, combined with soft warm glow (2700K-3000K) from a classic floor lamp with a pleated cream lampshade. FURNITURE: A spacious comfortable L-shaped cream-colored or off-white fabric sofa, styled with sage-green, light gray and warm beige throw pillows and a textured white knit throw blanket. A minimalist long white-oak coffee table and a matching low wood TV media console on the side. Lush green houseplants including a tall potted green indoor tree (like Radermachera sinica) in a wicker/ceramic pot and small trailing plants. VIBE: Extremely cozy, bright, serene, natural, healing, peaceful, and warm, photorealistic 8k.",
+          "新中式": "MASTERPIECE ARCHITECTURE: High-End warm and elegant New Chinese Style Living Room (Warm Oriental Zen). Symmetrical, spacious layout. MATERIALS: Light natural wood floors, premium warm oak and walnut wall paneling, elegant hollow wood grid screens (木格栅), warm plaster walls, sheer translucent linen curtains. FURNITURE: A traditional low-profile solid wood daybed (榻) with a plush cream-colored mattress and clean bolster cushions placed symmetrically, a minimalist solid-wood coffee table, and classical rattan woven armchairs. DETAILS: Traditional scroll ink painting of a red plum blossom branch (写意梅花水墨挂轴), a warm rustic ceramic vase with white plum blossoms on a low wooden console, and a large lush potted green houseplant (bamboo or money-tree) in a ceramic pot. LIGHTING: Built-in ambient ceiling cove lighting casting a rich soft warm yellow glow, and a beautiful central bronze lantern/chandelier. VIBE: Warm, serene, sophisticated, Zen, culturally rich, high-end residential, photorealistic.",
+          "奶油风": "MASTERPIECE ARCHITECTURE: Elegant French warm creamy-style bedroom (法式温柔奶油风卧室) featuring authentic and realistic high-end furniture. MATERIALS: Immaculate warm-white or ivory plaster wall panels with delicate classic mouldings (法式石膏线条) and clean white crown mouldings, premium high-gloss pristine beige ceramic floor tiles reflecting soft light, a fluffy white flower-shaped plush rug at the foot of the bed. LIGHTING: Gentle, dreamy warm light glowing from two wall-mounted brass glass flower-shaped sconces mounted symmetrically beside the bed, a delicate brass glass pendant lamp hanging low on the left bedside, and ceiling spotlights casting soft focus. FURNITURE: A luxurious low-profile double bed with a soft cream/beige leather headboard featuring vertical channel tufting (竖向拉扣/竖条纹软包), layered with fluffy white pillows, high-end milk-tea and pale-peach beige bedding, and a soft cream wool knit throw blanket. Side tables are minimalist 2-drawer matte cream cabinets with slender gold brass legs and gold drawer pulls. Next to the bed stands a custom built-in white shaker wardrobe with long brass handles. Left bedside table holds a vintage arched brass tabletop mirror and fresh green foliage branches in a minimalist glass vase. VIBE: Extremely gentle, warm, quiet, romantic, luxurious, and cozy, marshmallow-like, photorealistic 8k.",
+          "侘寂风": "MASTERPIECE ARCHITECTURE: Elegant, quiet Wabi-Sabi style living room (寂宅风客厅) featuring authentic and realistic high-end residential furniture. MATERIALS: Soft warm sand-beige textured clay plaster walls, warm natural wood floors, sheer translucent white linen window curtains, thick woven sand-beige wool blend area rug. LIGHTING: Built-in soft warm glow from a modern minimalist rectangular hollow box fireplace with a realistic yellow dancing flame, combined with gentle daylight filtering through a large floor-to-ceiling glass sliding patio door. FURNITURE: A highly comfortable, luxurious low-profile deep charcoal-gray/black textured fabric sofa, and a low chunky rectangular solid dark-wood coffee table. Side furniture includes a tall open dark-wood bookshelf on the left filled with books and organic-shaped ceramic vessels, and a cozy single lounge armchair in light beige cotton linen. Decor includes a large frameless abstract textured canvas painting in deep dark brown and charcoal tones on the wall, and dry twigs/branches in a rustic ceramic vase. VIBE: Extremely quiet, serene, peaceful, natural, and warm, photorealistic 8k.",
+          "田园风": "MASTERPIECE ARCHITECTURE: Warm cozy French country-style bedroom (温润田园风卧室) featuring authentic and realistic high-end residential furniture. MATERIALS: Light natural warm honey-oak wood floors, soft creamy-white or pale beige plaster walls, sheer translucent flowing white curtains, beautiful ruffled floral-lace window curtains. LIGHTING: Gentle, romantic indirect light from classic wall-mounted bronze sconces with small pleated fabric shades glowing warm golden yellow, combined with soft diffused daylight filtering from the window. FURNITURE: A highly comfortable classic solid-wood single/double bed frame styled with fluffy white pillows, delicate pink and yellow pastel-colored accent bedding and sheets with floral patterns, and a soft knit throw blanket. Side table is a minimalist metal round bedside stand with tulips. A classic, rustic warm solid-wood study desk styled with books, a small pleated-shade table lamp, and small green potted plant. Under the bed lies a textured handwoven jute area rug. VIBE: Warm, sweet, romantic, serene, natural, healing, peaceful, and cozy, photorealistic 8k."
+        };
+
+        const roomStylePrompt = isVirtualRoom
+          ? `CRITICAL ROOM STYLE MATCHING: You MUST strictly generate the room according to the textual design specifications below to perfectly capture the essence of "${roomAnalysis.style}". 必须严格按照以下【设计规范】和【文字描述】生成极致完美的【${roomAnalysis.style}】风格样板间，完全符合对应的颜色、家具和布局设定，切记不要偏离指定的风格！
+  
+DESIGN SPECIFICATION FOR THIS STYLE:
+${STYLE_SPECS[roomAnalysis.style] || "Generate a professional, high-end interior matching the requested style."}
+  
+The room style and context MUST match:
+- Style: ${roomAnalysis.style}
+- Layout: ${roomAnalysis.layout}
+- Furniture: ${roomAnalysis.furniture.join(", ")}
+- Colors: ${roomAnalysis.colors.join(", ")}`
+          : `CRITICAL ROOM STYLE MATCHING: You MUST preserve the exact style and structural integrity of the uploaded room background. Under no circumstances should you generate a completely different style of walls, floors, or furniture. The generated scene MUST feel like a natural extension and high-fidelity placement of the lamp within the real uploaded room context.`;
+
+        const lightPrompt = params.lightState === "on"
+          ? `CRITICAL (LIGHT IS ON): Warm, soft, high-fidelity light glows from the light source of the lamp. You MUST generate realistic volumetric light cones, ambient lighting casting on the nearby furniture and floor, and highlight shadows with rich glow effects. The warm light from the floor lamp (approx 3000K-3500K) must blend harmoniously with the room's cozy ambient lighting. The entire scene must use a unified, natural, and comfortable color temperature without any strange, extreme contrast between cold blue and warm orange.`
+          : `CRITICAL (LIGHT IS OFF): The floor lamp is TURNED OFF. No artificial light is emitted. The lamp is purely lit by the room's ambient daylight and surrounding lights, revealing the authentic texture, colors, and shadows of its structural elements (lampshade, metal poles, wooden elements) without any active glow or light-cone emission.`;
 
         const humanGuidance = params.needModel
           ? "5. PERSONA / HUMAN PRESENCE: You MUST include a realistic human model (e.g., a person reading, relaxing, or enjoying the space) to enhance the living atmosphere. The human figure should seamlessly blend into the scene and interact naturally with the lighting and environment. 必须要包含一个真实的人物模型（比如正在阅读或休息的人）。"
@@ -302,41 +336,38 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
         const prompt = `A professional, ultra-high-resolution interior design photograph.
 Your task is to generate a new room based on the analysis and embed the provided floor lamp into it.
 
-The room style and context MUST match:
-- Style: ${roomAnalysis.style}
-- Layout: ${roomAnalysis.layout}
-- Furniture: ${roomAnalysis.furniture.join(", ")}
-- Colors: ${roomAnalysis.colors.join(", ")}
+${roomStylePrompt}
 
-The floor lamp style, color, and materials MUST perfectly match the reference lamp image:
-- Style: ${lampAnalysis.style}
-- Structure: ${lampAnalysis.structure || "Standard floor lamp"}
-- Materials & Finish: ${lampAnalysis.materials.join(", ")} in ${lampAnalysis.color}
-- Lighting: ${params.lightState === "on" 
-  ? `CRITICAL (LIGHT IS ON): Warm, soft, high-fidelity light glows from the light source of the lamp. You MUST generate realistic volumetric light cones, ambient lighting casting on the nearby furniture and floor, and highlight shadows with rich glow effects.`
-  : `CRITICAL (LIGHT IS OFF): The floor lamp is TURNED OFF. No artificial light is emitted.`
-}
+THE LAMP TO INTEGRATE:
+Style: ${lampAnalysis.style}
+Materials: ${lampAnalysis.materials.join(", ")}
+Color: ${lampAnalysis.color}
+Light Type: ${lampAnalysis.lightType}
+Light Warmth: ${lampAnalysis.lightWarmth}
+
+${lightPrompt}
 
 HIGHEST PRIORITY CONSTRAINTS (MUST BE STRICTLY FOLLOWED):
-1. ABSOLUTE LAMP FAITHFULNESS & HERO STATUS (SINGLE HIGHEST PRIORITY - 100% 还原落地灯与绝对主角地位): You MUST completely and exactly reproduce the floor lamp's original appearance, colors, materials, structure, and shape. No changes are allowed to the lamp's design under any circumstances, regardless of which view, camera perspective, or lighting state (ON/OFF) is selected. The generated lamp MUST look absolutely IDENTICAL to the provided reference lamp image. CRITICAL: Pay strict attention to the EXACT COLOR and TEXTURE of the lampshade (灯罩) and the structure of the lamp pole/table/base (灯杆/置物台/底座). Do not change a light-colored lampshade to a dark one. The floor lamp MUST be the absolute, undisputed main subject of the image (绝对唯一的视觉中心与画面的绝对主角). 绝对、必须、100%完整的还原落地灯原本的样子、颜色（特别是灯罩的颜色）和材质！在任何情况下，落地灯都必须作为绝对的主体与核心主角！
+1. ABSOLUTE LAMP FAITHFULNESS & STRUCTURAL INTEGRITY (100% 还原落地灯与绝对一体化结构):
+   - You MUST completely and exactly reproduce the floor lamp's original appearance, colors, materials, structure, and shape.
+   - PHYSICAL INTEGRITY: The floor lamp (lampshade, pole, built-in tray/shelf, and bottom base) is ONE SINGLE CONNECTED PHYSICAL OBJECT. The base MUST rest firmly on the floor. STRICTLY FORBIDDEN: DO NOT detach the lamp pole from its base, do not separate the built-in tray, and DO NOT fuse/embed the lamp pole or tray into adjacent nightstands or drawers! The bedside nightstand and sofa are independent items sitting beside the floor lamp.
 
-2. STRICTLY DO NOT SHOW FULL ROOM (严禁展示完整/全景房间，只能展示局部角落):
-   - You are STRICTLY FORBIDDEN from generating a wide-angle full-room shot (严禁生成能看到整间卧室、整张床、大窗口、整排柜子的广角全景图).
-   - You MUST crop the photograph tightly so it shows ONLY A SINGLE LOCALIZED CORNER or nook of the room (e.g., just the nightstand corner beside the bed, or just one end of the sofa with the curtains/wall).
-   - Keep the surrounding corner elements (wall, curtains, nightstand or sofa arm) cohesive, clean, and matching the specified interior design style.
+2. ROOM LAYOUT CONSISTENCY & LOCALIZED CORNER (房间布局变动限制与局部角落取景):
+   - Keep the background walls, wall paneling, curtains, window positions, and furniture style completely consistent and stable.
+   - You are STRICTLY FORBIDDEN from generating a wide-angle full-room shot showing an entire room, huge open space, or random new room layouts. Focus strictly on the localized nook/corner where the lamp is placed.
 
-3. AUTHENTIC & REALISTIC LAMP PLACEMENT (落地灯必须真实合理地摆放，严禁随便乱摆):
-   - The floor lamp MUST be placed in a 100% natural, realistic, functional indoor position:
-     * In a bedroom: Place the floor lamp directly beside the headboard / nightstand (床头或床头柜旁).
-     * In a living room: Place the floor lamp in the sofa corner, behind or to the side of the sofa (沙发角/沙发侧后方), or next to an armchair/reading chair.
-   - STRICTLY FORBIDDEN: NEVER place the floor lamp floating in the open middle of the room floor, in walkways, or in front of a sofa or bed.
-   - DO NOT move the physical position of the lamp to an unnatural spot in the room just to center it! The lamp MUST stay in its authentic, practical corner spot.
+3. AUTHENTIC & REALISTIC LAMP PLACEMENT (落地灯必须真实合理地摆放在角落):
+   - Place the floor lamp in a 100% natural, practical indoor corner: directly beside the headboard/nightstand in a bedroom, or beside/behind the sofa arm in a living room.
+   - NEVER place the lamp in the open center of the room floor or in front of a sofa/bed.
 
-4. CAMERA CENTERING THROUGH FRAMING (依靠摄影镜头对焦取景居中，而不是移动灯的位置):
-   - To make the floor lamp the primary visual focus in the photograph, the CAMERA MUST FRAME AND CROP DIRECTLY AROUND THE CORNER WHERE THE LAMP STANDS.
-   - The camera angle should aim at the floor lamp in its cozy corner, making the lamp sit comfortably near the center of the photo frame.
+4. CAMERA CENTERING & VIEW-TYPE PERSPECTIVE (相机镜头对焦取景):
+   - ${perspectiveGuidance}
 
-${perspectiveGuidance}
+5. ZERO BOKEH & DEEP FOCUS (全焦清晰 - 画面真实清晰):
+   - You MUST keep the ENTIRE photograph (lamp, background wall, adjacent furniture, curtains) completely sharp and clear in deep focus.
+   - DO NOT apply unnatural bokeh blur or heavy portrait-style background blur.
+
+${preservationGuidance}
 
 ${humanGuidance}`;
 
