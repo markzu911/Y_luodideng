@@ -307,8 +307,8 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
           preservationGuidance = "2. MEDIUM CLOSE SHOT (中景/半身局部视角): The camera is 1 to 1.5 meters away, focusing on the upper-to-mid section of the floor lamp (lampshade, pole, built-in tray) and the adjacent sofa armrest or nightstand top. Keep the camera close so the floor lamp is the undisputed primary hero subject.";
           perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MID VIEW / 中景/半身视角): Medium close-up focusing directly on the upper 2/3 of the lamp and the immediate sofa armrest or bedside corner.";
         } else if (params.viewType === "close") {
-          preservationGuidance = "2. EXTREME MACRO CLOSE-UP (近景/特写 - 画面仅展示灯罩与上段灯杆): EXTREME MACRO DETAIL SHOT. The camera MUST zoom in very closely to focus exclusively on the upper lampshade, top pole/bracket, and pull-chain switch. The lampshade MUST dominate 60%-70% of the photo frame. The floor, lamp base, and room ceiling MUST be completely cropped OUT of the frame!";
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (CLOSE VIEW / 近景/灯罩长焦特写): Macro photography distance focusing directly on the lampshade and light glow. Look at classic product close-up detail photos: only the upper shade and top rod are visible, with the wall/cabinet right behind it. DO NOT show the bottom base or whole room floor!";
+          preservationGuidance = "2. EXTREME MACRO CLOSE-UP (近景/特写 - 画面仅展示灯罩与上段直立灯杆): EXTREME MACRO DETAIL SHOT. The camera MUST zoom in very closely to focus exclusively on the upper lampshade, straight vertical upper pole, and pull-chain switch (if present in original). The lampshade MUST dominate 60%-70% of the photo frame. CRITICAL: DO NOT add any horizontal swing arm, extension bracket, swivel joint, or side attachment under the shade! The floor, lamp base, and room ceiling MUST be completely cropped OUT of the frame!";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (CLOSE VIEW / 近景/灯罩长焦特写): Macro photography distance focusing directly on the lampshade and straight vertical pole. Look at classic product close-up detail photos: only the upper shade and straight vertical pole are visible. DO NOT add any horizontal swing arm, side bracket, or swivel joint!";
         }
 
         const STYLE_SPECS: Record<string, string> = {
@@ -358,19 +358,20 @@ Light Warmth: ${lampAnalysis.lightWarmth}
 ${lightPrompt}
 
 HIGHEST PRIORITY CONSTRAINTS (MUST BE STRICTLY FOLLOWED):
-1. NO UNREQUESTED OR HALLUCINATED LAMP PARTS (严禁出现台灯原本没有的任何部件 - 绝对精细100%还原):
+1. NO UNREQUESTED OR HALLUCINATED LAMP PARTS OR ITEMS (严禁出现台灯原本没有的任何部件与杂物 - 绝对精细100%还原):
    - You MUST reproduce ONLY the exact physical parts visible in the reference floor lamp image and described in the lamp analysis structure: ${lampAnalysis.structure || "N/A"}.
-   - STRICTLY FORBIDDEN: DO NOT add any unrequested horizontal swing arms, side brackets, extra poles, secondary lampshades, pull-chains (unless present in original), extra trays, or hardware extensions that do NOT exist in the original lamp image.
-   - IF the original floor lamp pole is a straight vertical rod, it MUST remain a single clean vertical rod. DO NOT generate any horizontal side arms protruding outwards.
-   - IF the original floor lamp does NOT have a built-in tray/table, DO NOT add a tray. IF it HAS a tray, preserve its exact shape, height, and color.
+   - STRICTLY FORBIDDEN HORIZONTAL ARMS / BRACKETS: DO NOT add any horizontal swing arms, side extension brackets, swivel joints, extra poles, secondary lampshades, or hardware attachments that do NOT exist in the original reference lamp image (绝对禁止增加任何横向伸缩摇臂、侧向延伸支架、转轴或副灯罩！).
+   - IF the original floor lamp pole is a straight vertical rod, it MUST remain a single clean, straight vertical rod with ZERO side projections.
+   - NO EXTRA ITEMS ON LAMP / TRAY: Do NOT place any unrequested cups, vases, desk lamps, or decorative clutter onto the floor lamp's tray or pole unless originally present in the reference image. Keep the floor lamp 100% clean and authentic to its original design.
 
 2. ABSOLUTE LAMP FAITHFULNESS & STRUCTURAL INTEGRITY (100% 还原落地灯整体结构与颜色):
    - You MUST completely and exactly reproduce the floor lamp's original appearance, colors, materials, structure, and shape.
    - PHYSICAL INTEGRITY: The floor lamp (lampshade, pole, built-in tray if any, and bottom base) is ONE SINGLE CONNECTED PHYSICAL OBJECT. The base MUST rest firmly on the floor. DO NOT detach the pole from its base, do not separate the tray, and DO NOT fuse/embed the lamp pole or tray into adjacent nightstands or drawers! The bedside nightstand and sofa are independent items sitting beside the floor lamp.
 
-3. ROOM LAYOUT CONSISTENCY & LOCALIZED CORNER (房间布局变动限制与局部角落取景):
-   - Keep the background walls, wall paneling, curtains, window positions, and furniture style completely consistent and stable.
-   - You are STRICTLY FORBIDDEN from generating a wide-angle full-room shot showing an entire room, huge open space, or random new room layouts. Focus strictly on the localized nook/corner where the lamp is placed.
+3. STRICT ROOM LAYOUT CONSISTENCY (房间布局与背景结构绝对禁止改变 - 100%保持原房布局):
+   - You MUST strictly preserve and maintain the exact room layout, wall paneling, sofa arrangement, window location, curtains, and furniture from the provided room image.
+   - STRICTLY FORBIDDEN: DO NOT rearrange furniture, DO NOT move the sofa, DO NOT change wall materials/paneling, and DO NOT invent a new room layout (绝对禁止移动沙发或主要家具位置、绝对禁止改变背景墙和窗帘结构！).
+   - The room background MUST remain 100% identical and stable across all generated views and light toggles.
 
 4. STRICT LAMP PLACEMENT RULES - MUST BE PLACED ON THE SIDE OF SOFA/BED (落地灯摆放位置严禁放在床尾或沙发正前方！必须放在侧面):
    - CRITICAL SOFA PLACEMENT: In a living room, the floor lamp MUST be placed on the SIDE of the sofa (beside the outer armrest or in the corner behind the armrest). STRICTLY FORBIDDEN: DO NOT place the floor lamp in front of the sofa seats, in front of the coffee table, or facing the sofa front (绝对禁止把落地灯摆放在沙发正前方、座位前或茶几旁！必须放在沙发侧面扶手旁！).
