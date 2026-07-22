@@ -352,12 +352,15 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
             },
             {
               text: `You are an expert interior designer. Analyze this room image for a floor lamp try-on visualizer application. VERY IMPORTANT: You MUST reply in Chinese (简体中文) for all string values.
-You must return the analysis in a clean JSON format matching this exact schema:
+You must return a highly detailed analysis in a clean JSON format matching this exact schema:
 {
   "style": "Specific style name in Chinese (e.g. 现代简约, 奶油风, 北欧风, 新中式, 工业风, 极简风, 侘寂风, 田园风, 意式轻奢, 美式复古, Cyberpunk电竞)",
-  "layout": "Room layout description in Chinese highlighting space, key structural elements, walls, floors, and natural lighting",
-  "furniture": ["List of 3-5 key furniture items present in the room in Chinese, e.g., 灰色布艺沙发, 浅色实木茶几, 白色羊毛地毯"],
+  "layout": "Room layout description in Chinese highlighting space, key structural elements, and natural lighting",
+  "architecturalDetails": "Detailed description of walls (e.g. wallpaper, wood paneling, paint color, textures), windows, curtains, and flooring in Chinese",
+  "furniture": ["List of major furniture pieces detected with detailed descriptions (material, color, style, relative sizes/proportions), e.g., 灰色棉麻宽大三人沙发, 浅色实木圆形茶几, 落地窗边的米色遮光窗帘"],
+  "materials": ["Key materials visible in the room in Chinese, e.g. 胡桃木实木, 纳帕牛皮, 棉麻混纺面料, 亮面大理石, 黑色哑光金属, 长绒羊毛"],
   "colors": ["Dominant color tones, e.g., Warm Beige, Charcoal Gray, Light Wood"],
+  "atmosphere": "The overall mood or atmosphere of the room in Chinese (e.g., 温暖舒适, 明亮通透, 沉稳大气, 极简冷淡, 复古奢华)",
   "recommendation": "Specific aesthetic and functional recommendation on where to place a floor lamp (e.g., Place next to the sofa corner to create a reading nook, Position in the empty corner behind the accent chair)",
   "lightSuggestion": "Suggestion for the floor lamp light parameters (e.g., Warm light (2700K-3000K) to complement the cozy fabric textures, Natural white (4000K) to enhance the clean minimalist lines)"
 }
@@ -371,7 +374,12 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
               properties: {
                 style: { type: Type.STRING },
                 layout: { type: Type.STRING },
+                architecturalDetails: { type: Type.STRING },
                 furniture: {
+                  type: Type.ARRAY,
+                  items: { type: Type.STRING }
+                },
+                materials: {
                   type: Type.ARRAY,
                   items: { type: Type.STRING }
                 },
@@ -379,10 +387,11 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
                   type: Type.ARRAY,
                   items: { type: Type.STRING }
                 },
+                atmosphere: { type: Type.STRING },
                 recommendation: { type: Type.STRING },
                 lightSuggestion: { type: Type.STRING }
               },
-              required: ["style", "layout", "furniture", "colors", "recommendation", "lightSuggestion"]
+              required: ["style", "layout", "architecturalDetails", "furniture", "materials", "colors", "atmosphere", "recommendation", "lightSuggestion"]
             }
           }
         });
@@ -543,8 +552,8 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
           preservationGuidance = "2. CENTERED LAMP IN MID-VIEW (中景/完整视角 - 局部取景且落地灯居中):\n   - MAIN SUBJECT & CENTERING: The floor lamp MUST be the absolute main subject and perfectly CENTERED in the image frame.\n   - LOCALIZED BACKGROUND: Frame only the immediate furniture (sofa armrest, nightstand) directly adjacent to the lamp. DO NOT show the wider room.\n   - LOGICAL PLACEMENT: Place the lamp beside the furniture naturally, then center the camera on the lamp.";
           perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MID VIEW / 中景视角): Medium-distance framing. The floor lamp is perfectly CENTERED. The background is strictly limited to the immediate adjacent furniture and wall.";
         } else if (safeParams.viewType === "close") {
-          preservationGuidance = "2. CENTERED MACRO DETAIL SHOT (近景特写视角 - 局部实拍感且落地灯居中):\n   - SUBJECT FOCUS & CENTERING: The floor lamp (lampshade and upper pole) MUST be perfectly CENTERED and dominate the frame.\n   - CROP LEVEL: You MUST crop out the lower half and base of the floor lamp. \n   - NARROW FIELD OF VIEW BACKGROUND (背景必须是局部): Because the camera is very close, the background MUST be a NARROW, PARTIAL section of the room directly behind the lamp (e.g., a piece of textured wall, a curtain edge). STRICTLY FORBIDDEN to show the wide layout of the room.";
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MACRO CLOSE-UP VIEW / 近景特写视角): Camera zoomed in very close. The lampshade is perfectly CENTERED. The background field of view is extremely narrow, showing only a small, localized fraction of the room.";
+          preservationGuidance = "2. AUTHENTIC MACRO PHOTOGRAPHY (真实近景特写摄影 - 完美融入背景且落地灯居中):\n   - SUBJECT FOCUS & CENTERING: The floor lamp (lampshade and upper pole) MUST be perfectly CENTERED and dominate the foreground.\n   - CROP LEVEL: You MUST crop out the lower half and base of the floor lamp.\n   - TRUE ENVIRONMENTAL INTEGRATION (拒绝抠图贴图感): The lamp MUST NOT look like it was simply enlarged and pasted over the room. It must be deeply integrated into the environment. The light from the lampshade must realistically spill over and illuminate the adjacent background elements (e.g., casting a warm glow on the sofa cushion, shelf, or wood paneling directly behind/beside it).\n   - NARROW FIELD OF VIEW BACKGROUND (背景必须是局部特写): The background MUST be a very tight, narrow, soft-focus crop of the authentic room elements directly behind the lamp. STRICTLY FORBIDDEN to show the wide layout of the room.";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MACRO CLOSE-UP VIEW / 真实近景特写视角): A highly realistic, aesthetically pleasing macro shot. The camera is very close to the lampshade. The immediate background is naturally framed and integrated, feeling like a high-end interior photography close-up.";
         }
 
         // Detailed style specifications for Virtual Rooms
