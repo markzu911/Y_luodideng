@@ -288,11 +288,11 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
         // Detailed prompt
         let perspectiveGuidance = "";
         if (params.viewType === "far") {
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (FAR VIEW / 远景/全景): EXTREME WIDE ANGLE. The camera MUST be positioned as far back as possible to capture the entire room floor-to-ceiling. It MUST show the full room layout, multiple pieces of furniture (e.g., entire sofa, coffee table, windows), and the complete floor lamp from base to shade. This is a wide architectural shot establishing the overall space. CRITICAL: Keep the entire background fully sharp and clear without any bokeh or depth-of-field blur. 整个背景必须完全清晰，绝对不能有景深虚化！";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (FAR VIEW / 远景/局部角落景): Show the full height of the floor lamp within its immediate corner setting. The camera MUST focus and crop tightly on this corner alone. DO NOT pull back to show the entire room.";
         } else if (params.viewType === "mid") {
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MID VIEW / 中景): MEDIUM SHOT. The camera is positioned at an intermediate distance. It MUST be noticeably closer than the 'Far View' but farther back than a 'Close-up'. It should frame ONLY the local seating/bedside zone (e.g., just the floor lamp and one side of the sofa, or the nightstand). DO NOT show the entire room. DO NOT show just the lampshade. Show the lamp and its immediate context. CRITICAL: Keep the entire background fully sharp and clear without any bokeh or depth-of-field blur. 整个背景必须完全清晰，绝对不能有景深虚化！";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MID VIEW / 中景/中近景): Medium close-up shot focusing directly on the floor lamp body, its shelf/side-table, and the immediate bedside nightstand or sofa corner. The background room is tightly cropped out.";
         } else if (params.viewType === "close") {
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (CLOSE VIEW / 近景/特写): MACRO/TIGHT CLOSE-UP. The camera is very close, focusing entirely on the upper section of the floor lamp (the lampshade and light source). The lampshade MUST dominate the frame. Large furniture pieces should be excluded or only slightly visible at the very edges. CRITICAL: Keep the entire background fully sharp and clear without any bokeh or depth-of-field blur. DO NOT add any fake walls, partitions, or pillars in the foreground or background to block the view; preserve the original depth of the room. 整个背景必须完全清晰，绝对不能有景深虚化！绝对不要在画面中凭空生成一堵墙或隔断来遮挡视线，必须保持原有的房间纵深！";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (CLOSE VIEW / 近景/特写): Extreme close-up detail shot focusing strictly on the lampshade, upper pole, and soft light bloom. The background furniture is softly blurred or cropped out.";
         }
 
         const humanGuidance = params.needModel
@@ -313,20 +313,31 @@ The floor lamp style, color, and materials MUST perfectly match the reference la
 - Structure: ${lampAnalysis.structure || "Standard floor lamp"}
 - Materials & Finish: ${lampAnalysis.materials.join(", ")} in ${lampAnalysis.color}
 - Lighting: ${params.lightState === "on" 
-  ? `CRITICAL (LIGHT IS ON): The floor lamp is TURNED ON. Emitted light MUST be rendered with maximum physical realism as follows:
-    1. VOLUMETRIC GLOW & BLOOM: The lampshade must glow with high luminescent intensity, creating a realistic warm light bloom and subtle atmospheric halo around the shade. The light source within must look active and bright.
-    2. DIRECT & INDIRECT WALL WASHING: The lamp must project a strong, beautiful, realistic cone of light (光锥) or diffuse wash onto the adjacent wall, floor, and ceiling according to its lighting type (${lampAnalysis.lightType || "ambient diffuse light"}). The light pool on the wall must have a smooth, natural gradient falloff.
-    3. LOCALIZED GLOBAL ILLUMINATION: The emitted light (${lampAnalysis.lightWarmth || "3000开尔文暖黄光"}) must dynamically illuminate surrounding surfaces. Fabric sofas, leather chairs, wooden floors, and pillows adjacent to the lamp must show natural warm highlights, enhanced texture relief, and soft specular reflections from the light.
-    4. ACCURATE CAST SHADOWS: The lamp base must ground naturally on the floor with soft ambient occlusion shadows. Furniture pieces closest to the lamp must cast subtle, soft-edged contact shadows in the direction away from the lamp, blending seamlessly with the room's ambient illumination.
-    5. DAYLIGHT-GLOW CONTRAST: The warm yellow/amber illumination must realistically blend with the cooler, natural daylight in the room, creating an atmospheric, high-end architectural digest photograph feel with complex multi-source lighting.`
-  : `CRITICAL (LIGHT IS OFF): The floor lamp is TURNED OFF. No artificial light is emitted. The lamp is purely lit by the room's ambient daylight and surrounding lights, revealing the authentic texture, colors, and shadows of its structural elements (lampshade, metal poles, wooden elements) without any active glow or light-cone emission.`
+  ? `CRITICAL (LIGHT IS ON): Warm, soft, high-fidelity light glows from the light source of the lamp. You MUST generate realistic volumetric light cones, ambient lighting casting on the nearby furniture and floor, and highlight shadows with rich glow effects.`
+  : `CRITICAL (LIGHT IS OFF): The floor lamp is TURNED OFF. No artificial light is emitted.`
 }
 
 HIGHEST PRIORITY CONSTRAINTS (MUST BE STRICTLY FOLLOWED):
-1. ABSOLUTE LAMP FAITHFULNESS (SINGLE HIGHEST PRIORITY): You MUST completely and exactly reproduce the floor lamp's original appearance, colors, materials, structure, and shape. No changes are allowed to the lamp's design under any circumstances, regardless of which view, camera perspective, or lighting state (ON/OFF) is selected. The generated lamp MUST look absolutely IDENTICAL to the provided reference lamp image. CRITICAL: You must accurately reproduce all three specific components of the lamp: 1. The Base (底座), 2. The Pole/Stand (撑杆), and 3. The Shade/Lamp Head (灯罩/灯头). If the original lamp has a straight vertical pole, the generated lamp MUST have a perfectly straight vertical pole; do NOT make it bent or curved. Pay strict attention to the EXACT COLOR and TEXTURE of the lampshade and the structure of the lamp pole and base. Do not change a light-colored lampshade to a dark one. 绝对、必须、100%完整的还原落地灯原本的样子，必须完整呈现灯具的底座（Base）、撑杆（Pole）和灯罩（Shade）三个部分，缺一不可！如果原图的灯杆是笔直的，生成的灯杆绝对不能变弯曲！在任何情况下都绝对不能改变或修改落地灯原本的外观与设计，不能改变落地灯原本样子！这是最高优先级的绝对红线约束！
-2. ROOM REGENERATION: Do NOT directly edit the original room photograph. You MUST reconstruct a new room based on the analysis results of the original room and place the floor lamp inside it. CRITICAL: DO NOT alter the architectural structure, the room layout, or the styles of the furniture. DO NOT add any fake walls, pillars, or partitions to block the view. DO NOT add any extra furniture (like extra sofas or chairs). The architectural structure, furniture count, furniture styles, furniture scales (e.g., if it's a large double bed, it MUST remain a large double bed, do NOT shrink it to a single bed), and layout MUST remain exactly the same as the original room. 绝对不能改变房间的布局和家具的样式与尺寸比例（比如原来是大双人床，绝对不能变成单人小床），不允许直接在原来的房间图片上进行修改，必须根据分析的房间数据重构一个房间，然后再把落地灯放进去！绝对不能在画面中生硬地添加一堵墙或柱子！
-3. PLACEMENT RULE: If there is a bed in the scene (e.g., a bedroom), YOU MUST PLACE THE LAMP NEXT TO THE HEAD OF THE BED OR NIGHTSTAND (床头/床头柜旁). IT IS STRICTLY FORBIDDEN to place it anywhere else (e.g., foot of the bed, corners far from the bed, or walkways). The placement must look like a practical reading/bedside lamp. If the room is a living room, place the floor lamp directly beside or behind (侧后方/侧边) EXISTING furniture like a chaise longue (贵妃榻) or bean bag/lazy sofa (懒人沙发). NEVER place the lamp in front of any sofa. NEVER place the lamp in the aisle/walkway between two sofas. If no such furniture is present, place it on the side-rear (侧后方) or side (侧边) of the main sofa closer to the balcony or window. The placement must be logical and physically realistic. 只要场景中有床，落地灯一定要、必须放到床头或床头柜旁边的合理位置，绝对不能放在房间的其他任何地方（如床尾、远离床的墙角、过道等）！如果是客厅，绝对不能将落地灯摆放在沙发的正前方遮挡视线或影响使用，可以摆放在沙发的侧后方或侧边（参考真实居家环境）。
+1. ABSOLUTE LAMP FAITHFULNESS & HERO STATUS (SINGLE HIGHEST PRIORITY - 100% 还原落地灯与绝对主角地位): You MUST completely and exactly reproduce the floor lamp's original appearance, colors, materials, structure, and shape. No changes are allowed to the lamp's design under any circumstances, regardless of which view, camera perspective, or lighting state (ON/OFF) is selected. The generated lamp MUST look absolutely IDENTICAL to the provided reference lamp image. CRITICAL: Pay strict attention to the EXACT COLOR and TEXTURE of the lampshade (灯罩) and the structure of the lamp pole/table/base (灯杆/置物台/底座). Do not change a light-colored lampshade to a dark one. The floor lamp MUST be the absolute, undisputed main subject of the image (绝对唯一的视觉中心与画面的绝对主角). 绝对、必须、100%完整的还原落地灯原本的样子、颜色（特别是灯罩的颜色）和材质！在任何情况下，落地灯都必须作为绝对的主体与核心主角！
+
+2. STRICTLY DO NOT SHOW FULL ROOM (严禁展示完整/全景房间，只能展示局部角落):
+   - You are STRICTLY FORBIDDEN from generating a wide-angle full-room shot (严禁生成能看到整间卧室、整张床、大窗口、整排柜子的广角全景图).
+   - You MUST crop the photograph tightly so it shows ONLY A SINGLE LOCALIZED CORNER or nook of the room (e.g., just the nightstand corner beside the bed, or just one end of the sofa with the curtains/wall).
+   - Keep the surrounding corner elements (wall, curtains, nightstand or sofa arm) cohesive, clean, and matching the specified interior design style.
+
+3. AUTHENTIC & REALISTIC LAMP PLACEMENT (落地灯必须真实合理地摆放，严禁随便乱摆):
+   - The floor lamp MUST be placed in a 100% natural, realistic, functional indoor position:
+     * In a bedroom: Place the floor lamp directly beside the headboard / nightstand (床头或床头柜旁).
+     * In a living room: Place the floor lamp in the sofa corner, behind or to the side of the sofa (沙发角/沙发侧后方), or next to an armchair/reading chair.
+   - STRICTLY FORBIDDEN: NEVER place the floor lamp floating in the open middle of the room floor, in walkways, or in front of a sofa or bed.
+   - DO NOT move the physical position of the lamp to an unnatural spot in the room just to center it! The lamp MUST stay in its authentic, practical corner spot.
+
+4. CAMERA CENTERING THROUGH FRAMING (依靠摄影镜头对焦取景居中，而不是移动灯的位置):
+   - To make the floor lamp the primary visual focus in the photograph, the CAMERA MUST FRAME AND CROP DIRECTLY AROUND THE CORNER WHERE THE LAMP STANDS.
+   - The camera angle should aim at the floor lamp in its cozy corner, making the lamp sit comfortably near the center of the photo frame.
+
 ${perspectiveGuidance}
+
 ${humanGuidance}`;
 
         parts.push({ text: prompt });
