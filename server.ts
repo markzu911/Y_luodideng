@@ -516,7 +516,7 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
           preservationGuidance = "2. MEDIUM CLOSE SHOT (中景/半身局部视角): The camera is 1 to 1.5 meters away, focusing on the upper-to-mid section of the floor lamp (lampshade, pole, built-in tray) and the adjacent sofa armrest or nightstand top. Keep the camera close so the floor lamp is the undisputed primary hero subject.";
           perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MID VIEW / 中景/半身视角): Medium close-up focusing directly on the upper 2/3 of the lamp and the immediate sofa armrest or bedside corner.";
         } else if (safeParams.viewType === "close") {
-          preservationGuidance = "2. EXTREME MACRO CLOSE-UP (近景/特写 - 画面仅展示灯罩与上段灯杆): EXTREME MACRO DETAIL SHOT. The camera MUST zoom in very closely to focus exclusively on the upper lampshade, top pole/bracket, and pull-chain switch. The lampshade MUST dominate 60%-70% of the photo frame. The floor, lamp base, and room ceiling MUST be completely cropped OUT of the frame!";
+          preservationGuidance = "2. EXTREME MACRO CLOSE-UP (近景/特写 - 画面仅展示灯罩与上段灯杆): EXTREME MACRO DETAIL SHOT. The camera MUST zoom in very closely to focus exclusively on the upper lampshade and top pole/bracket. DO NOT add any pull-chain, bead-chain switch, or hanging cord unless explicitly visible in the uploaded lamp image! The lampshade MUST dominate 60%-70% of the photo frame. The floor, lamp base, and room ceiling MUST be completely cropped OUT of the frame!";
           perspectiveGuidance = "4. VIEW AND PERSPECTIVE (CLOSE VIEW / 近景/灯罩长焦特写): Macro photography distance focusing directly on the lampshade and light glow. Look at classic product close-up detail photos: only the upper shade and top rod are visible, with the wall/cabinet right behind it. DO NOT show the bottom base or whole room floor!";
         }
 
@@ -577,7 +577,7 @@ HIGHEST PRIORITY CONSTRAINTS (MUST BE STRICTLY FOLLOWED):
 0. THE MOST IMPORTANT CONSTRAINT (最核心约束): THE GENERATED FLOOR LAMP MUST BE 100% IDENTICAL TO THE UPLOADED FLOOR LAMP (最重要的约束就是生成的图片要确保落地灯和用户上传的必须完全一致). Any deviation in shape, structure, color, or missing parts is a complete failure!
 1. NO UNREQUESTED OR HALLUCINATED LAMP PARTS (严禁出现台灯原本没有的任何部件 - 绝对精细100%还原):
    - You MUST reproduce ONLY the exact physical parts visible in the reference floor lamp image and described in the lamp analysis structure: ${lampAnalysis.structure || "N/A"}.
-   - STRICTLY FORBIDDEN: DO NOT add any unrequested horizontal swing arms, side brackets, extra poles, secondary lampshades, pull-chains (unless present in original), extra trays, or hardware extensions that do NOT exist in the original lamp image.
+   - STRICTLY FORBIDDEN: DO NOT add any pull-chain switches (拉链开关/悬挂小珠链/拉绳), swing arms, extra brackets, extra poles, secondary lampshades, extra trays, or hardware extensions unless they explicitly exist in the uploaded reference lamp image! If the uploaded lamp does NOT have a pull-chain or hanging cord under the lampshade, the generated lamp MUST NOT have any pull-chain or hanging string!
    - IF the original floor lamp pole is a straight vertical rod, it MUST remain a single clean vertical rod. DO NOT generate any horizontal side arms protruding outwards.
    - IF the original floor lamp does NOT have a built-in tray/table, DO NOT add a tray. IF it HAS a tray, preserve its exact shape, height, and color.
 
