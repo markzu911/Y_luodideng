@@ -501,8 +501,8 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
         let perspectiveGuidance = "";
 
         if (params.viewType === "far") {
-          preservationGuidance = "2. LOCALIZED CORNER FULL-HEIGHT SHOT (远景/局部全高视角): The camera is positioned at a close-to-medium distance to frame the full vertical height of the floor lamp from base to shade in its cozy corner. The floor lamp MUST fill at least 60%-80% of the image frame height! CRITICAL: STRICTLY FORBIDDEN to pull back or generate a wide panoramic room photo showing an entire huge living room/bedroom. Crop tightly to only the localized corner (e.g. lamp + sofa armrest).";
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (FAR VIEW / 远景/局部全高视角): Focus directly on the full-length floor lamp in its immediate corner setting beside the sofa armrest or nightstand. Frame and crop tightly on this corner alone; DO NOT show the rest of the room or distant furniture.";
+          preservationGuidance = "2. CORNER CLOSE-UP FULL LAMP SHOT (沙发床头局部特写/完整展示落地灯): YOU MUST FIND the sofa or bed in the room. Place the floor lamp perfectly next to the sofa or bedside. The camera MUST be a close-up shot (特写镜头) of this localized corner. The room DOES NOT need to be fully shown (房间不用全部展示，只展示一角即可). However, the floor lamp itself MUST be fully and completely displayed from top to bottom (完整的展示落地灯).";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (FAR VIEW / 远景设定/局部特写): CRITICAL! Do NOT generate a wide panoramic room photo. Frame a tight, cozy close-up shot (特写镜头) focusing strictly on the sofa or bed corner and the lamp. Only show this corner (只展示一角即可). The entire floor lamp must be fully visible in this close-up frame.";
         } else if (params.viewType === "mid") {
           preservationGuidance = "2. MEDIUM CLOSE SHOT (中景/半身局部视角): The camera is 1 to 1.5 meters away, focusing on the upper-to-mid section of the floor lamp (lampshade, pole, built-in tray) and the adjacent sofa armrest or nightstand top. Keep the camera close so the floor lamp is the undisputed primary hero subject.";
           perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MID VIEW / 中景/半身视角): Medium close-up focusing directly on the upper 2/3 of the lamp and the immediate sofa armrest or bedside corner.";
@@ -533,7 +533,7 @@ The room style and context MUST match:
 - Layout: ${roomAnalysis.layout}
 - Furniture: ${roomAnalysis.furniture.join(", ")}
 - Colors: ${roomAnalysis.colors.join(", ")}`
-          : `CRITICAL ROOM STYLE MATCHING: You MUST preserve the exact style and structural integrity of the uploaded room background. Under no circumstances should you generate a completely different style of walls, floors, or furniture. The generated scene MUST feel like a natural extension and high-fidelity placement of the lamp within the real uploaded room context.`;
+          : `CRITICAL ROOM STYLE MATCHING: You MUST preserve the exact style and structural integrity of the uploaded room background. Find the main sofa or bed in the uploaded room image. You MUST place the floor lamp next to this sofa or bedside. The generated scene MUST feel like a natural extension and high-fidelity placement of the lamp within this specific corner of the real uploaded room.`;
 
         const lightPrompt = params.lightState === "on"
           ? `CRITICAL (LIGHT IS ON): Warm, soft, high-fidelity light glows from the light source of the lamp. You MUST generate realistic volumetric light cones, ambient lighting casting on the nearby furniture and floor, and highlight shadows with rich glow effects. The warm light from the floor lamp (approx 3000K-3500K) must blend harmoniously with the room's cozy ambient lighting. The entire scene must use a unified, natural, and comfortable color temperature without any strange, extreme contrast between cold blue and warm orange.`
