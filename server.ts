@@ -537,14 +537,14 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
         let perspectiveGuidance = "";
 
         if (safeParams.viewType === "far") {
-          preservationGuidance = "2. CORNER CLOSE-UP FULL LAMP SHOT (沙发床头局部特写/完整展示落地灯): YOU MUST FIND the sofa or bed in the room. Place the floor lamp perfectly next to the sofa or bedside. The camera MUST be a close-up shot (特写镜头) of this localized corner. The room DOES NOT need to be fully shown (房间不用全部展示，只展示一角即可). However, the floor lamp itself MUST be fully and completely displayed from top to bottom (完整的展示落地灯).";
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (FAR VIEW / 远景设定/局部特写): CRITICAL! Do NOT generate a wide panoramic room photo. Frame a tight, cozy close-up shot (特写镜头) focusing strictly on the sofa or bed corner and the lamp. Only show this corner (只展示一角即可). The entire floor lamp must be fully visible in this close-up frame.";
+          preservationGuidance = "2. FULL-HEIGHT CORNER SHOT (远景/完整视角): Frame the full floor lamp from top shade to bottom base in its cozy room corner next to the sofa or bed. The room corner environment (wall, curtains, sofa/bed) should be harmoniously displayed around the lamp.";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (FAR VIEW / 远景/全景视角): Wide-to-medium interior framing displaying the full height of the floor lamp standing in the corner next to the primary furniture from a far camera distance.";
         } else if (safeParams.viewType === "mid") {
-          preservationGuidance = "2. TIGHT MEDIUM SHOT (中景/进一步拉近镜头): ZOOM THE CAMERA IN VERY CLOSE! Frame tightly on the upper half of the floor lamp (lampshade and top pole curve) and the upper surface of nearby furniture (top of sofa backrest/armrest, or nightstand top). The lampshade MUST be large and prominent, occupying 40%-50% of the image frame. The floor, lamp base, and lower pole MUST be completely cropped off at the bottom of the frame.";
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MID VIEW / 中景紧凑拉近视角): CRITICAL CLOSE MEDIUM DISTANCE! Position the camera about 1 meter away. Focus closely on the lampshade, its warm light diffusion, and the adjacent sofa cushion or tabletop details. Do NOT show the lamp base or lower floor. The composition should be an intimate, tight mid-close-up shot emphasizing the product's upper silhouette and cozy lighting.";
+          preservationGuidance = "2. FULL-HEIGHT CORNER SHOT (中景/完整视角): All generation requirements and room/lamp preservation constraints are 100% IDENTICAL to far view (远景). Frame the full floor lamp in its cozy room corner next to the sofa or bed, strictly preserving the exact room background, walls, and furniture. ONLY the camera shooting distance is changed to a medium distance (中景距离).";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MID VIEW / 中景视角): Medium-distance interior framing displaying the floor lamp standing in the corner next to the primary furniture from a medium camera distance, maintaining all other far-view generation rules.";
         } else if (safeParams.viewType === "close") {
-          preservationGuidance = "2. EXTREME MACRO CLOSE-UP (近景/特写 - 画面仅展示灯罩与上段灯杆): EXTREME MACRO DETAIL SHOT. The camera MUST zoom in very closely to focus exclusively on the upper lampshade and top pole/bracket. DO NOT add any pull-chain, bead-chain switch, or hanging cord unless explicitly visible in the uploaded lamp image! The lampshade MUST dominate 60%-70% of the photo frame. The floor, lamp base, and room ceiling MUST be completely cropped OUT of the frame!";
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (CLOSE VIEW / 近景/灯罩长焦特写): Macro photography distance focusing directly on the lampshade and light glow. Look at classic product close-up detail photos: only the upper shade and top rod are visible, with the wall/cabinet right behind it. DO NOT show the bottom base or whole room floor!";
+          preservationGuidance = "2. CLOSE-UP DETAIL SHOT (近景/特写视角): Reference tight product & interior detail photography (参考近景视角). Zoom in close to focus on the glowing lampshade, upper pole detail, and the warm light reflections on the adjacent tabletop or sofa surface. The lampshade and its warm light diffusion should be prominent in the frame.";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (CLOSE VIEW / 近景特写视角): Close-up detail shot framing the illuminated lampshade, warm light wash, and adjacent furniture textures.";
         }
 
         // Detailed style specifications for Virtual Rooms
@@ -649,7 +649,7 @@ ${humanGuidance}`;
         parts.push({ text: prompt });
 
         const response = await client.models.generateContent({
-          model: model || "gemini-3.1-flash-lite-image",
+          model: "gemini-3.1-flash-image",
           contents: {
             parts: parts,
           },

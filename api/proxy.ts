@@ -294,14 +294,14 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
         let perspectiveGuidance = "";
 
         if (params.viewType === "far") {
-          preservationGuidance = "2. LOCALIZED CORNER FULL-HEIGHT SHOT (远景/局部全高视角): The camera is positioned at a close-to-medium distance to frame the full vertical height of the floor lamp from base to shade in its cozy corner. The floor lamp MUST fill at least 60%-80% of the image frame height! CRITICAL: STRICTLY FORBIDDEN to pull back or generate a wide panoramic room photo showing an entire huge living room/bedroom. Crop tightly to only the localized corner (e.g. lamp + sofa armrest).";
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (FAR VIEW / 远景/局部全高视角): Focus directly on the full-length floor lamp in its immediate corner setting beside the sofa armrest or nightstand. Frame and crop tightly on this corner alone; DO NOT show the rest of the room or distant furniture.";
+          preservationGuidance = "2. FULL-HEIGHT CORNER SHOT (远景/完整视角): Frame the full floor lamp from top shade to bottom base in its cozy room corner next to the sofa or bed. The room corner environment (wall, curtains, sofa/bed) should be harmoniously displayed around the lamp.";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (FAR VIEW / 远景/全景视角): Wide-to-medium interior framing displaying the full height of the floor lamp standing in the corner next to the primary furniture from a far camera distance.";
         } else if (params.viewType === "mid") {
-          preservationGuidance = "2. MEDIUM CLOSE SHOT (中景/半身局部视角): The camera is 1 to 1.5 meters away, focusing on the upper-to-mid section of the floor lamp (lampshade, pole, built-in tray) and the adjacent sofa armrest or nightstand top. Keep the camera close so the floor lamp is the undisputed primary hero subject.";
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MID VIEW / 中景/半身视角): Medium close-up focusing directly on the upper 2/3 of the lamp and the immediate sofa armrest or bedside corner.";
+          preservationGuidance = "2. FULL-HEIGHT CORNER SHOT (中景/完整视角): All generation requirements and room/lamp preservation constraints are 100% IDENTICAL to far view (远景). Frame the full floor lamp in its cozy room corner next to the sofa or bed, strictly preserving the exact room background, walls, and furniture. ONLY the camera shooting distance is changed to a medium distance (中景距离).";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MID VIEW / 中景视角): Medium-distance interior framing displaying the floor lamp standing in the corner next to the primary furniture from a medium camera distance, maintaining all other far-view generation rules.";
         } else if (params.viewType === "close") {
-          preservationGuidance = "2. EXTREME MACRO CLOSE-UP (近景/特写 - 画面仅展示灯罩与上段灯杆): EXTREME MACRO DETAIL SHOT. The camera MUST zoom in very closely to focus exclusively on the upper lampshade, top pole/bracket, and pull-chain switch. The lampshade MUST dominate 60%-70% of the photo frame. The floor, lamp base, and room ceiling MUST be completely cropped OUT of the frame!";
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (CLOSE VIEW / 近景/灯罩长焦特写): Macro photography distance focusing directly on the lampshade and light glow. Look at classic product close-up detail photos: only the upper shade and top rod are visible, with the wall/cabinet right behind it. DO NOT show the bottom base or whole room floor!";
+          preservationGuidance = "2. CLOSE-UP DETAIL SHOT (近景/特写视角): Reference tight product & interior detail photography (参考近景视角). Zoom in close to focus on the glowing lampshade, upper pole detail, and the warm light reflections on the adjacent tabletop or sofa surface. The lampshade and its warm light diffusion should be prominent in the frame.";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (CLOSE VIEW / 近景特写视角): Close-up detail shot framing the illuminated lampshade, warm light wash, and adjacent furniture textures.";
         }
 
         const STYLE_SPECS: Record<string, string> = {
@@ -384,7 +384,7 @@ ${humanGuidance}`;
         parts.push({ text: prompt });
 
         const response = await client.models.generateContent({
-          model: model || "gemini-3.1-flash-lite-image",
+          model: "gemini-3.1-flash-image",
           contents: {
             parts: parts,
           },
