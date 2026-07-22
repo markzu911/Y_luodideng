@@ -63,6 +63,16 @@ async function fetchImageAsBase64(url: string): Promise<{ data: string; mimeType
   }
 }
 
+// Helper to sanitize prompt text and strip out negative token triggers (e.g. chains/pulls/beads)
+function sanitizePromptText(text: string, stripChain: boolean = true): string {
+  if (!text) return "";
+  let result = text.replace(/(无开关|无手柄|无铰链|无卡扣|无调节手柄|无转轴|无拉线|无拉绳|无拉链|无珠链|无吊坠|无挂珠)/g, "");
+  if (stripChain) {
+    result = result.replace(/(拉链|珠链|拉绳|挂链|吊坠|开关绳|链子|开关拉链|挂珠链|拉珠|pull-chain|pull chain|chain|pendant|bead cord|bead chain)/gi, "");
+  }
+  return result.replace(/\s+/g, " ").trim();
+}
+
 async function startServer() {
   const app = express();
   const PORT = 3000;
@@ -414,9 +424,7 @@ VERY IMPORTANT: You MUST reply in Chinese (简体中文) for all string values.
 
 8-DIMENSIONAL LAMP ANALYSIS METHODOLOGY (台灯8维深度解构拆解):
 1. 产品结构与整体轮廓 (Product Structure & Silhouette): 识别灯具整体轮廓与结构组成，包括灯罩形状（圆筒/圆锥/百褶等）、灯杆造型（直立杆/一体光滑弧形弯杆/三脚架等）、底座形式（平整圆形/方块等）及各部件连接方式。
-2. 外观形态与开关/关节特征 (Visual Form & Controls/Joints): 
-   - 重点检查是否有拉链开关/悬挂珠链/拉绳（若无拉链，必须明确标注“无开关拉链/无悬挂珠链/无拉绳”；若有拉链才注明）。
-   - 重点检查灯杆转折处是否有机械调节关节/卡扣/手柄（若为一体光滑弧形弯杆，必须明确标注“一体光滑弧度，无凸起调节手柄/无铰链转轴”）。
+2. 外观形态与开关/吊坠特征 (Visual Form & Accessories): 准确识别灯体造型、灯罩形状。特别精细观察灯罩下方是否真实悬挂有【拉链开关/拉绳/珠链/吊坠饰品】：若【图片中确实存在】，设置 hasPullChain 为 true，并在 structure 中客观描述该拉链/吊坠外观；若【图片中不存在】，设置 hasPullChain 为 false，且绝不要在文字中输出“无拉链”、“无珠链”等否定词。
 3. 材质工艺 (Materials & Craftsmanship): 分析灯罩织物/布艺纹理、金属杆颜色与哑光/高光质感、底座材质。
 4. 比例尺寸 (Proportions & Scale): 判断高度、宽度、灯罩与灯杆的弯曲比例关系及视觉重心。
 5. 颜色搭配 (Color Scheme): 精准拆解灯罩、灯杆、连接件、底座各自的颜色。
@@ -427,7 +435,8 @@ VERY IMPORTANT: You MUST reply in Chinese (简体中文) for all string values.
 You must return the analysis in a clean JSON format matching this exact schema:
 {
   "style": "Overall design style",
-  "structure": "Exhaustive breakdown covering structure, pole shape, shade shape, base, and EXPLICITLY stating whether pull-chains or adjustment levers exist (e.g., 结构组成: 暖白色布艺圆筒灯罩、一体光滑弧形哑光黑色金属灯杆（无调节手柄/无铰链）、无拉链开关/无挂珠链、底部黑色平整圆形金属底座。)",
+  "structure": "Exhaustive positive description of the lamp structure (e.g., 暖白色极简布艺圆筒灯罩，一体光滑弧形哑光黑色金属灯杆，平整圆形金属底座。)",
+  "hasPullChain": false,
   "materials": ["Exhaustive list of materials used"],
   "color": "Exact color breakdown per component",
   "lightType": "Lighting description",
@@ -445,6 +454,7 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
               properties: {
                 style: { type: Type.STRING },
                 structure: { type: Type.STRING },
+                hasPullChain: { type: Type.BOOLEAN, description: "True ONLY if the floor lamp image explicitly shows a visible pull chain, bead cord, hanging string, or pendant hanging under the lampshade. False if no pull chain or pendant exists." },
                 materials: {
                   type: Type.ARRAY,
                   items: { type: Type.STRING }
@@ -455,7 +465,7 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
                 cozyIndex: { type: Type.INTEGER },
                 placementTip: { type: Type.STRING }
               },
-              required: ["style", "structure", "materials", "color", "lightType", "lightWarmth", "cozyIndex", "placementTip"]
+              required: ["style", "structure", "hasPullChain", "materials", "color", "lightType", "lightWarmth", "cozyIndex", "placementTip"]
             }
           }
         });
@@ -572,15 +582,29 @@ The room style and context MUST match:
           ? "7. IMAGE QUALITY & RESOLUTION: Render at high-definition 2K resolution with crisp details and clean clarity."
           : "7. IMAGE QUALITY & RESOLUTION: Render at standard clean 1K resolution.";
 
-        // Sanitize lamp structure description to prevent negative token activation in diffusion models
-        let sanitizedLampStructure = lampAnalysis.structure || "N/A";
-        const hasExplicitPullChain = /有拉链|有链子|有拉绳|有珠链|pull-chain/i.test(sanitizedLampStructure);
-        if (!hasExplicitPullChain) {
-          // Strip out mentions of chains/pulls so negative keywords don't trigger the image model
-          sanitizedLampStructure = sanitizedLampStructure
-            .replace(/(无拉链开关|无挂珠链|无拉绳|无拉链|无开关拉链|无链子|无开关绳)/g, "")
-            .replace(/(无调节手柄|无铰链|无凸起调节手柄|无铰链转轴)/g, "");
-        }
+        // Determine whether the lamp in IMAGE 2 actually has a pull chain / pendant / hanging cord
+        const rawLampText = (lampAnalysis.structure || "") + " " + (lampAnalysis.style || "");
+        const hasPullChain = Boolean(
+          lampAnalysis.hasPullChain === true ||
+          (/有拉链|有珠链|有拉绳|有吊坠|有挂珠|有开关拉链|有拉链开关|pull-chain|pull chain|pendant/i.test(rawLampText) &&
+           !/无拉链|无珠链|无拉绳|无吊坠|无挂珠|无开关拉链|无拉链开关|no pull-chain/i.test(rawLampText))
+        );
+
+        // Sanitize all lamp fields (if hasPullChain is false, strip out chain keywords; if true, preserve them)
+        const sanitizedLampStyle = sanitizePromptText(lampAnalysis.style || "", !hasPullChain);
+        const sanitizedLampStructure = sanitizePromptText(lampAnalysis.structure || "", !hasPullChain);
+        const sanitizedLampMaterials = (lampAnalysis.materials || []).map(m => sanitizePromptText(m, !hasPullChain)).filter(Boolean);
+        const sanitizedLampColor = sanitizePromptText(lampAnalysis.color || "", !hasPullChain);
+        const sanitizedLampLightType = sanitizePromptText(lampAnalysis.lightType || "", !hasPullChain);
+        const sanitizedLampLightWarmth = sanitizePromptText(lampAnalysis.lightWarmth || "", !hasPullChain);
+
+        const lampshadeBottomInstruction = hasPullChain
+          ? "The reference lamp HAS a visible pull-chain switch, bead cord, or decorative pendant hanging under the lampshade. You MUST accurately render this pull-chain / pendant hanging naturally under the lampshade as shown in IMAGE 2."
+          : "The bottom of the lampshade is a completely smooth, hollow, clean, empty opening with NO pull-chains, NO cords, and NO pendants hanging down.";
+
+        const pullChainConstraint = hasPullChain
+          ? "1.1 PULL-CHAIN / PENDANT FEATURE (100% 还原灯罩下方存在的拉链/吊坠): IMAGE 2 HAS a visible pull-chain switch or pendant. You MUST render this pull-chain/pendant hanging naturally under the lampshade."
+          : "1.1 CLEAN LAMPSHADE BOTTOM - NO PULL-CHAIN OR PENDANT (极致干净的灯罩下沿 - 绝无拉链/无吊坠): IMAGE 2 does NOT have any pull-chain, bead cord, hanging string, or pendant. The bottom rim of the lampshade MUST be 100% smooth, clean, hollow, open, and completely free of any hanging strings, pull chains, cords, or pendants. DO NOT draw any pull chains or dangling items!";
 
         const prompt = `A professional, ultra-high-resolution interior design photograph.
 Your task is to generate a new room based on the analysis and embed the provided floor lamp into it.
@@ -588,12 +612,12 @@ Your task is to generate a new room based on the analysis and embed the provided
 ${roomStylePrompt}
 
 THE LAMP TO INTEGRATE:
-Style: ${lampAnalysis.style}
+Style: ${sanitizedLampStyle}
 Structure details: ${sanitizedLampStructure}
-Materials: ${lampAnalysis.materials.join(", ")}
-Color: ${lampAnalysis.color}
-Light Type: ${lampAnalysis.lightType}
-Light Warmth: ${lampAnalysis.lightWarmth}
+Materials: ${sanitizedLampMaterials.join(", ")}
+Color: ${sanitizedLampColor}
+Light Type: ${sanitizedLampLightType}
+Light Warmth: ${sanitizedLampLightWarmth}
 
 ${lightPrompt}
 
@@ -601,15 +625,15 @@ HIGHEST PRIORITY CONSTRAINTS (MUST BE STRICTLY FOLLOWED):
 0. CRITICAL DIRECT VISUAL REPLICATION OF IMAGE 2 (最核心约束 - 必须和用户上传/选择的落地灯图片完全一致):
    - Look directly at the attached reference floor lamp image (IMAGE 2).
    - The generated floor lamp MUST BE AN EXACT 1:1 VISUAL REPLICA of the floor lamp in IMAGE 2 in every single dimension:
-     * EXACT Lampshade: Same geometry (e.g. cylinder/drum/cone/pleated/flower-shaped), fabric/material texture, pleat pattern, and color as shown in IMAGE 2. The bottom of the lampshade is clean and unobstructed.
-     * EXACT Pole/Stand: Same exact curve angle, pole thickness, material finish (e.g. matte black/brushed brass/chrome), and trajectory. If IMAGE 2 shows a smooth arched pole, render it as ONE smooth, continuous curved rod without any extra knobs, levers, or joints.
-     * EXACT Base: Same base type, diameter, and material as in IMAGE 2.
-     * MINIMALIST PURITY: Render ONLY the exact physical parts visible in IMAGE 2. No extra accessories or unrequested hardware.
+     * EXACT Lampshade: Same geometry (e.g. cylinder/drum/cone/pleated/flower-shaped), fabric/material texture, pleat pattern, and color as shown in IMAGE 2. ${lampshadeBottomInstruction}
+     * EXACT Pole/Stand: Same exact curve angle, pole thickness, material finish (e.g. matte black/brushed brass/chrome), and trajectory. If IMAGE 2 shows a smooth arched pole, render it as ONE smooth, continuous curved rod with a clean surface.
+     * EXACT Base & Foot Switch: Same base type and material as in IMAGE 2.
+     * MINIMALIST PURITY: Render ONLY the exact physical parts visible in IMAGE 2. No unrequested extra hardware or unneeded accessories.
    - If there is any discrepancy between text descriptions and IMAGE 2, IMAGE 2 IS THE ABSOLUTE TRUTH AND MUST BE REPLICATED EXACTLY.
 
 1. POLE SHAPE & DESIGN PURITY (灯杆与灯体造型纯正性):
    - If the lamp pole in IMAGE 2 is a smooth arched curve, render it as ONE continuous, sleek, smooth curved rod.
-   - The bottom opening of the lampshade must be clean, neat, and minimalist.
+   ${pullChainConstraint}
    - IF the original floor lamp pole is a straight vertical rod, it MUST remain a single clean vertical rod.
    - IF the original floor lamp does NOT have a built-in tray/table, DO NOT add a tray. IF it HAS a tray, preserve its exact shape, height, and color.
 

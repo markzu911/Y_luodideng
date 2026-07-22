@@ -19,6 +19,7 @@ export interface RoomAnalysis {
 export interface LampAnalysis {
   style: string;
   structure: string;
+  hasPullChain?: boolean;
   materials: string[];
   color: string;
   lightType: string;
