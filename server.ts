@@ -492,8 +492,7 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
           }
         }
 
-        const isUploadedRoom = roomImage && (roomImage.startsWith("data:image/") || roomImage.startsWith("blob:"));
-        const isVirtualRoom = !isUploadedRoom;
+        const hasRoomImage = !!roomImage;
 
         const lampMaterialsStr = Array.isArray(lampAnalysis?.materials) 
           ? lampAnalysis.materials.join("、") 
@@ -558,8 +557,14 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
           "田园风": "MASTERPIECE ARCHITECTURE: Warm cozy French country-style bedroom (温润田园风卧室) featuring authentic and realistic high-end residential furniture. MATERIALS: Light natural warm honey-oak wood floors, soft creamy-white or pale beige plaster walls, sheer translucent flowing white curtains, beautiful ruffled floral-lace window curtains. LIGHTING: Gentle, romantic indirect light from classic wall-mounted bronze sconces with small pleated fabric shades glowing warm golden yellow, combined with soft diffused daylight filtering from the window. FURNITURE: A highly comfortable classic solid-wood single/double bed frame styled with fluffy white pillows, delicate pink and yellow pastel-colored accent bedding and sheets with floral patterns, and a soft knit throw blanket. Side table is a minimalist metal round bedside stand with tulips. A classic, rustic warm solid-wood study desk styled with books, a small pleated-shade table lamp, and small green potted plant. Under the bed lies a textured handwoven jute area rug. VIBE: Warm, sweet, romantic, serene, natural, healing, peaceful, and cozy, photorealistic 8k."
         };
 
-        const roomStylePrompt = isVirtualRoom
-          ? `CRITICAL ROOM STYLE MATCHING: You MUST strictly generate the room according to the textual design specifications below to perfectly capture the essence of "${roomAnalysis.style}". 必须严格按照以下【设计规范】和【文字描述】生成极致完美的【${roomAnalysis.style}】风格样板间，完全符合对应的颜色、家具和布局设定，切记不要偏离指定的风格！
+        const roomStylePrompt = hasRoomImage
+          ? `CRITICAL ROOM BACKGROUND PRESERVATION (必须100%绝对保留IMAGE 1原图房间与家具面貌):
+- Look directly at the attached reference room image (IMAGE 1).
+- You MUST STRICTLY PRESERVE the exact room background, architectural wall materials (wallpapers, wood paneling, plaster, paint colors), window placements, curtains, floor finish, and existing sofa/bed furniture from IMAGE 1.
+- DO NOT REPLACE OR MODIFY THE SOFA/BED: The sofa or bed in IMAGE 1 MUST remain identical in shape, fabric/leather material, color, and cushions.
+- DO NOT CHANGE WALLS, WINDOWS, OR DECOR: Keep the exact wall colors, paneling, and decor from IMAGE 1.
+- DO NOT generate a brand new room or alter the room's interior decoration! Your task is ONLY to place the floor lamp (IMAGE 2) into this exact room corner from IMAGE 1.`
+          : `CRITICAL ROOM STYLE MATCHING: You MUST strictly generate the room according to the textual design specifications below to perfectly capture the essence of "${roomAnalysis.style}". 必须严格按照以下【设计规范】和【文字描述】生成极致完美的【${roomAnalysis.style}】风格样板间，完全符合对应的颜色、家具和布局设定，切记不要偏离指定的风格！
   
 DESIGN SPECIFICATION FOR THIS STYLE:
 ${STYLE_SPECS[roomAnalysis.style] || "Generate a professional, high-end interior matching the requested style."}
@@ -568,8 +573,7 @@ The room style and context MUST match:
 - Style: ${roomAnalysis.style}
 - Layout: ${roomAnalysis.layout}
 - Furniture: ${roomFurnitureStr}
-- Colors: ${roomColorsStr}`
-          : `CRITICAL ROOM STYLE & ARCHITECTURE PRESERVATION: You MUST strictly preserve the exact style, architectural walls, window placement, wall textures, and furniture layout of the uploaded room background (IMAGE 1). 必须完全绝对保留用户上传房间图片（IMAGE 1）的墙面材质、窗户布局、硬装结构和原有家具。严禁擅自增加原图不存在的窗户、修改墙面颜色/材质或多出未经允许的家具！将落地灯（IMAGE 2）自然融合成画放置在原本房间角落的沙发或床头侧面。`;
+- Colors: ${roomColorsStr}`;
 
         const lightPrompt = safeParams.lightState === "on"
           ? `CRITICAL (LIGHT IS ON): Warm, soft, high-fidelity light glows from the light source of the lamp. You MUST generate realistic volumetric light cones, ambient lighting casting on the nearby furniture and floor, and highlight shadows with rich glow effects. The warm light from the floor lamp (approx 3000K-3500K) must blend harmoniously with the room's cozy ambient lighting. The entire scene must use a unified, natural, and comfortable color temperature without any strange, extreme contrast between cold blue and warm orange.`
@@ -586,7 +590,7 @@ The room style and context MUST match:
           : "7. IMAGE QUALITY & RESOLUTION: Render at standard clean 1K resolution.";
 
         const prompt = `A professional, ultra-high-resolution interior design photograph.
-Your task is to generate a new room based on the analysis and embed the provided floor lamp into it.
+Your task is to seamlessly integrate the provided reference floor lamp (IMAGE 2) into the room environment (IMAGE 1), strictly maintaining 100% visual fidelity for BOTH the room (IMAGE 1) and the floor lamp (IMAGE 2).
 
 ${roomStylePrompt}
 
@@ -601,14 +605,14 @@ Light Warmth: ${lampAnalysis.lightWarmth}
 ${lightPrompt}
 
 HIGHEST PRIORITY CONSTRAINTS (MUST BE STRICTLY FOLLOWED):
-0. CRITICAL DIRECT VISUAL REPLICATION OF IMAGE 2 (最核心约束 - 必须和用户上传/选择的落地灯图片完全一致):
-   - Look directly at the attached reference floor lamp image (IMAGE 2).
-   - The generated floor lamp MUST BE AN EXACT 1:1 VISUAL REPLICA of the floor lamp in IMAGE 2 in every single dimension:
+0. CRITICAL DUAL VISUAL FIDELITY - PRESERVE BOTH IMAGE 1 AND IMAGE 2 (最核心双重约束 - 100%忠实还原原图房间与落地灯):
+   - IMAGE 1 IS THE ABSOLUTE TRUTH FOR THE ROOM: Look directly at IMAGE 1. Keep the exact walls, window frame, curtains, flooring, and sofa/bed from IMAGE 1. DO NOT change the sofa/bed style, upholstery material, or wall finish!
+   - IMAGE 2 IS THE ABSOLUTE TRUTH FOR THE FLOOR LAMP: Look directly at IMAGE 2. Replicate the floor lamp in IMAGE 2 with exact 1:1 visual fidelity across every dimension:
      * EXACT Lampshade: Same geometry (e.g. cylinder/drum/cone/pleated/flower-shaped), fabric/material texture, pleat pattern, and color as shown in IMAGE 2.
      * EXACT Pole/Stand: Same exact curve angle, pole thickness, material finish (e.g. matte black/brushed brass/chrome), and trajectory. If IMAGE 2 shows a smooth arched pole, DO NOT add any joints, levers, knobs, or extra bends! If IMAGE 2 shows a straight vertical pole, DO NOT bend it!
      * EXACT Base: Same base type, diameter, and material as in IMAGE 2.
      * ZERO HALLUCINATIONS: DO NOT add any pull-chains, hanging beads, extra shelves, swing arms, or hardware controls unless explicitly visible in IMAGE 2!
-   - If there is any discrepancy between text descriptions and IMAGE 2, IMAGE 2 IS THE ABSOLUTE TRUTH AND MUST BE REPLICATED EXACTLY. Any visual deviation from IMAGE 2 is a critical failure!
+   - Any visual deviation from IMAGE 1 (room) or IMAGE 2 (lamp) is a critical failure!
 
 1. POLE SHAPE & CONTROL DETAILS (灯杆造型与开关细节 - 100%按IMAGE 2原样还原):
    - POLE SHAPE FIDELITY: If the lamp pole in IMAGE 2 is a smooth arched curve (光滑弧形弯杆), it MUST be rendered as ONE continuous, sleek, smooth curved rod. STRICTLY FORBIDDEN: DO NOT add any mechanical adjustment knobs, angular elbow hinges, counterweight handles, or lever sticks protruding from the pole bend!
