@@ -397,27 +397,31 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
               },
             },
             {
-              text: `You are an expert product and lighting designer. Perform a 100% EXHAUSTIVE, NON-OMISSIVE, HIGH-PRECISION analysis of this floor lamp image.
+              text: `You are an expert product and lighting designer. Perform a 100% EXHAUSTIVE, HIGH-PRECISION analysis of this floor lamp image across 8 key product dimensions:
 VERY IMPORTANT: You MUST reply in Chinese (简体中文) for all string values.
 
-CRITICAL INSTRUCTIONS FOR FULL COMPONENT ANALYSIS (全部件无遗漏全面细节深度解析):
-You MUST inspect and describe EVERY SINGLE physical component of the lamp in detail. Do NOT omit anything:
-1. Base (底座): Material, shape (round disc/square block/marble slab/integrated bedside table), finish, and stability features.
-2. Pole/Stand & Joints (撑杆与结构件): Pole shape (straight vertical / curved arc / swan-neck / tripod), material, color, height joints, and any mechanical features. EXPLICITLY state if there are NO horizontal swing arms, NO side branches, or NO extra brackets!
-3. Built-in Tray/Shelf (置物台/茶几盘): Does a built-in tray or drawer exist on the pole? Describe its shape (round/square wood tray), height position, drawer count, and material. If NO tray exists, explicitly state "无置物茶几盘".
-4. Shade & Light Head (灯罩/灯头): Lampshade shape (pleated cone / scalloped dome / glass globe / drum / paper lantern), fabric/glass material, pleat pattern, rim color, and light diffusion direction.
-5. Switches & Controls (开关与细节): Note switch mechanisms (e.g., hanging brass pull-chain switch below the shade, foot pedal switch, turn knob) if visible.
+8-DIMENSIONAL LAMP ANALYSIS METHODOLOGY (台灯8维深度解构拆解):
+1. 产品结构与整体轮廓 (Product Structure & Silhouette): 识别灯具整体轮廓与结构组成，包括灯罩形状（圆筒/圆锥/百褶等）、灯杆造型（直立杆/一体光滑弧形弯杆/三脚架等）、底座形式（平整圆形/方块等）及各部件连接方式。
+2. 外观形态与开关/关节特征 (Visual Form & Controls/Joints): 
+   - 重点检查是否有拉链开关/悬挂珠链/拉绳（若无拉链，必须明确标注“无开关拉链/无悬挂珠链/无拉绳”；若有拉链才注明）。
+   - 重点检查灯杆转折处是否有机械调节关节/卡扣/手柄（若为一体光滑弧形弯杆，必须明确标注“一体光滑弧度，无凸起调节手柄/无铰链转轴”）。
+3. 材质工艺 (Materials & Craftsmanship): 分析灯罩织物/布艺纹理、金属杆颜色与哑光/高光质感、底座材质。
+4. 比例尺寸 (Proportions & Scale): 判断高度、宽度、灯罩与灯杆的弯曲比例关系及视觉重心。
+5. 颜色搭配 (Color Scheme): 精准拆解灯罩、灯杆、连接件、底座各自的颜色。
+6. 光影效果 (Lighting Effects): 光源颜色、亮度、透光方式与产生的环境氛围。
+7. 设计风格 (Design Style): 判断设计风格（如现代极简弧形风、复古法式百褶风等）。
+8. 空间关系与搭配场景 (Spatial Fit): 判断适用场景与推荐摆放方位。
 
 You must return the analysis in a clean JSON format matching this exact schema:
 {
-  "style": "Overall design style (e.g., 现代法式百褶复古风, 北欧极简原木风, 包豪斯黄铜弧形风)",
-  "structure": "Exhaustive component-by-component breakdown (e.g., 包含: 暖白色百褶布艺灯罩、直立式哑光黑色金属杆、悬挂式黄铜拉线开关、中部固定圆形胡桃木置物茶几盘、底部圆形黑色平整底座。严禁增加任何摇臂或侧向延伸杆。)",
-  "materials": ["Exhaustive list of all materials used in base, pole, tray, shade, and switch"],
-  "color": "Exact color breakdown for each individual component (e.g., 暖白布艺灯罩、哑光黑灯杆、胡桃木色茶几盘、黑色金属底座)",
-  "lightType": "Lighting classification (e.g., 360°柔和漫反射环境光、下照式舒适阅读光)",
-  "lightWarmth": "Light warmth recommendation (e.g., 2700K-3000K 温馨暖光)",
+  "style": "Overall design style",
+  "structure": "Exhaustive breakdown covering structure, pole shape, shade shape, base, and EXPLICITLY stating whether pull-chains or adjustment levers exist (e.g., 结构组成: 暖白色布艺圆筒灯罩、一体光滑弧形哑光黑色金属灯杆（无调节手柄/无铰链）、无拉链开关/无挂珠链、底部黑色平整圆形金属底座。)",
+  "materials": ["Exhaustive list of materials used"],
+  "color": "Exact color breakdown per component",
+  "lightType": "Lighting description",
+  "lightWarmth": "Light warmth recommendation",
   "cozyIndex": 9,
-  "placementTip": "A professional tip on how to position and style this lamp in a room"
+  "placementTip": "Placement tip"
 }
 Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json.`,
             },
@@ -574,10 +578,14 @@ Light Warmth: ${lampAnalysis.lightWarmth}
 ${lightPrompt}
 
 HIGHEST PRIORITY CONSTRAINTS (MUST BE STRICTLY FOLLOWED):
-0. THE MOST IMPORTANT CONSTRAINT (最核心约束): THE GENERATED FLOOR LAMP MUST BE 100% IDENTICAL TO THE UPLOADED FLOOR LAMP (最重要的约束就是生成的图片要确保落地灯和用户上传的必须完全一致). Any deviation in shape, structure, color, or missing parts is a complete failure!
-1. NO UNREQUESTED OR HALLUCINATED LAMP PARTS (严禁出现台灯原本没有的任何部件 - 绝对精细100%还原):
+0. THE MOST IMPORTANT CONSTRAINT - 8-DIMENSIONAL LAMP RECONSTRUCTION (最核心约束 - 8维精准还原落地灯):
+   - You MUST reconstruct the floor lamp with 100% fidelity across all 8 dimensions: 产品结构、外观形态、材质工艺、比例尺寸、颜色搭配、光影效果、设计风格及空间关系.
+   - The generated floor lamp MUST BE 100% IDENTICAL to the uploaded floor lamp image. Any deviation in shape, structure, color, or hallucinated parts is a critical failure!
+
+1. POLE SHAPE & CONTROL DETAILS (灯杆造型与开关细节 - 严禁出现无中生有的杆子接头/手柄或链子):
+   - POLE SHAPE FIDELITY: If the uploaded lamp pole is a smooth arched curve (光滑弧形弯杆), it MUST be rendered as ONE continuous, sleek, smooth curved rod. STRICTLY FORBIDDEN: DO NOT add any mechanical adjustment knobs, angular elbow hinges, counterweight handles, or lever sticks protruding from the pole bend!
+   - ABSOLUTE PROHIBITION OF HALLUCINATED PULL-CHAINS: If the uploaded lamp image or analysis specifies "无拉链/无挂珠链" or shows no hanging cord, YOU MUST NOT RENDER ANY PULL-CHAIN, BEAD CHAIN, OR SWITCH CORD UNDER THE LAMPSHADE!
    - You MUST reproduce ONLY the exact physical parts visible in the reference floor lamp image and described in the lamp analysis structure: ${lampAnalysis.structure || "N/A"}.
-   - STRICTLY FORBIDDEN: DO NOT add any pull-chain switches (拉链开关/悬挂小珠链/拉绳), swing arms, extra brackets, extra poles, secondary lampshades, extra trays, or hardware extensions unless they explicitly exist in the uploaded reference lamp image! If the uploaded lamp does NOT have a pull-chain or hanging cord under the lampshade, the generated lamp MUST NOT have any pull-chain or hanging string!
    - IF the original floor lamp pole is a straight vertical rod, it MUST remain a single clean vertical rod. DO NOT generate any horizontal side arms protruding outwards.
    - IF the original floor lamp does NOT have a built-in tray/table, DO NOT add a tray. IF it HAS a tray, preserve its exact shape, height, and color.
 
