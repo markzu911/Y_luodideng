@@ -374,7 +374,7 @@ export default function App() {
             "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            model: "gemini-3.1-flash-lite-image",
+            model: "gemini-3.1-flash-image",
             payload: {
               task: "generate-scene",
               roomAnalysis,

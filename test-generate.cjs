@@ -27,7 +27,7 @@ HIGHEST PRIORITY CONSTRAINTS (MUST BE STRICTLY FOLLOWED):
 
   try {
     const response = await client.models.generateContent({
-      model: "gemini-3.1-flash-lite-image",
+      model: "gemini-3.1-flash-image",
       contents: {
         parts: [
           { text: prompt },
