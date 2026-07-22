@@ -569,8 +569,9 @@ HIGHEST PRIORITY CONSTRAINTS (MUST BE STRICTLY FOLLOWED):
    - You MUST completely and exactly reproduce the floor lamp's original appearance, colors, materials, structure, and shape.
    - PHYSICAL INTEGRITY: The floor lamp (lampshade, pole, built-in tray if any, and bottom base) is ONE SINGLE CONNECTED PHYSICAL OBJECT. The base MUST rest firmly on the floor. DO NOT detach the pole from its base, do not separate the tray, and DO NOT fuse/embed the lamp pole or tray into adjacent nightstands or drawers! The bedside nightstand and sofa are independent items sitting beside the floor lamp.
 
-3. ROOM LAYOUT CONSISTENCY & LOCALIZED CORNER (房间布局变动限制与局部角落取景):
-   - Keep the background walls, wall paneling, curtains, window positions, and furniture style completely consistent and stable.
+3. STRICT ROOM LAYOUT CONSISTENCY AND CAMERA PERSPECTIVE (严格的房间布局一致性与相机视角说明):
+   - You MUST keep the background walls, wall paneling, curtains, window positions, and furniture items/layout completely consistent with the uploaded room image.
+   - The camera's shooting angle/perspective CAN BE DIFFERENT from the original uploaded room photo (拍摄视角可以和用户原图不一致，例如可以从不同角度拍摄这个角落), BUT the room background, layout, and furniture MUST remain exactly the same as the original room (房间背景和家具布局必须保持绝对一致).
    - You are STRICTLY FORBIDDEN from generating a wide-angle full-room shot showing an entire room, huge open space, or random new room layouts. Focus strictly on the localized nook/corner where the lamp is placed.
 
 4. STRICT LAMP PLACEMENT RULES - MUST BE PLACED ON THE SIDE OF SOFA/BED (落地灯摆放位置严禁放在床尾或沙发正前方！必须放在侧面):
