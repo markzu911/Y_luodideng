@@ -501,14 +501,14 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
         let perspectiveGuidance = "";
 
         if (params.viewType === "far") {
-          preservationGuidance = "2. DISTANT / WIDER CORNER SHOT (远景/更宽局部视角): The camera is positioned further back compared to the medium close view to capture a wider, more comprehensive view of the room corner. It clearly reveals the entire height of the floor lamp (base to shade), the full scale of the neighboring furniture (e.g., the complete side of the sofa, or the entire bed headboard with the nightstand), and more floor and wall surface. It MUST show a distinctly larger range of the room than the medium view, but NOT the entire room (远景视角：视距较远，展示落地灯所在角落的更宽范围，包括完整的落地灯、完整的相邻家具侧边、更多的墙面与地面，展示范围明显大于中景，但又不是展示整间房间，确保画面重点仍在角落里).";
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (FAR VIEW / 远景/更宽视距视角): Set a larger camera distance to show a broader segment of the room's corner environment. It must be clearly distinguished from the medium view by showing significantly more of the surrounding layout and furniture, while keeping the floor lamp as the primary focal subject.";
+          preservationGuidance = "2. LOCALIZED CORNER FULL-HEIGHT SHOT (远景/局部全高视角): The camera is positioned at a close-to-medium distance to frame the full vertical height of the floor lamp from base to shade in its cozy corner. The floor lamp MUST fill at least 60%-80% of the image frame height! CRITICAL: STRICTLY FORBIDDEN to pull back or generate a wide panoramic room photo showing an entire huge living room/bedroom. Crop tightly to only the localized corner (e.g. lamp + sofa armrest).";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (FAR VIEW / 远景/局部全高视角): Focus directly on the full-length floor lamp in its immediate corner setting beside the sofa armrest or nightstand. Frame and crop tightly on this corner alone; DO NOT show the rest of the room or distant furniture.";
         } else if (params.viewType === "mid") {
-          preservationGuidance = "2. MEDIUM CLOSE SHOT (中景/中等视距视角): The camera is positioned at a medium distance (approx 1 to 1.5 meters), focusing on a tighter, more intimate view of the floor lamp's upper-to-mid section (lampshade, pole, built-in shelf/tray) and the immediate neighboring furniture (e.g., only the side armrest of the sofa or the top of the bedside nightstand). The visible room area is smaller, more focused, and much tighter than the far view (中景视角：视距较近，约1-1.5米，聚焦于落地灯中上段及其紧邻的局部，展示的房间范围明显比远景更小更窄，与远景有明确的视距和景深区分).";
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MID VIEW / 中景/中等视距): A closer, more focused medium shot that tightly frames the floor lamp and its immediate surrounding elements. It MUST have a narrower perspective and smaller visible room range compared to the far view.";
+          preservationGuidance = "2. MEDIUM CLOSE SHOT (中景/半身局部视角): The camera is 1 to 1.5 meters away, focusing on the upper-to-mid section of the floor lamp (lampshade, pole, built-in tray) and the adjacent sofa armrest or nightstand top. Keep the camera close so the floor lamp is the undisputed primary hero subject.";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MID VIEW / 中景/半身视角): Medium close-up focusing directly on the upper 2/3 of the lamp and the immediate sofa armrest or bedside corner.";
         } else if (params.viewType === "close") {
-          preservationGuidance = "2. CLOSE-UP COMPOSITION & DISTANCE (近景/特写 - 严格平视半身构图与视距规范): The camera MUST adopt a very tight, frontal, eye-level close-up shot that strictly mirrors the uploaded reference image's composition and distance. The shot is positioned extremely close, showing ONLY the upper portion of the floor lamp. The lampshade MUST dominate 60%-70% of the entire frame horizontally and vertically, positioned as the undisputed central-upper hero subject. The camera's focal line is perfectly parallel to the lampshade's lower rim, capturing a perfectly straight, flat, and horizontal lower edge of the shade (镜头的视平线高度刚好平视灯罩的下沿，使得下沿在画面中呈现为一条完全水平的直线，不能有仰角或俯角的弧度). Extending from the lampshade is the pole, neck, or support structure of the floor lamp, which MUST strictly preserve the exact shape, profile, curvature, metallic color, and physical structure of the user's uploaded floor lamp reference (灯罩下方延伸出的灯杆/支架结构，必须高度还原用户上传落地灯参考图中的材质、金属色泽与物理弯曲度/直立特征。如果参考图是直杆则保持笔直；如果参考图是拱形、带弧度或特殊弯曲设计，则必须完美保留其原始的物理弯曲或支撑结构，绝不强制一律做成笔直，必须要同用户上传的落地灯原型具有百分之百的特征一致性). If the original uploaded lamp has a delicate beaded pull-chain switch hanging from inside the shade, replicate it hanging parallel next to the pole; otherwise, respect the original lamp's native components. In the lower-left corner of the frame, a simple round white ceramic flower vase with blooming soft pink/apricot roses rests on a table surface covered with a delicate white lace-trimmed table runner (画面左下角，一张铺有白色精致蕾丝边桌布的桌面上，摆放着一个圆形白色陶瓷花瓶，瓶中插着几朵娇艳盛开的淡粉/杏色玫瑰花). The background is a dim, clean, and out-of-focus dark-grey or deep-brown flat paneled wall or cabinet door with a clean vertical seam line, mirroring the provided reference image composition exactly (背景为暗色调、虚化、平整的暗灰色或深褐色木饰面墙板/柜门，并带有一条垂直的拼缝线，烘托出高级温馨的对比氛围). The floor, lamp base, room ceiling, and rest of the furniture are completely cropped out of the frame (地、灯座、天花板以及完整的其它家具主体均被完全裁剪在画面之外).";
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (CLOSE VIEW / 近景/灯罩平视特写): A perfectly leveled, frontal, straight-on macro close-up. The camera lens is positioned directly level with the lower edge of the lampshade. The lampshade dominates 60%-70% of the top-center of the screen. Directly below the shade, the physical support pole, neck, or arm structure (straight, arched, or curved) must perfectly replicate the shape, metallic finish, and posture of the original uploaded reference floor lamp (下方延伸出的金属杆件或支撑结构必须与原图弯曲度或笔直特征完全一致). Replicate any pull-chain details if they exist in the original. In the bottom-left corner, frame the top of a table with a white lace runner and a round white vase containing pink roses. The background must be a dark, simple flat panel, completely sharp-focus on the lamp and softly focused on the vase. Absolutely NO generic horizontal brackets, swing arms, or side attachments around the shade unless they exist on the original uploaded lamp!";
+          preservationGuidance = "2. EXTREME MACRO CLOSE-UP (近景/特写 - 画面仅展示灯罩与上段灯杆): EXTREME MACRO DETAIL SHOT. The camera MUST zoom in very closely to focus exclusively on the upper lampshade, top pole/bracket, and pull-chain switch. The lampshade MUST dominate 60%-70% of the photo frame. The floor, lamp base, and room ceiling MUST be completely cropped OUT of the frame!";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (CLOSE VIEW / 近景/灯罩长焦特写): Macro photography distance focusing directly on the lampshade and light glow. Look at classic product close-up detail photos: only the upper shade and top rod are visible, with the wall/cabinet right behind it. DO NOT show the bottom base or whole room floor!";
         }
 
         // Detailed style specifications for Virtual Rooms
@@ -522,34 +522,18 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
           "田园风": "MASTERPIECE ARCHITECTURE: Warm cozy French country-style bedroom (温润田园风卧室) featuring authentic and realistic high-end residential furniture. MATERIALS: Light natural warm honey-oak wood floors, soft creamy-white or pale beige plaster walls, sheer translucent flowing white curtains, beautiful ruffled floral-lace window curtains. LIGHTING: Gentle, romantic indirect light from classic wall-mounted bronze sconces with small pleated fabric shades glowing warm golden yellow, combined with soft diffused daylight filtering from the window. FURNITURE: A highly comfortable classic solid-wood single/double bed frame styled with fluffy white pillows, delicate pink and yellow pastel-colored accent bedding and sheets with floral patterns, and a soft knit throw blanket. Side table is a minimalist metal round bedside stand with tulips. A classic, rustic warm solid-wood study desk styled with books, a small pleated-shade table lamp, and small green potted plant. Under the bed lies a textured handwoven jute area rug. VIBE: Warm, sweet, romantic, serene, natural, healing, peaceful, and cozy, photorealistic 8k."
         };
 
-        let roomStylePrompt = "";
-        if (isVirtualRoom) {
-          if (params.viewType === "close") {
-            roomStylePrompt = `CRITICAL BACKGROUND MATCHING: You MUST strictly generate the background to perfectly capture the essence of "${roomAnalysis.style}". 
-DESIGN SPECIFICATION FOR BACKGROUND:
-Keep the background extremely simple, such as a dim, clean, and out-of-focus dark-grey or deep-brown flat paneled wall or cabinet door, creating a sophisticated luxury contrast. 
-CRITICAL: DO NOT generate any large furniture, beds, sofas, floors, or complete rooms, as this is an extreme close-up detail shot of the lamp only.
-- Style: ${roomAnalysis.style}
-- Colors: ${roomAnalysis.colors.join(", ")}`;
-          } else {
-            roomStylePrompt = `CRITICAL ROOM STYLE MATCHING: You MUST strictly generate the room according to the textual design specifications below to perfectly capture the essence of "${roomAnalysis.style}". 必须严格按照以下【设计规范】和【文字描述】生成极致完美的【${roomAnalysis.style}】风格样板间，完全符合对应的颜色、家具和布局设定，切记不要偏离指定的风格！
-
+        const roomStylePrompt = isVirtualRoom
+          ? `CRITICAL ROOM STYLE MATCHING: You MUST strictly generate the room according to the textual design specifications below to perfectly capture the essence of "${roomAnalysis.style}". 必须严格按照以下【设计规范】和【文字描述】生成极致完美的【${roomAnalysis.style}】风格样板间，完全符合对应的颜色、家具和布局设定，切记不要偏离指定的风格！
+  
 DESIGN SPECIFICATION FOR THIS STYLE:
 ${STYLE_SPECS[roomAnalysis.style] || "Generate a professional, high-end interior matching the requested style."}
-
+  
 The room style and context MUST match:
 - Style: ${roomAnalysis.style}
 - Layout: ${roomAnalysis.layout}
 - Furniture: ${roomAnalysis.furniture.join(", ")}
-- Colors: ${roomAnalysis.colors.join(", ")}`;
-          }
-        } else {
-          roomStylePrompt = `CRITICAL ROOM PRESERVATION RULES (真实照片背景、家具硬装与布局100%严苛保持一致 - 绝不修改或虚构背景):
-- You MUST use the EXACT room layout, wall paneling, cabinets, decorative items, flooring, doors, windows, and furniture shown in the "Reference Room Image".
-- ABSOLUTELY NO ALTERATIONS TO BACKGROUND: Do NOT rearrange the sofa, do NOT change the wall material or texture, do not add or delete cabinet boards, do not introduce new shelves or plants, and do not create non-existent window designs.
-- STRICTLY CONSTRAIN PLACEMENT: The room environment MUST remain 100% identical to the uploaded photo. You are ONLY placing the floor lamp into this existing real corner.
-- The corner of the room must be a real corner from the room uploaded by the user, and the layout and furniture must remain consistent. Do not add or delete items, and do not invent non-existent walls, cabinets, or windows (画面里展示的房间一角必须是用户上传照片中真实的一角，家具与硬装布局必须完全保持一致，严禁自己添加多余物品或删除原有物品，严禁虚构任何原本不存在的墙面、柜面、窗户、柜子或背景元素！).`;
-        }
+- Colors: ${roomAnalysis.colors.join(", ")}`
+          : `CRITICAL ROOM STYLE MATCHING: You MUST preserve the exact style and structural integrity of the uploaded room background. Under no circumstances should you generate a completely different style of walls, floors, or furniture. The generated scene MUST feel like a natural extension and high-fidelity placement of the lamp within the real uploaded room context.`;
 
         const lightPrompt = params.lightState === "on"
           ? `CRITICAL (LIGHT IS ON): Warm, soft, high-fidelity light glows from the light source of the lamp. You MUST generate realistic volumetric light cones, ambient lighting casting on the nearby furniture and floor, and highlight shadows with rich glow effects. The warm light from the floor lamp (approx 3000K-3500K) must blend harmoniously with the room's cozy ambient lighting. The entire scene must use a unified, natural, and comfortable color temperature without any strange, extreme contrast between cold blue and warm orange.`
@@ -575,38 +559,29 @@ Light Warmth: ${lampAnalysis.lightWarmth}
 ${lightPrompt}
 
 HIGHEST PRIORITY CONSTRAINTS (MUST BE STRICTLY FOLLOWED):
-1. NO UNREQUESTED OR HALLUCINATED LAMP PARTS OR ITEMS (严禁出现台灯原本没有的任何部件与杂物 - 绝对精细100%还原):
+1. NO UNREQUESTED OR HALLUCINATED LAMP PARTS (严禁出现台灯原本没有的任何部件 - 绝对精细100%还原):
    - You MUST reproduce ONLY the exact physical parts visible in the reference floor lamp image and described in the lamp analysis structure: ${lampAnalysis.structure || "N/A"}.
-   - STRICTLY FORBIDDEN HORIZONTAL ARMS / BRACKETS: DO NOT add any horizontal swing arms, side extension brackets, swivel joints, extra poles, secondary lampshades, or hardware attachments that do NOT exist in the original reference lamp image (绝对禁止增加任何横向伸缩摇臂、侧向延伸支架、转轴或副灯罩！).
-   - IF the original floor lamp pole is a straight vertical rod, it MUST remain a single clean, straight vertical rod with ZERO side projections.
-   - NO EXTRA ITEMS ON LAMP / TRAY: Do NOT place any unrequested cups, vases, desk lamps, or decorative clutter onto the floor lamp's tray or pole unless originally present in the reference image. Keep the floor lamp 100% clean and authentic to its original design.
+   - STRICTLY FORBIDDEN: DO NOT add any unrequested horizontal swing arms, side brackets, extra poles, secondary lampshades, pull-chains (unless present in original), extra trays, or hardware extensions that do NOT exist in the original lamp image.
+   - IF the original floor lamp pole is a straight vertical rod, it MUST remain a single clean vertical rod. DO NOT generate any horizontal side arms protruding outwards.
+   - IF the original floor lamp does NOT have a built-in tray/table, DO NOT add a tray. IF it HAS a tray, preserve its exact shape, height, and color.
 
 2. ABSOLUTE LAMP FAITHFULNESS & STRUCTURAL INTEGRITY (100% 还原落地灯整体结构与颜色):
    - You MUST completely and exactly reproduce the floor lamp's original appearance, colors, materials, structure, and shape.
    - PHYSICAL INTEGRITY: The floor lamp (lampshade, pole, built-in tray if any, and bottom base) is ONE SINGLE CONNECTED PHYSICAL OBJECT. The base MUST rest firmly on the floor. DO NOT detach the pole from its base, do not separate the tray, and DO NOT fuse/embed the lamp pole or tray into adjacent nightstands or drawers! The bedside nightstand and sofa are independent items sitting beside the floor lamp.
 
-3. STRICT ROOM LAYOUT CONSISTENCY (房间布局与背景结构绝对禁止改变 - 100%保持原房布局):
-   - You MUST strictly preserve and maintain the exact room layout, wall paneling, sofa arrangement, window location, curtains, and furniture from the provided room image.
-   - STRICTLY FORBIDDEN: DO NOT rearrange furniture, DO NOT move the sofa, DO NOT change wall materials/paneling, and DO NOT invent a new room layout (绝对禁止移动沙发或主要家具位置、绝对禁止改变背景墙和窗帘结构！).
-   - The room background MUST remain 100% identical and stable across all generated views and light toggles.
+3. ROOM LAYOUT CONSISTENCY & LOCALIZED CORNER (房间布局变动限制与局部角落取景):
+   - Keep the background walls, wall paneling, curtains, window positions, and furniture style completely consistent and stable.
+   - You are STRICTLY FORBIDDEN from generating a wide-angle full-room shot showing an entire room, huge open space, or random new room layouts. Focus strictly on the localized nook/corner where the lamp is placed.
 
 4. STRICT LAMP PLACEMENT RULES - MUST BE PLACED ON THE SIDE OF SOFA/BED (落地灯摆放位置严禁放在床尾或沙发正前方！必须放在侧面):
    - CRITICAL SOFA PLACEMENT: In a living room, the floor lamp MUST be placed on the SIDE of the sofa (beside the outer armrest or in the corner behind the armrest). STRICTLY FORBIDDEN: DO NOT place the floor lamp in front of the sofa seats, in front of the coffee table, or facing the sofa front (绝对禁止把落地灯摆放在沙发正前方、座位前或茶几旁！必须放在沙发侧面扶手旁！).
    - CRITICAL BEDROOM PLACEMENT: In a bedroom, the floor lamp MUST be placed ONLY at the headboard corner beside the nightstand. STRICTLY FORBIDDEN to place at the foot of the bed or bed-end bench (绝对禁止把落地灯放在床尾或床脚处！).
    - NEVER place the lamp floating in walkways, open room center, or facing furniture frontally.
 
-5. STRICT DIMENSIONS & PROPORTIONAL SCALE MATCHING (严苛家具与落地灯的物理尺寸与比例对照规范):
-   - HEIGHT PROPORTION (相对高度): A standard floor lamp stands about 1.5 to 1.8 meters tall. The floor lamp MUST be physically taller than the sofa backrest and bedside nightstand. The lampshade should stand at a realistic reading/ambient height relative to the adjacent sofa or bed.
-   - USER LAMP SCALE FIDELITY (注意用户上传落地灯的尺寸信息): Strictly honor the proportions of the uploaded floor lamp image. If the reference lamp is a slender pole lamp, do not make it thick. If the shade is large and dome-shaped, ensure it maintains that scale relative to the sofa's armrest.
-   - BUILT-IN TRAY HEIGHT (内置置物台/茶几高度): If the floor lamp has a built-in tray/table, its height from the floor MUST stand at a standard, realistic height (about 55cm to 65cm). It MUST align beautifully and horizontally with the adjacent sofa armrest or bedside nightstand. It must NOT look unnaturally low or abnormally high near the shade.
-   - SIZE & SCALE FIDELITY (真实比例与家具尺寸对照): The lampshade, pole thickness, built-in tray width, and base diameter MUST be perfectly proportioned to the adjacent real furniture (sofa, nightstand, bed). The lamp must NOT look like a giant towering column, nor a tiny miniature desk-lamp scale model.
-   - GROUNDED BASE (底座落地稳固): The floor lamp's base must rest flatly and solidly on the floor, rather than floating in mid-air or sinking into the ground.
-
-6. CAMERA CENTERING & VIEW-TYPE PERSPECTIVE & SOFA CORNER FRAMING (相机镜头对焦取景与沙发一角局部取景规范):
+5. CAMERA CENTERING & VIEW-TYPE PERSPECTIVE (相机镜头对焦取景):
    - ${perspectiveGuidance}
-   - SOFA CORNER FRAMING (只展示房间中沙发的一角): In living room or sofa scenes, the camera MUST adopt an elegant, tight, and professional catalog-style framing. Do NOT show the entire sofa, and do NOT show the entire room. Instead, only capture a localized corner of the sofa (e.g., about 1/3 to 1/2 of the sofa, showing one armrest, the side seat cushion, and a pillow or two, with a small part of a coffee table in the corner foreground, and a beautifully framed painting or textured paneling on the wall behind it). Place the floor lamp gracefully right beside the sofa armrest. This tight framing keeps the visual focus extremely snug, cozy, and highly professional.
 
-7. ZERO BOKEH & DEEP FOCUS (全焦清晰 - 画面真实清晰):
+6. ZERO BOKEH & DEEP FOCUS (全焦清晰 - 画面真实清晰):
    - You MUST keep the ENTIRE photograph (lamp, background wall, adjacent furniture, curtains) completely sharp and clear in deep focus.
    - DO NOT apply unnatural bokeh blur or heavy portrait-style background blur.
 
