@@ -559,14 +559,15 @@ Light Warmth: ${lampAnalysis.lightWarmth}
 ${lightPrompt}
 
 HIGHEST PRIORITY CONSTRAINTS (MUST BE STRICTLY FOLLOWED):
+0. THE MOST IMPORTANT CONSTRAINT (最核心约束): THE GENERATED FLOOR LAMP MUST BE 100% IDENTICAL TO THE UPLOADED FLOOR LAMP (最重要的约束就是生成的图片要确保落地灯和用户上传的必须完全一致). Any deviation in shape, structure, color, or missing parts is a complete failure!
 1. NO UNREQUESTED OR HALLUCINATED LAMP PARTS (严禁出现台灯原本没有的任何部件 - 绝对精细100%还原):
    - You MUST reproduce ONLY the exact physical parts visible in the reference floor lamp image and described in the lamp analysis structure: ${lampAnalysis.structure || "N/A"}.
    - STRICTLY FORBIDDEN: DO NOT add any unrequested horizontal swing arms, side brackets, extra poles, secondary lampshades, pull-chains (unless present in original), extra trays, or hardware extensions that do NOT exist in the original lamp image.
    - IF the original floor lamp pole is a straight vertical rod, it MUST remain a single clean vertical rod. DO NOT generate any horizontal side arms protruding outwards.
    - IF the original floor lamp does NOT have a built-in tray/table, DO NOT add a tray. IF it HAS a tray, preserve its exact shape, height, and color.
 
-2. ABSOLUTE LAMP FAITHFULNESS & STRUCTURAL INTEGRITY (100% 还原落地灯整体结构与颜色):
-   - You MUST completely and exactly reproduce the floor lamp's original appearance, colors, materials, structure, and shape.
+2. ABSOLUTE LAMP FAITHFULNESS & STRUCTURAL INTEGRITY (100% 还原落地灯整体结构与颜色 - 最重要约束):
+   - CRITICAL PRIORITY: The most important constraint is that the generated floor lamp MUST be perfectly identical to the uploaded floor lamp image. You MUST completely and exactly reproduce the floor lamp's original appearance, colors, materials, structure, and shape. No modifications or hallucinations are allowed for the lamp itself!
    - PHYSICAL INTEGRITY: The floor lamp (lampshade, pole, built-in tray if any, and bottom base) is ONE SINGLE CONNECTED PHYSICAL OBJECT. The base MUST rest firmly on the floor. DO NOT detach the pole from its base, do not separate the tray, and DO NOT fuse/embed the lamp pole or tray into adjacent nightstands or drawers! The bedside nightstand and sofa are independent items sitting beside the floor lamp.
 
 3. STRICT ROOM LAYOUT CONSISTENCY AND CAMERA PERSPECTIVE (严格的房间布局一致性与相机视角说明):
