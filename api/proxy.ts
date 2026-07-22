@@ -392,7 +392,7 @@ ${humanGuidance}`;
         parts.push({ text: prompt });
 
         const response = await client.models.generateContent({
-          model: model || "gemini-3.1-flash-image",
+          model: model || "gemini-3.1-flash-lite-image",
           contents: {
             parts: parts,
           },
