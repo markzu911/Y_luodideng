@@ -30,17 +30,29 @@ async function fetchImageAsBase64(url: string): Promise<{ data: string; mimeType
       cleanPath = cleanPath.substring(1);
     }
 
-    const localPath = path.join(process.cwd(), cleanPath);
-    if (fs.existsSync(localPath)) {
-      const buffer = fs.readFileSync(localPath);
-      const ext = path.extname(localPath).toLowerCase();
-      const mimeType = ext === ".png" ? "image/png" : "image/jpeg";
-      const base64 = buffer.toString("base64");
-      return { data: base64, mimeType };
+    const candidates = [
+      path.join(process.cwd(), cleanPath),
+      path.join(process.cwd(), "public", cleanPath),
+      path.join(process.cwd(), "dist", cleanPath),
+    ];
+
+    for (const localPath of candidates) {
+      if (fs.existsSync(localPath) && fs.statSync(localPath).isFile()) {
+        const buffer = fs.readFileSync(localPath);
+        const ext = path.extname(localPath).toLowerCase();
+        const mimeType = ext === ".png" ? "image/png" : ext === ".webp" ? "image/webp" : "image/jpeg";
+        const base64 = buffer.toString("base64");
+        return { data: base64, mimeType };
+      }
     }
 
-    const response = await fetch(url);
-    if (!response.ok) throw new Error(`Failed to fetch image from URL: ${url}`);
+    let fetchUrl = url;
+    if (url.startsWith("/")) {
+      fetchUrl = `http://localhost:3000${url}`;
+    }
+
+    const response = await fetch(fetchUrl);
+    if (!response.ok) throw new Error(`Failed to fetch image from URL: ${fetchUrl}`);
     const arrayBuf = await response.arrayBuffer();
     const contentType = response.headers.get("content-type") || "image/jpeg";
     const base64 = Buffer.from(arrayBuf).toString("base64");
@@ -466,7 +478,7 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
 
         // ALWAYS add the room image as a visual context if provided
         if (roomImage) {
-          parts.push({ text: "Reference Room Image (This is the room environment to place the lamp into):" });
+          parts.push({ text: "IMAGE 1 [REFERENCE ROOM ENVIRONMENT]:" });
           try {
             const fetched = await fetchImageAsBase64(roomImage);
             parts.push({
@@ -484,19 +496,17 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
 
         // Add lamp image as a visual context if provided
         if (lampImage) {
-          parts.push({ text: "Reference Floor Lamp Image (You MUST place THIS exact lamp into the room):" });
-          if (lampImage.startsWith("http") || lampImage.startsWith("data:") || lampImage.includes("/assets/")) {
-            try {
-              const fetched = await fetchImageAsBase64(lampImage);
-              parts.push({
-                inlineData: {
-                  data: fetched.data,
-                  mimeType: fetched.mimeType,
-                }
-              });
-            } catch (e) {
-              console.error("Failed to fetch lamp image URL, ignoring inlineData context:", e);
-            }
+          parts.push({ text: "IMAGE 2 [EXACT REFERENCE FLOOR LAMP IMAGE TO REPLICATE - 必须100%按此图还原落地灯]:" });
+          try {
+            const fetched = await fetchImageAsBase64(lampImage);
+            parts.push({
+              inlineData: {
+                data: fetched.data,
+                mimeType: fetched.mimeType,
+              }
+            });
+          } catch (e) {
+            console.error("Failed to fetch lamp image URL, ignoring inlineData context:", e);
           }
         }
 
@@ -546,7 +556,7 @@ The room style and context MUST match:
 - Layout: ${roomAnalysis.layout}
 - Furniture: ${roomAnalysis.furniture.join(", ")}
 - Colors: ${roomAnalysis.colors.join(", ")}`
-          : `CRITICAL ROOM STYLE MATCHING: You MUST preserve the exact style and structural integrity of the uploaded room background. Find the main sofa or bed in the uploaded room image. You MUST place the floor lamp next to this sofa or bedside. The generated scene MUST feel like a natural extension and high-fidelity placement of the lamp within this specific corner of the real uploaded room.`;
+          : `CRITICAL ROOM STYLE & ARCHITECTURE PRESERVATION: You MUST strictly preserve the exact style, architectural walls, window placement, wall textures, and furniture layout of the uploaded room background (IMAGE 1). 必须完全绝对保留用户上传房间图片（IMAGE 1）的墙面材质、窗户布局、硬装结构和原有家具。严禁擅自增加原图不存在的窗户、修改墙面颜色/材质或多出未经允许的家具！将落地灯（IMAGE 2）自然融合成画放置在原本房间角落的沙发或床头侧面。`;
 
         const lightPrompt = safeParams.lightState === "on"
           ? `CRITICAL (LIGHT IS ON): Warm, soft, high-fidelity light glows from the light source of the lamp. You MUST generate realistic volumetric light cones, ambient lighting casting on the nearby furniture and floor, and highlight shadows with rich glow effects. The warm light from the floor lamp (approx 3000K-3500K) must blend harmoniously with the room's cozy ambient lighting. The entire scene must use a unified, natural, and comfortable color temperature without any strange, extreme contrast between cold blue and warm orange.`
@@ -574,18 +584,28 @@ Materials: ${lampAnalysis.materials.join(", ")}
 Color: ${lampAnalysis.color}
 Light Type: ${lampAnalysis.lightType}
 Light Warmth: ${lampAnalysis.lightWarmth}
+${lampAnalysis?.structure?.includes("有拉链") || lampAnalysis?.structure?.includes("有链子") || lampAnalysis?.structure?.includes("有拉绳") || lampAnalysis?.structure?.includes("有珠链") ? "PULL-CHAIN FEATURE: The reference lamp HAS a visible pull-chain under the lampshade. Preserve it." : "ABSOLUTE ZERO PULL-CHAIN MANDATE (100%无拉链/无珠链/无小吊坠): The reference lamp in IMAGE 2 has NO pull-chain or hanging cord under the lampshade. THE BOTTOM RIM OF THE LAMPSHADE MUST BE COMPLETELY CLEAN, SMOOTH, AND EMPTY. YOU ARE STRICTLY FORBIDDEN FROM DRAWING ANY DANGLING CHAIN, BEAD CORD, SWITCH STRING, OR WIRE BELOW THE LAMPSHADE!"}
 
 ${lightPrompt}
 
 HIGHEST PRIORITY CONSTRAINTS (MUST BE STRICTLY FOLLOWED):
-0. THE MOST IMPORTANT CONSTRAINT - 8-DIMENSIONAL LAMP RECONSTRUCTION (最核心约束 - 8维精准还原落地灯):
-   - You MUST reconstruct the floor lamp with 100% fidelity across all 8 dimensions: 产品结构、外观形态、材质工艺、比例尺寸、颜色搭配、光影效果、设计风格及空间关系.
-   - The generated floor lamp MUST BE 100% IDENTICAL to the uploaded floor lamp image. Any deviation in shape, structure, color, or hallucinated parts is a critical failure!
+0. CRITICAL DIRECT VISUAL REPLICATION OF IMAGE 2 (最核心约束 - 必须和用户上传/选择的落地灯图片完全一致):
+   - Look directly at the attached reference floor lamp image (IMAGE 2).
+   - The generated floor lamp MUST BE AN EXACT 1:1 VISUAL REPLICA of the floor lamp in IMAGE 2 in every single dimension:
+     * EXACT Lampshade: Same geometry (e.g. cylinder/drum/cone/pleated/flower-shaped), fabric/material texture, pleat pattern, and color as shown in IMAGE 2.
+     * EXACT Pole/Stand: Same exact curve angle, pole thickness, material finish (e.g. matte black/brushed brass/chrome), and trajectory. If IMAGE 2 shows a smooth arched pole, DO NOT add any joints, levers, knobs, or extra bends! If IMAGE 2 shows a straight vertical pole, DO NOT bend it!
+     * EXACT Base: Same base type, diameter, and material as in IMAGE 2.
+     * ZERO HALLUCINATIONS: DO NOT add any pull-chains, hanging beads, extra shelves, swing arms, or hardware controls unless explicitly visible in IMAGE 2!
+   - If there is any discrepancy between text descriptions and IMAGE 2, IMAGE 2 IS THE ABSOLUTE TRUTH AND MUST BE REPLICATED EXACTLY. Any visual deviation from IMAGE 2 is a critical failure!
 
-1. POLE SHAPE & CONTROL DETAILS (灯杆造型与开关细节 - 严禁出现无中生有的杆子接头/手柄或链子):
-   - POLE SHAPE FIDELITY: If the uploaded lamp pole is a smooth arched curve (光滑弧形弯杆), it MUST be rendered as ONE continuous, sleek, smooth curved rod. STRICTLY FORBIDDEN: DO NOT add any mechanical adjustment knobs, angular elbow hinges, counterweight handles, or lever sticks protruding from the pole bend!
-   - ABSOLUTE PROHIBITION OF HALLUCINATED PULL-CHAINS: If the uploaded lamp image or analysis specifies "无拉链/无挂珠链" or shows no hanging cord, YOU MUST NOT RENDER ANY PULL-CHAIN, BEAD CHAIN, OR SWITCH CORD UNDER THE LAMPSHADE!
-   - You MUST reproduce ONLY the exact physical parts visible in the reference floor lamp image and described in the lamp analysis structure: ${lampAnalysis.structure || "N/A"}.
+1. POLE SHAPE & CONTROL DETAILS (灯杆造型与开关细节 - 绝对严禁出现任何链子/绳子/关节手柄):
+   - ABSOLUTE PROHIBITION OF PULL-CHAINS & CORDS (严禁出现拉线/拉链开关/珠链):
+     * THE LAMPSHADE BOTTOM RIM MUST BE 100% CLEAN AND SMOOTH.
+     * DO NOT DRAW ANY PULL-CHAIN, BEAD CORD, SWITCH STRING, WIRE, OR HANGING BEAD UNDERNEATH THE LAMPSHADE!
+     * IF THE REFERENCE LAMP (IMAGE 2) DOES NOT HAVE A HANGING PULL-CHAIN, THE GENERATED LAMPSHADE MUST NOT HAVE ANY PULL-CHAIN OR STRING DANGLING FROM IT!
+   - POLE SHAPE FIDELITY (灯杆造型):
+     * If the lamp pole in IMAGE 2 is a smooth arched curve (光滑弧形弯杆), it MUST be rendered as ONE continuous, sleek, smooth curved rod. STRICTLY FORBIDDEN: DO NOT add any mechanical adjustment knobs, angular elbow hinges, counterweight handles, or lever sticks protruding from the pole bend!
+   - You MUST reproduce ONLY the exact physical parts visible in IMAGE 2 and described in the lamp analysis structure: ${lampAnalysis.structure || "N/A"}.
    - IF the original floor lamp pole is a straight vertical rod, it MUST remain a single clean vertical rod. DO NOT generate any horizontal side arms protruding outwards.
    - IF the original floor lamp does NOT have a built-in tray/table, DO NOT add a tray. IF it HAS a tray, preserve its exact shape, height, and color.
 
@@ -593,9 +613,11 @@ HIGHEST PRIORITY CONSTRAINTS (MUST BE STRICTLY FOLLOWED):
    - CRITICAL PRIORITY: The most important constraint is that the generated floor lamp MUST be perfectly identical to the uploaded floor lamp image. You MUST completely and exactly reproduce the floor lamp's original appearance, colors, materials, structure, and shape. No modifications or hallucinations are allowed for the lamp itself!
    - PHYSICAL INTEGRITY: The floor lamp (lampshade, pole, built-in tray if any, and bottom base) is ONE SINGLE CONNECTED PHYSICAL OBJECT. The base MUST rest firmly on the floor. DO NOT detach the pole from its base, do not separate the tray, and DO NOT fuse/embed the lamp pole or tray into adjacent nightstands or drawers! The bedside nightstand and sofa are independent items sitting beside the floor lamp.
 
-3. STRICT ROOM LAYOUT CONSISTENCY AND CAMERA PERSPECTIVE (严格的房间布局一致性与相机视角说明):
-   - You MUST keep the background walls, wall paneling, curtains, window positions, and furniture items/layout completely consistent with the uploaded room image.
-   - The camera's shooting angle/perspective CAN BE DIFFERENT from the original uploaded room photo (拍摄视角可以和用户原图不一致，例如可以从不同角度拍摄这个角落), BUT the room background, layout, and furniture MUST remain exactly the same as the original room (房间背景和家具布局必须保持绝对一致).
+3. STRICT ROOM ARCHITECTURE, WALLS, WINDOWS & FURNITURE FAITHFULNESS (房间墙面、窗户与家具严禁随意篡改与幻觉):
+   - ABSOLUTE ROOM FIDELITY: You MUST PRESERVE the exact architectural structure, wall finishes (wallpapers, dark wood paneling, stone slabs, paint color, plaster textures), window locations, and existing furniture from IMAGE 1.
+   - NO HALLUCINATED WINDOWS OR WALLS: If IMAGE 1 does NOT have a window on a wall, DO NOT add a window! If IMAGE 1 has dark wood wall panels, KEEP the exact same dark wood panels! DO NOT change the wall material or color!
+   - NO UNREQUESTED FURNITURE: DO NOT introduce random new cabinets, tables, chairs, or shelves that do not exist in IMAGE 1. The furniture present in the generated image MUST strictly match the furniture in IMAGE 1.
+   - PERSPECTIVE CONSISTENCY: The camera's shooting distance or framing may zoom in depending on the View Type (Far / Mid / Close), BUT the underlying room elements (background wall, curtains, sofa, bedding) MUST remain 100% faithful to IMAGE 1 without any arbitrary changes.
    - You are STRICTLY FORBIDDEN from generating a wide-angle full-room shot showing an entire room, huge open space, or random new room layouts. Focus strictly on the localized nook/corner where the lamp is placed.
 
 4. STRICT LAMP PLACEMENT RULES - MUST BE PLACED ON THE SIDE OF SOFA/BED (落地灯摆放位置严禁放在床尾或沙发正前方！必须放在侧面):
