@@ -492,7 +492,20 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
           }
         }
 
-        const isVirtualRoom = roomImage && roomImage.includes("/assets/");
+        const isUploadedRoom = roomImage && (roomImage.startsWith("data:image/") || roomImage.startsWith("blob:"));
+        const isVirtualRoom = !isUploadedRoom;
+
+        const lampMaterialsStr = Array.isArray(lampAnalysis?.materials) 
+          ? lampAnalysis.materials.join("、") 
+          : (lampAnalysis?.materials || "N/A");
+
+        const roomFurnitureStr = Array.isArray(roomAnalysis?.furniture) 
+          ? roomAnalysis.furniture.join("、") 
+          : (roomAnalysis?.furniture || "N/A");
+
+        const roomColorsStr = Array.isArray(roomAnalysis?.colors) 
+          ? roomAnalysis.colors.join("、") 
+          : (roomAnalysis?.colors || "N/A");
 
         // Add lamp image as a visual context if provided
         if (lampImage) {
@@ -554,8 +567,8 @@ ${STYLE_SPECS[roomAnalysis.style] || "Generate a professional, high-end interior
 The room style and context MUST match:
 - Style: ${roomAnalysis.style}
 - Layout: ${roomAnalysis.layout}
-- Furniture: ${roomAnalysis.furniture.join(", ")}
-- Colors: ${roomAnalysis.colors.join(", ")}`
+- Furniture: ${roomFurnitureStr}
+- Colors: ${roomColorsStr}`
           : `CRITICAL ROOM STYLE & ARCHITECTURE PRESERVATION: You MUST strictly preserve the exact style, architectural walls, window placement, wall textures, and furniture layout of the uploaded room background (IMAGE 1). 必须完全绝对保留用户上传房间图片（IMAGE 1）的墙面材质、窗户布局、硬装结构和原有家具。严禁擅自增加原图不存在的窗户、修改墙面颜色/材质或多出未经允许的家具！将落地灯（IMAGE 2）自然融合成画放置在原本房间角落的沙发或床头侧面。`;
 
         const lightPrompt = safeParams.lightState === "on"
@@ -580,7 +593,7 @@ ${roomStylePrompt}
 THE LAMP TO INTEGRATE:
 Style: ${lampAnalysis.style}
 Structure details: ${lampAnalysis.structure || "N/A"}
-Materials: ${lampAnalysis.materials.join(", ")}
+Materials: ${lampMaterialsStr}
 Color: ${lampAnalysis.color}
 Light Type: ${lampAnalysis.lightType}
 Light Warmth: ${lampAnalysis.lightWarmth}

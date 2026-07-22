@@ -244,55 +244,48 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
 
         // Add room image as context
         if (roomImage) {
-          if (roomImage.startsWith("http")) {
-            try {
-              const fetched = await fetchImageAsBase64(roomImage);
-              parts.push({
-                inlineData: {
-                  data: fetched.data,
-                  mimeType: fetched.mimeType,
-                }
-              });
-            } catch (e) {
-              console.error("Failed to fetch room image URL, ignoring inlineData context:", e);
-            }
-          } else if (roomImage.includes("base64,")) {
-            const split = roomImage.split(",");
-            const mime = roomImage.split(";")[0].split(":")[1] || "image/jpeg";
+          parts.push({ text: "IMAGE 1 [REFERENCE ROOM ENVIRONMENT]:" });
+          try {
+            const fetched = await fetchImageAsBase64(roomImage);
             parts.push({
               inlineData: {
-                data: split[1],
-                mimeType: mime,
+                data: fetched.data,
+                mimeType: fetched.mimeType,
               }
             });
+          } catch (e) {
+            console.error("Failed to fetch room image URL, ignoring inlineData context:", e);
           }
         }
 
-        const isVirtualRoom = roomImage && (roomImage.includes("/assets/") || roomImage.includes("assets/"));
+        const isUploadedRoom = roomImage && (roomImage.includes("base64,") || roomImage.startsWith("data:image/") || roomImage.startsWith("blob:"));
+        const isVirtualRoom = !isUploadedRoom;
+
+        const lampMaterialsStr = Array.isArray(lampAnalysis?.materials) 
+          ? lampAnalysis.materials.join("、") 
+          : (lampAnalysis?.materials || "N/A");
+
+        const roomFurnitureStr = Array.isArray(roomAnalysis?.furniture) 
+          ? roomAnalysis.furniture.join("、") 
+          : (roomAnalysis?.furniture || "N/A");
+
+        const roomColorsStr = Array.isArray(roomAnalysis?.colors) 
+          ? roomAnalysis.colors.join("、") 
+          : (roomAnalysis?.colors || "N/A");
 
         // Add lamp image as context
         if (lampImage) {
-          if (lampImage.startsWith("http") || lampImage.includes("/assets/")) {
-            try {
-              const fetched = await fetchImageAsBase64(lampImage);
-              parts.push({
-                inlineData: {
-                  data: fetched.data,
-                  mimeType: fetched.mimeType,
-                }
-              });
-            } catch (e) {
-              console.error("Failed to fetch lamp image URL, ignoring inlineData context:", e);
-            }
-          } else if (lampImage.includes("base64,")) {
-            const split = lampImage.split(",");
-            const mime = lampImage.split(";")[0].split(":")[1] || "image/png";
+          parts.push({ text: "IMAGE 2 [EXACT REFERENCE FLOOR LAMP IMAGE TO REPLICATE - 必须100%按此图还原落地灯]:" });
+          try {
+            const fetched = await fetchImageAsBase64(lampImage);
             parts.push({
               inlineData: {
-                data: split[1],
-                mimeType: mime,
+                data: fetched.data,
+                mimeType: fetched.mimeType,
               }
             });
+          } catch (e) {
+            console.error("Failed to fetch lamp image URL, ignoring inlineData context:", e);
           }
         }
 
@@ -330,9 +323,9 @@ ${STYLE_SPECS[roomAnalysis.style] || "Generate a professional, high-end interior
 The room style and context MUST match:
 - Style: ${roomAnalysis.style}
 - Layout: ${roomAnalysis.layout}
-- Furniture: ${roomAnalysis.furniture.join(", ")}
-- Colors: ${roomAnalysis.colors.join(", ")}`
-          : `CRITICAL ROOM STYLE MATCHING: You MUST preserve the exact style and structural integrity of the uploaded room background. Under no circumstances should you generate a completely different style of walls, floors, or furniture. The generated scene MUST feel like a natural extension and high-fidelity placement of the lamp within the real uploaded room context.`;
+- Furniture: ${roomFurnitureStr}
+- Colors: ${roomColorsStr}`
+          : `CRITICAL ROOM STYLE & ARCHITECTURE PRESERVATION: You MUST strictly preserve the exact style, architectural walls, window placement, wall textures, and furniture layout of the uploaded room background (IMAGE 1). 必须完全绝对保留用户上传房间图片（IMAGE 1）的墙面材质、窗户布局、硬装结构和原有家具。严禁擅自增加原图不存在的窗户、修改墙面颜色/材质或多出未经允许的家具！将落地灯（IMAGE 2）自然融合成画放置在原本房间角落的沙发或床头侧面。`;
 
         const lightPrompt = params.lightState === "on"
           ? `CRITICAL (LIGHT IS ON): Warm, soft, high-fidelity light glows from the light source of the lamp. You MUST generate realistic volumetric light cones, ambient lighting casting on the nearby furniture and floor, and highlight shadows with rich glow effects. The warm light from the floor lamp (approx 3000K-3500K) must blend harmoniously with the room's cozy ambient lighting. The entire scene must use a unified, natural, and comfortable color temperature without any strange, extreme contrast between cold blue and warm orange.`
@@ -350,7 +343,7 @@ ${roomStylePrompt}
 THE LAMP TO INTEGRATE:
 Style: ${lampAnalysis.style}
 Structure details: ${lampAnalysis.structure || "N/A"}
-Materials: ${lampAnalysis.materials.join(", ")}
+Materials: ${lampMaterialsStr}
 Color: ${lampAnalysis.color}
 Light Type: ${lampAnalysis.lightType}
 Light Warmth: ${lampAnalysis.lightWarmth}
