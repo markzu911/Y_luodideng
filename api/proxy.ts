@@ -289,18 +289,33 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
         }
 
         // Detailed prompt
-        let preservationGuidance = "";
-        let perspectiveGuidance = "";
+        let viewTypeSpecificPrompt = "";
 
-        if (params.viewType === "far") {
-          preservationGuidance = "2. FAR VIEW (远景/局部角落视角 - 严格参考远景视角参考图): Reference high-end lifestyle interior photography (如远景视角参考图所示). DO NOT show a wide-angle full room or distant room layout. Frame a localized cozy corner of the sofa or bed (沙发或床榻的局部角落). In the foreground/midground, show the sofa backrest/armrest with plush cushions or throw blanket. In the background, soft floor-to-ceiling window curtains or warm wall paneling are visible. The floor lamp stands in this cozy corner beside/behind the sofa/bed, with its illuminated shade standing out prominently in the upper-center frame. The full height or upper 4/5 of the floor lamp is framed naturally in this localized furniture nook.";
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (FAR VIEW / 远景视角): Focused interior photography of a localized sofa or bed corner (沙发/床的局部一角). The floor lamp stands in the corner beside the sofa/bed, framed with soft background curtains and foreground sofa cushions. DO NOT render a wide full room.";
+        if (params.viewType === "close") {
+          viewTypeSpecificPrompt = `
+CRITICAL VIEW TYPE: CLOSE VIEW (近景/特写视角 - 必须100%严格按照近景参考图进行微距特写剪裁，绝对禁止画成远景/大房间！):
+- THIS IS A TIGHT MACRO / CLOSE-UP DETAIL PHOTOGRAPH (如同用户提供的近景参考图所示的特写镜头).
+- CAMERA CROP & ZOOM: The camera MUST zoom in extremely close to capture ONLY the glowing lampshade and the upper stem/pole of the floor lamp.
+- LAMPSHADE DOMINANCE: The illuminated lampshade MUST fill the majority (~50%-70%) of the upper/center frame.
+- BACKGROUND: The immediate background behind the pole/stem shows ONLY a warm wall surface, cabinet panel, or side table corner with decor (such as a vase of flowers) bathed in the lamp's soft golden glow.
+- ABSOLUTE PROHIBITIONS FOR CLOSE VIEW (近景特写严禁事项):
+  * DO NOT show any ceiling or ceiling light strips!
+  * DO NOT show the floor or the floor lamp base!
+  * DO NOT show a wide living room, full sofas, chaise lounges, coffee tables, or wide windows!
+  * ANY image showing a wide living room or visible ceiling/floor in CLOSE VIEW is a critical error!`;
         } else if (params.viewType === "mid") {
-          preservationGuidance = "2. MID VIEW (中景/中近景视角 - 参考中近景视角图): Reference high-end lifestyle interior photography (参考中近景视角图). Frame a tight, warm medium shot focusing on the illuminated upper 2/3 of the floor lamp (lampshade and pole) standing naturally next to the sofa backrest or wooden side table, with soft translucent window curtains or textured wall behind it. The floor lamp MUST be centered in the frame. Warm golden light casts natural highlights onto nearby furniture surfaces. Lower base and floor may be cropped out.";
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MID VIEW / 中景视角): Medium-shot perspective capturing the illuminated floor lamp in the central frame, flanked by sofa armrest/backrest and soft background curtains.";
-        } else if (params.viewType === "close") {
-          preservationGuidance = "2. CLOSE VIEW (近景/特写视角 - 严格参考近景特写参考图): Reference tight macro product & interior detail photography (如参考图所示). Camera zooms in close to focus directly on the glowing lampshade and upper pole/stem of the floor lamp. The illuminated lampshade MUST dominate the central-upper area of the frame (filling ~50%-60% of the top frame). In the immediate background beside/behind the lamp stem, a side table corner with decor (such as a vase with flowers) or warm textured wall/cabinet is visible, bathed in the lamp's soft golden glow. The floor lamp base, floor, and ceiling MUST be completely cropped off.";
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (CLOSE VIEW / 近景特写视角): Close-up detail shot centered directly on the glowing lampshade, upper stem, and warm light diffusion onto adjacent background decor.";
+          viewTypeSpecificPrompt = `
+CRITICAL VIEW TYPE: MID VIEW (中景/中近景视角):
+- Reference high-end interior photography. Frame a tight medium shot focusing on the illuminated upper 2/3 of the floor lamp (lampshade and pole) standing naturally next to the sofa backrest or bedside table.
+- Background shows soft translucent curtains or warm wall paneling.
+- The floor lamp base and floor are cropped out.`;
+        } else {
+          viewTypeSpecificPrompt = `
+CRITICAL VIEW TYPE: FAR VIEW (远景/局部角落视角 - 绝对禁止展示整间大客厅或远景大房间！):
+- Reference high-end lifestyle interior photography (如远景视角参考图所示). Frame ONLY a cozy localized nook/corner of the sofa or bed (沙发或床榻的局部角落一角).
+- In the midground/foreground, show the sofa backrest/armrest with plush cushions or throw blanket. In the background, soft floor-to-ceiling window curtains or warm wall paneling are visible.
+- The floor lamp stands in this cozy corner beside/behind the sofa/bed, with its illuminated shade standing out prominently in the upper-center frame.
+- ABSOLUTE PROHIBITION: DO NOT show a wide-angle full room, open living room layout, or distant wide furniture!`;
         }
 
         const STYLE_SPECS: Record<string, string> = {
@@ -316,35 +331,34 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
         const roomStylePrompt = hasRoomImage
           ? `CRITICAL ROOM BACKGROUND PRESERVATION (必须100%绝对保留IMAGE 1原图房间与家具面貌):
 - Look directly at the attached reference room image (IMAGE 1).
-- You MUST STRICTLY PRESERVE the exact room background, architectural wall materials (wallpapers, wood paneling, plaster, paint colors), window placements, curtains, floor finish, and existing sofa/bed furniture from IMAGE 1.
+- You MUST STRICTLY PRESERVE the exact room background, architectural wall materials (wallpapers, wood paneling, plaster, paint colors), window placements, curtains, and existing sofa/bed furniture from IMAGE 1.
 - DO NOT REPLACE OR MODIFY THE SOFA/BED: The sofa or bed in IMAGE 1 MUST remain identical in shape, fabric/leather material, color, and cushions.
-- DO NOT CHANGE WALLS, WINDOWS, OR DECOR: Keep the exact wall colors, paneling, and decor from IMAGE 1.
-- DO NOT generate a brand new room or alter the room's interior decoration! Your task is ONLY to place the floor lamp (IMAGE 2) into this exact room corner from IMAGE 1.`
-          : `CRITICAL ROOM STYLE MATCHING: You MUST strictly generate the room according to the textual design specifications below to perfectly capture the essence of "${roomAnalysis.style}". 必须严格按照以下【设计规范】和【文字描述】生成极致完美的【${roomAnalysis.style}】风格样板间，完全符合对应的颜色、家具和布局设定，切记不要偏离指定的风格！
-  
+- DO NOT CHANGE WALLS OR DECOR: Keep the exact wall colors, paneling, and decor from IMAGE 1.`
+          : (params.viewType === "close"
+              ? `ROOM STYLE CONTEXT: Match the wall colors, textures, and ambient materials of "${roomAnalysis.style}" for the background wall.`
+              : `CRITICAL ROOM STYLE MATCHING: You MUST strictly generate the room according to the textual design specifications below to perfectly capture the essence of "${roomAnalysis.style}".
 DESIGN SPECIFICATION FOR THIS STYLE:
 ${STYLE_SPECS[roomAnalysis.style] || "Generate a professional, high-end interior matching the requested style."}
-  
-The room style and context MUST match:
 - Style: ${roomAnalysis.style}
 - Layout: ${roomAnalysis.layout}
 - Furniture: ${roomFurnitureStr}
-- Colors: ${roomColorsStr}`;
+- Colors: ${roomColorsStr}`);
 
         const lightPrompt = params.lightState === "on"
-          ? `CRITICAL (LIGHT IS ON): Warm, soft, high-fidelity light glows from the light source of the lamp. You MUST generate realistic volumetric light cones, ambient lighting casting on the nearby furniture and floor, and highlight shadows with rich glow effects. The warm light from the floor lamp (approx 3000K-3500K) must blend harmoniously with the room's cozy ambient lighting. The entire scene must use a unified, natural, and comfortable color temperature without any strange, extreme contrast between cold blue and warm orange.`
-          : `CRITICAL (LIGHT IS OFF): The floor lamp is TURNED OFF. No artificial light is emitted. The lamp is purely lit by the room's ambient daylight and surrounding lights, revealing the authentic texture, colors, and shadows of its structural elements (lampshade, metal poles, wooden elements) without any active glow or light-cone emission.`;
+          ? `CRITICAL (LIGHT IS ON): Warm, soft, high-fidelity light glows from the light source of the lamp. You MUST generate realistic volumetric light cones, ambient lighting casting on nearby surfaces, and highlight shadows with rich glow effects. The warm light from the floor lamp (approx 3000K-3500K) must blend harmoniously with the cozy ambient lighting.`
+          : `CRITICAL (LIGHT IS OFF): The floor lamp is TURNED OFF. No artificial light is emitted. The lamp is purely lit by ambient daylight.`;
 
         const humanGuidance = params.needModel
-          ? "5. PERSONA / HUMAN PRESENCE: You MUST include a realistic human model (e.g., a person reading, relaxing, or enjoying the space) to enhance the living atmosphere. The human figure should seamlessly blend into the scene and interact naturally with the lighting and environment. 必须要包含一个真实的人物模型（比如正在阅读或休息的人）。"
-          : "5. PERSONA / HUMAN PRESENCE: DO NOT include any human figures or models in the scene. Provide a pure architectural and furniture visualization. 绝对不要在画面中出现任何人物模型。";
+          ? "PERSONA / HUMAN PRESENCE: Include a realistic human model interacting naturally with the space."
+          : "PERSONA / HUMAN PRESENCE: DO NOT include any human figures or models in the scene. Provide a pure architectural and furniture visualization.";
 
         const prompt = `A professional, ultra-high-resolution interior design photograph.
-Your task is to seamlessly integrate the provided reference floor lamp (IMAGE 2) into the room environment (IMAGE 1), strictly maintaining 100% visual fidelity for BOTH the room (IMAGE 1) and the floor lamp (IMAGE 2).
+
+${viewTypeSpecificPrompt}
 
 ${roomStylePrompt}
 
-THE LAMP TO INTEGRATE:
+THE LAMP TO INTEGRATE (IMAGE 2):
 Style: ${lampAnalysis.style}
 Structure details: ${lampAnalysis.structure || "N/A"}
 Materials: ${lampMaterialsStr}
@@ -355,41 +369,22 @@ Light Warmth: ${lampAnalysis.lightWarmth}
 ${lightPrompt}
 
 HIGHEST PRIORITY CONSTRAINTS (MUST BE STRICTLY FOLLOWED):
-0. CRITICAL DUAL VISUAL FIDELITY - PRESERVE BOTH IMAGE 1 AND IMAGE 2 (最核心双重约束 - 100%忠实还原原图房间与落地灯):
-   - IMAGE 1 IS THE ABSOLUTE TRUTH FOR THE ROOM: Look directly at IMAGE 1. Keep the exact walls, window frame, curtains, flooring, and sofa/bed from IMAGE 1. DO NOT change the sofa/bed style, upholstery material, or wall finish!
-   - IMAGE 2 IS THE ABSOLUTE TRUTH FOR THE FLOOR LAMP: Look directly at IMAGE 2. Replicate the floor lamp in IMAGE 2 with exact 1:1 visual fidelity across every dimension:
-     * EXACT Lampshade: Same geometry (e.g. cylinder/drum/cone/pleated/flower-shaped), fabric/material texture, pleat pattern, and color as shown in IMAGE 2.
-     * EXACT Pole/Stand: Same exact curve angle, pole thickness, material finish (e.g. matte black/brushed brass/chrome), and trajectory. If IMAGE 2 shows a smooth arched pole, DO NOT add any joints, levers, knobs, or extra bends! If IMAGE 2 shows a straight vertical pole, DO NOT bend it!
-     * EXACT Base: Same base type, diameter, and material as in IMAGE 2.
-     * ZERO HALLUCINATIONS: DO NOT add any pull-chains, hanging beads, extra shelves, swing arms, or hardware controls unless explicitly visible in IMAGE 2!
-   - Any visual deviation from IMAGE 1 (room) or IMAGE 2 (lamp) is a critical failure!
-1. NO UNREQUESTED OR HALLUCINATED LAMP PARTS (严禁出现台灯原本没有的任何部件 - 绝对精细100%还原):
-   - You MUST reproduce ONLY the exact physical parts visible in the reference floor lamp image and described in the lamp analysis structure: ${lampAnalysis.structure || "N/A"}.
-   - STRICTLY FORBIDDEN: DO NOT add any unrequested horizontal swing arms, side brackets, extra poles, secondary lampshades, pull-chains (unless present in original), extra trays, or hardware extensions that do NOT exist in the original lamp image.
-   - IF the original floor lamp pole is a straight vertical rod, it MUST remain a single clean vertical rod. DO NOT generate any horizontal side arms protruding outwards.
-   - IF the original floor lamp does NOT have a built-in tray/table, DO NOT add a tray. IF it HAS a tray, preserve its exact shape, height, and color.
+0. STRICT SINGLE LAMP MANDATE (绝对唯一落地灯规则 - 严禁出现双杆或两盏灯):
+   - The scene MUST contain EXACTLY ONE single floor lamp (replicated 1:1 from IMAGE 2).
+   - STRICTLY FORBIDDEN: DO NOT render two floor lamps, DO NOT generate double poles, extra arc branches, or floating secondary lamp stands!
 
-2. ABSOLUTE LAMP FAITHFULNESS & STRUCTURAL INTEGRITY (100% 还原落地灯整体结构与颜色):
-   - You MUST completely and exactly reproduce the floor lamp's original appearance, colors, materials, structure, and shape.
-   - PHYSICAL INTEGRITY: The floor lamp (lampshade, pole, built-in tray if any, and bottom base) is ONE SINGLE CONNECTED PHYSICAL OBJECT. The base MUST rest firmly on the floor. DO NOT detach the pole from its base, do not separate the tray, and DO NOT fuse/embed the lamp pole or tray into adjacent nightstands or drawers! The bedside nightstand and sofa are independent items sitting beside the floor lamp.
+1. CRITICAL DUAL VISUAL FIDELITY (100%忠实还原原图):
+   - IF ROOM IMAGE (IMAGE 1) IS PROVIDED: Preserve the exact walls, curtains, and sofa/bed from IMAGE 1.
+   - LAMP (IMAGE 2): Replicate the floor lamp in IMAGE 2 with exact 1:1 visual fidelity across lampshade geometry, pole curvature/shape, and color.
+   - If IMAGE 2 shows a single straight vertical rod, DO NOT bend it and DO NOT add side branches!
+   - If IMAGE 2 shows a single arched rod, render a single smooth arched rod with NO extra elbows or joints!
 
-3. ROOM LAYOUT CONSISTENCY & LOCALIZED CORNER (房间布局变动限制与局部角落取景):
-   - Keep the background walls, wall paneling, curtains, window positions, and furniture style completely consistent and stable.
-   - You are STRICTLY FORBIDDEN from generating a wide-angle full-room shot showing an entire room, huge open space, or random new room layouts. Focus strictly on the localized nook/corner where the lamp is placed.
+2. NO UNREQUESTED OR HALLUCINATED LAMP PARTS:
+   - Reproduce ONLY the exact physical parts visible in IMAGE 2.
+   - ABSOLUTE PROHIBITION OF HALLUCINATED PULL-CHAINS: If IMAGE 2 has no pull-chain cord, DO NOT add any pull-chain cord!
 
-4. STRICT LAMP PLACEMENT RULES & CENTERED COMPOSITION (落地灯摆放位置与画面居中构图):
-   - LOGICAL PLACEMENT: The floor lamp MUST be placed in a realistic and natural location (e.g. beside the sofa outer armrest or next to the bed nightstand in the corner). DO NOT place the floor lamp in floating or unnatural places (such as walkways, directly in front of sofa seats, or at the foot of the bed) just to achieve centering.
-   - CENTERED FRAMING: Achieve central placement in the photograph through camera angle and framing (通过摄像机的角度选择、对焦取景与构图剪裁，将落地灯呈现在画面中央). The floor lamp MUST be the undisputed primary hero subject and positioned in the central area of the photograph.
-   - LOCALIZED NOOK ONLY: Do NOT show an entire wide room — focus purely on this localized nook/corner (无需展示完整房间，只需展示落地灯所在的温馨局部角落).
-
-5. CAMERA CENTERING & VIEW-TYPE PERSPECTIVE (相机镜头对焦取景):
-   - ${perspectiveGuidance}
-
-6. ZERO BOKEH & DEEP FOCUS (全焦清晰 - 画面真实清晰):
-   - You MUST keep the ENTIRE photograph (lamp, background wall, adjacent furniture, curtains) completely sharp and clear in deep focus.
-   - DO NOT apply unnatural bokeh blur or heavy portrait-style background blur.
-
-${preservationGuidance}
+3. CAMERA & COMPOSITION RULES:
+   - ${viewTypeSpecificPrompt}
 
 ${humanGuidance}`;
 
