@@ -296,16 +296,16 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
           }
         }
 
-        // Detailed prompt
+        // Detailed prompt and structure preservation guidance based on selected viewType
         let preservationGuidance = "";
         let perspectiveGuidance = "";
 
         if (params.viewType === "far") {
-          preservationGuidance = "2. LOCALIZED CORNER FULL-HEIGHT SHOT (远景/局部全高视角): The camera is positioned at a close-to-medium distance to frame the full vertical height of the floor lamp from base to shade in its cozy corner. The floor lamp MUST fill at least 60%-80% of the image frame height! CRITICAL: STRICTLY FORBIDDEN to pull back or generate a wide panoramic room photo showing an entire huge living room/bedroom. Crop tightly to only the localized corner (e.g. lamp + sofa armrest).";
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (FAR VIEW / 远景/局部全高视角): Focus directly on the full-length floor lamp in its immediate corner setting beside the sofa armrest or nightstand. Frame and crop tightly on this corner alone; DO NOT show the rest of the room or distant furniture.";
+          preservationGuidance = "2. DISTANT / WIDER CORNER SHOT (远景/更宽局部视角): The camera is positioned further back compared to the medium close view to capture a wider, more comprehensive view of the room corner. It clearly reveals the entire height of the floor lamp (base to shade), the full scale of the neighboring furniture (e.g., the complete side of the sofa, or the entire bed headboard with the nightstand), and more floor and wall surface. It MUST show a distinctly larger range of the room than the medium view, but NOT the entire room (远景视角：视距较远，展示落地灯所在角落的更宽范围，包括完整的落地灯、完整的相邻家具侧边、更多的墙面与地面，展示范围明显大于中景，但又不是展示整间房间，确保画面重点仍在角落里).";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (FAR VIEW / 远景/更宽视距视角): Set a larger camera distance to show a broader segment of the room's corner environment. It must be clearly distinguished from the medium view by showing significantly more of the surrounding layout and furniture, while keeping the floor lamp as the primary focal subject.";
         } else if (params.viewType === "mid") {
-          preservationGuidance = "2. MEDIUM CLOSE SHOT (中景/半身局部视角): The camera is 1 to 1.5 meters away, focusing on the upper-to-mid section of the floor lamp (lampshade, pole, built-in tray) and the adjacent sofa armrest or nightstand top. Keep the camera close so the floor lamp is the undisputed primary hero subject.";
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MID VIEW / 中景/半身视角): Medium close-up focusing directly on the upper 2/3 of the lamp and the immediate sofa armrest or bedside corner.";
+          preservationGuidance = "2. MEDIUM CLOSE SHOT (中景/中等视距视角): The camera is positioned at a medium distance (approx 1 to 1.5 meters), focusing on a tighter, more intimate view of the floor lamp's upper-to-mid section (lampshade, pole, built-in shelf/tray) and the immediate neighboring furniture (e.g., only the side armrest of the sofa or the top of the bedside nightstand). The visible room area is smaller, more focused, and much tighter than the far view (中景视角：视距较近，约1-1.5米，聚焦于落地灯中上段及其紧邻的局部，展示的房间范围明显比远景更小更窄，与远景有明确的视距和景深区分).";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MID VIEW / 中景/中等视距): A closer, more focused medium shot that tightly frames the floor lamp and its immediate surrounding elements. It MUST have a narrower perspective and smaller visible room range compared to the far view.";
         } else if (params.viewType === "close") {
           preservationGuidance = "2. EXTREME MACRO CLOSE-UP (近景/特写 - 画面仅展示灯罩与上段直立灯杆): EXTREME MACRO DETAIL SHOT. The camera MUST zoom in very closely to focus exclusively on the upper lampshade, straight vertical upper pole, and pull-chain switch (if present in original). The lampshade MUST dominate 60%-70% of the photo frame. CRITICAL: DO NOT add any horizontal swing arm, extension bracket, swivel joint, or side attachment under the shade! The floor, lamp base, and room ceiling MUST be completely cropped OUT of the frame!";
           perspectiveGuidance = "4. VIEW AND PERSPECTIVE (CLOSE VIEW / 近景/灯罩长焦特写): Macro photography distance focusing directly on the lampshade and straight vertical pole. Look at classic product close-up detail photos: only the upper shade and straight vertical pole are visible. DO NOT add any horizontal swing arm, side bracket, or swivel joint!";
@@ -378,10 +378,18 @@ HIGHEST PRIORITY CONSTRAINTS (MUST BE STRICTLY FOLLOWED):
    - CRITICAL BEDROOM PLACEMENT: In a bedroom, the floor lamp MUST be placed ONLY at the headboard corner beside the nightstand. STRICTLY FORBIDDEN to place at the foot of the bed or bed-end bench (绝对禁止把落地灯放在床尾或床脚处！).
    - NEVER place the lamp floating in walkways, open room center, or facing furniture frontally.
 
-5. CAMERA CENTERING & VIEW-TYPE PERSPECTIVE (相机镜头对焦取景):
-   - ${perspectiveGuidance}
+5. STRICT DIMENSIONS & PROPORTIONAL SCALE MATCHING (严苛家具与落地灯的物理尺寸与比例对照规范):
+   - HEIGHT PROPORTION (相对高度): A standard floor lamp stands about 1.5 to 1.8 meters tall. The floor lamp MUST be physically taller than the sofa backrest and bedside nightstand. The lampshade should stand at a realistic reading/ambient height relative to the adjacent sofa or bed.
+   - USER LAMP SCALE FIDELITY (注意用户上传落地灯的尺寸信息): Strictly honor the proportions of the uploaded floor lamp image. If the reference lamp is a slender pole lamp, do not make it thick. If the shade is large and dome-shaped, ensure it maintains that scale relative to the sofa's armrest.
+   - BUILT-IN TRAY HEIGHT (内置置物台/茶几高度): If the floor lamp has a built-in tray/table, its height from the floor MUST stand at a standard, realistic height (about 55cm to 65cm). It MUST align beautifully and horizontally with the adjacent sofa armrest or bedside nightstand. It must NOT look unnaturally low or abnormally high near the shade.
+   - SIZE & SCALE FIDELITY (真实比例与家具尺寸对照): The lampshade, pole thickness, built-in tray width, and base diameter MUST be perfectly proportioned to the adjacent real furniture (sofa, nightstand, bed). The lamp must NOT look like a giant towering column, nor a tiny miniature desk-lamp scale model.
+   - GROUNDED BASE (底座落地稳固): The floor lamp's base must rest flatly and solidly on the floor, rather than floating in mid-air or sinking into the ground.
 
-6. ZERO BOKEH & DEEP FOCUS (全焦清晰 - 画面真实清晰):
+6. CAMERA CENTERING & VIEW-TYPE PERSPECTIVE & SOFA CORNER FRAMING (相机镜头对焦取景与沙发一角局部取景规范):
+   - ${perspectiveGuidance}
+   - SOFA CORNER FRAMING (只展示房间中沙发的一角): In living room or sofa scenes, the camera MUST adopt an elegant, tight, and professional catalog-style framing. Do NOT show the entire sofa, and do NOT show the entire room. Instead, only capture a localized corner of the sofa (e.g., about 1/3 to 1/2 of the sofa, showing one armrest, the side seat cushion, and a pillow or two, with a small part of a coffee table in the corner foreground, and a beautifully framed painting or textured paneling on the wall behind it). Place the floor lamp gracefully right beside the sofa armrest. This tight framing keeps the visual focus extremely snug, cozy, and highly professional.
+
+7. ZERO BOKEH & DEEP FOCUS (全焦清晰 - 画面真实清晰):
    - You MUST keep the ENTIRE photograph (lamp, background wall, adjacent furniture, curtains) completely sharp and clear in deep focus.
    - DO NOT apply unnatural bokeh blur or heavy portrait-style background blur.
 

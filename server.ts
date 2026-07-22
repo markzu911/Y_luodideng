@@ -583,10 +583,18 @@ HIGHEST PRIORITY CONSTRAINTS (MUST BE STRICTLY FOLLOWED):
    - CRITICAL BEDROOM PLACEMENT: In a bedroom, the floor lamp MUST be placed ONLY at the headboard corner beside the nightstand. STRICTLY FORBIDDEN to place at the foot of the bed or bed-end bench (绝对禁止把落地灯放在床尾或床脚处！).
    - NEVER place the lamp floating in walkways, open room center, or facing furniture frontally.
 
-5. CAMERA CENTERING & VIEW-TYPE PERSPECTIVE (相机镜头对焦取景):
-   - ${perspectiveGuidance}
+5. STRICT DIMENSIONS & PROPORTIONAL SCALE MATCHING (严苛家具与落地灯的物理尺寸与比例对照规范):
+   - HEIGHT PROPORTION (相对高度): A standard floor lamp stands about 1.5 to 1.8 meters tall. The floor lamp MUST be physically taller than the sofa backrest and bedside nightstand. The lampshade should stand at a realistic reading/ambient height relative to the adjacent sofa or bed.
+   - USER LAMP SCALE FIDELITY (注意用户上传落地灯的尺寸信息): Strictly honor the proportions of the uploaded floor lamp image. If the reference lamp is a slender pole lamp, do not make it thick. If the shade is large and dome-shaped, ensure it maintains that scale relative to the sofa's armrest.
+   - BUILT-IN TRAY HEIGHT (内置置物台/茶几高度): If the floor lamp has a built-in tray/table, its height from the floor MUST stand at a standard, realistic height (about 55cm to 65cm). It MUST align beautifully and horizontally with the adjacent sofa armrest or bedside nightstand. It must NOT look unnaturally low or abnormally high near the shade.
+   - SIZE & SCALE FIDELITY (真实比例与家具尺寸对照): The lampshade, pole thickness, built-in tray width, and base diameter MUST be perfectly proportioned to the adjacent real furniture (sofa, nightstand, bed). The lamp must NOT look like a giant towering column, nor a tiny miniature desk-lamp scale model.
+   - GROUNDED BASE (底座落地稳固): The floor lamp's base must rest flatly and solidly on the floor, rather than floating in mid-air or sinking into the ground.
 
-6. ZERO BOKEH & DEEP FOCUS (全焦清晰 - 画面真实清晰):
+6. CAMERA CENTERING & VIEW-TYPE PERSPECTIVE & SOFA CORNER FRAMING (相机镜头对焦取景与沙发一角局部取景规范):
+   - ${perspectiveGuidance}
+   - SOFA CORNER FRAMING (只展示房间中沙发的一角): In living room or sofa scenes, the camera MUST adopt an elegant, tight, and professional catalog-style framing. Do NOT show the entire sofa, and do NOT show the entire room. Instead, only capture a localized corner of the sofa (e.g., about 1/3 to 1/2 of the sofa, showing one armrest, the side seat cushion, and a pillow or two, with a small part of a coffee table in the corner foreground, and a beautifully framed painting or textured paneling on the wall behind it). Place the floor lamp gracefully right beside the sofa armrest. This tight framing keeps the visual focus extremely snug, cozy, and highly professional.
+
+7. ZERO BOKEH & DEEP FOCUS (全焦清晰 - 画面真实清晰):
    - You MUST keep the ENTIRE photograph (lamp, background wall, adjacent furniture, curtains) completely sharp and clear in deep focus.
    - DO NOT apply unnatural bokeh blur or heavy portrait-style background blur.
 
