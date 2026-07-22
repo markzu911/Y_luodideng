@@ -537,14 +537,14 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
         let perspectiveGuidance = "";
 
         if (safeParams.viewType === "far") {
-          preservationGuidance = "2. FULL-HEIGHT CORNER SHOT (远景/完整视角): Frame the full floor lamp from top shade to bottom base in its cozy room corner next to the sofa or bed. The room corner environment (wall, curtains, sofa/bed) should be harmoniously displayed around the lamp.";
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (FAR VIEW / 远景/全景视角): Wide-to-medium interior framing displaying the full height of the floor lamp standing in the corner next to the primary furniture from a far camera distance.";
+          preservationGuidance = "2. FAR VIEW (远景/局部全高视角): Frame a cozy localized corner (sofa armrest/backrest or bedside + wall/curtains). The camera frames the FULL vertical height of the floor lamp from top shade to bottom base. The floor lamp MUST be placed in a realistic, logical location (beside the sofa armrest or bed nightstand) and positioned in the CENTRAL focus area of the photograph. DO NOT show a full wide room — focus strictly on this cozy corner.";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (FAR VIEW / 远景视角): Medium-wide interior photography centered on the floor lamp in its cozy room corner. The full lamp stands centered in the frame.";
         } else if (safeParams.viewType === "mid") {
-          preservationGuidance = "2. FULL-HEIGHT CORNER SHOT (中景/完整视角): All generation requirements and room/lamp preservation constraints are 100% IDENTICAL to far view (远景). Frame the full floor lamp in its cozy room corner next to the sofa or bed, strictly preserving the exact room background, walls, and furniture. ONLY the camera shooting distance is changed to a medium distance (中景距离).";
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MID VIEW / 中景视角): Medium-distance interior framing displaying the floor lamp standing in the corner next to the primary furniture from a medium camera distance, maintaining all other far-view generation rules.";
+          preservationGuidance = "2. MID VIEW (中景/中近景视角 - 参考中近景视角图): Reference high-end lifestyle interior photography (参考中近景视角图). Frame a tight, warm medium shot focusing on the illuminated upper 2/3 of the floor lamp (lampshade and pole) standing naturally next to the sofa backrest or wooden side table, with soft translucent window curtains or textured wall behind it. The floor lamp MUST be centered in the frame. Warm golden light casts natural highlights onto nearby furniture surfaces. Lower base and floor may be cropped out.";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MID VIEW / 中景视角): Medium-shot perspective capturing the illuminated floor lamp in the central frame, flanked by sofa armrest/backrest and soft background curtains.";
         } else if (safeParams.viewType === "close") {
-          preservationGuidance = "2. CLOSE-UP DETAIL SHOT (近景/特写视角): Reference tight product & interior detail photography (参考近景视角). Zoom in close to focus on the glowing lampshade, upper pole detail, and the warm light reflections on the adjacent tabletop or sofa surface. The lampshade and its warm light diffusion should be prominent in the frame.";
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (CLOSE VIEW / 近景特写视角): Close-up detail shot framing the illuminated lampshade, warm light wash, and adjacent furniture textures.";
+          preservationGuidance = "2. CLOSE VIEW (近景/特写视角 - 参考近景特写参考图): Reference tight product & interior detail photography (参考近景特写参考图). Zoom in close to focus directly on the glowing lampshade and upper pole of the floor lamp. The illuminated lampshade MUST dominate the central area of the frame. Soft ambient background wall, curtains, or tabletop decor are visible behind the lamp. Floor and base are cropped out.";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (CLOSE VIEW / 近景特写视角): Close-up detail shot centered on the glowing lampshade, upper pole, and warm light diffusion.";
         }
 
         // Detailed style specifications for Virtual Rooms
@@ -628,10 +628,10 @@ HIGHEST PRIORITY CONSTRAINTS (MUST BE STRICTLY FOLLOWED):
    - PERSPECTIVE CONSISTENCY: The camera's shooting distance or framing may zoom in depending on the View Type (Far / Mid / Close), BUT the underlying room elements (background wall, curtains, sofa, bedding) MUST remain 100% faithful to IMAGE 1 without any arbitrary changes.
    - You are STRICTLY FORBIDDEN from generating a wide-angle full-room shot showing an entire room, huge open space, or random new room layouts. Focus strictly on the localized nook/corner where the lamp is placed.
 
-4. STRICT LAMP PLACEMENT RULES - MUST BE PLACED ON THE SIDE OF SOFA/BED (落地灯摆放位置严禁放在床尾或沙发正前方！必须放在侧面):
-   - CRITICAL SOFA PLACEMENT: In a living room, the floor lamp MUST be placed on the SIDE of the sofa (beside the outer armrest or in the corner behind the armrest). STRICTLY FORBIDDEN: DO NOT place the floor lamp in front of the sofa seats, in front of the coffee table, or facing the sofa front (绝对禁止把落地灯摆放在沙发正前方、座位前或茶几旁！必须放在沙发侧面扶手旁！).
-   - CRITICAL BEDROOM PLACEMENT: In a bedroom, the floor lamp MUST be placed ONLY at the headboard corner beside the nightstand. STRICTLY FORBIDDEN to place at the foot of the bed or bed-end bench (绝对禁止把落地灯放在床尾或床脚处！).
-   - NEVER place the lamp floating in walkways, open room center, or facing furniture frontally.
+4. STRICT LAMP PLACEMENT RULES & CENTERED COMPOSITION (落地灯摆放位置与画面居中构图):
+   - LOGICAL PLACEMENT: The floor lamp MUST be placed in a realistic and natural location (e.g. beside the sofa outer armrest or next to the bed nightstand in the corner). DO NOT place the floor lamp in floating or unnatural places (such as walkways, directly in front of sofa seats, or at the foot of the bed) just to achieve centering.
+   - CENTERED FRAMING: Achieve central placement in the photograph through camera angle and framing (通过摄像机的角度选择、对焦取景与构图剪裁，将落地灯呈现在画面中央). The floor lamp MUST be the undisputed primary hero subject and positioned in the central area of the photograph.
+   - LOCALIZED NOOK ONLY: Do NOT show an entire wide room — focus purely on this localized nook/corner (无需展示完整房间，只需展示落地灯所在的温馨局部角落).
 
 5. CAMERA CENTERING & VIEW-TYPE PERSPECTIVE (相机镜头对焦取景):
    - ${perspectiveGuidance}
