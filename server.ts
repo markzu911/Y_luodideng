@@ -496,17 +496,26 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
           }
         }
 
+        // Safely extract params with defaults
+        const safeParams = {
+          viewType: params?.viewType || "far",
+          quality: params?.quality || "1K",
+          ratio: params?.ratio || "4:3",
+          lightState: params?.lightState || "on",
+          needModel: !!params?.needModel,
+        };
+
         // Detailed prompt and structure preservation guidance based on selected viewType
         let preservationGuidance = "";
         let perspectiveGuidance = "";
 
-        if (params.viewType === "far") {
+        if (safeParams.viewType === "far") {
           preservationGuidance = "2. CORNER CLOSE-UP FULL LAMP SHOT (沙发床头局部特写/完整展示落地灯): YOU MUST FIND the sofa or bed in the room. Place the floor lamp perfectly next to the sofa or bedside. The camera MUST be a close-up shot (特写镜头) of this localized corner. The room DOES NOT need to be fully shown (房间不用全部展示，只展示一角即可). However, the floor lamp itself MUST be fully and completely displayed from top to bottom (完整的展示落地灯).";
           perspectiveGuidance = "4. VIEW AND PERSPECTIVE (FAR VIEW / 远景设定/局部特写): CRITICAL! Do NOT generate a wide panoramic room photo. Frame a tight, cozy close-up shot (特写镜头) focusing strictly on the sofa or bed corner and the lamp. Only show this corner (只展示一角即可). The entire floor lamp must be fully visible in this close-up frame.";
-        } else if (params.viewType === "mid") {
+        } else if (safeParams.viewType === "mid") {
           preservationGuidance = "2. MEDIUM CLOSE SHOT (中景/半身局部视角): The camera is 1 to 1.5 meters away, focusing on the upper-to-mid section of the floor lamp (lampshade, pole, built-in tray) and the adjacent sofa armrest or nightstand top. Keep the camera close so the floor lamp is the undisputed primary hero subject.";
           perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MID VIEW / 中景/半身视角): Medium close-up focusing directly on the upper 2/3 of the lamp and the immediate sofa armrest or bedside corner.";
-        } else if (params.viewType === "close") {
+        } else if (safeParams.viewType === "close") {
           preservationGuidance = "2. EXTREME MACRO CLOSE-UP (近景/特写 - 画面仅展示灯罩与上段灯杆): EXTREME MACRO DETAIL SHOT. The camera MUST zoom in very closely to focus exclusively on the upper lampshade, top pole/bracket, and pull-chain switch. The lampshade MUST dominate 60%-70% of the photo frame. The floor, lamp base, and room ceiling MUST be completely cropped OUT of the frame!";
           perspectiveGuidance = "4. VIEW AND PERSPECTIVE (CLOSE VIEW / 近景/灯罩长焦特写): Macro photography distance focusing directly on the lampshade and light glow. Look at classic product close-up detail photos: only the upper shade and top rod are visible, with the wall/cabinet right behind it. DO NOT show the bottom base or whole room floor!";
         }
@@ -535,13 +544,19 @@ The room style and context MUST match:
 - Colors: ${roomAnalysis.colors.join(", ")}`
           : `CRITICAL ROOM STYLE MATCHING: You MUST preserve the exact style and structural integrity of the uploaded room background. Find the main sofa or bed in the uploaded room image. You MUST place the floor lamp next to this sofa or bedside. The generated scene MUST feel like a natural extension and high-fidelity placement of the lamp within this specific corner of the real uploaded room.`;
 
-        const lightPrompt = params.lightState === "on"
+        const lightPrompt = safeParams.lightState === "on"
           ? `CRITICAL (LIGHT IS ON): Warm, soft, high-fidelity light glows from the light source of the lamp. You MUST generate realistic volumetric light cones, ambient lighting casting on the nearby furniture and floor, and highlight shadows with rich glow effects. The warm light from the floor lamp (approx 3000K-3500K) must blend harmoniously with the room's cozy ambient lighting. The entire scene must use a unified, natural, and comfortable color temperature without any strange, extreme contrast between cold blue and warm orange.`
           : `CRITICAL (LIGHT IS OFF): The floor lamp is TURNED OFF. No artificial light is emitted. The lamp is purely lit by the room's ambient daylight and surrounding lights, revealing the authentic texture, colors, and shadows of its structural elements (lampshade, metal poles, wooden elements) without any active glow or light-cone emission.`;
 
-        const humanGuidance = params.needModel 
+        const humanGuidance = safeParams.needModel 
           ? "5. PERSONA / HUMAN PRESENCE: You MUST include a realistic human model (e.g., a person reading, relaxing, or enjoying the space) to enhance the living atmosphere. The human figure should seamlessly blend into the scene and interact naturally with the lighting and environment. 认知说明：必须要包含一个真实的人物模型（比如正在阅读或休息的人）。" 
           : "5. PERSONA / HUMAN PRESENCE: DO NOT include any human figures or models in the scene. Provide a pure architectural and furniture visualization. 绝对不要在画面中出现任何人物模型。";
+
+        const qualityPrompt = safeParams.quality === "4K"
+          ? "7. IMAGE QUALITY & RESOLUTION: Render at ultra-high 4K resolution with hyper-fine textures, extreme edge sharpness, and studio master photographic clarity."
+          : safeParams.quality === "2K"
+          ? "7. IMAGE QUALITY & RESOLUTION: Render at high-definition 2K resolution with crisp details and clean clarity."
+          : "7. IMAGE QUALITY & RESOLUTION: Render at standard clean 1K resolution.";
 
         const prompt = `A professional, ultra-high-resolution interior design photograph.
 Your task is to generate a new room based on the analysis and embed the provided floor lamp into it.
@@ -587,6 +602,8 @@ HIGHEST PRIORITY CONSTRAINTS (MUST BE STRICTLY FOLLOWED):
    - You MUST keep the ENTIRE photograph (lamp, background wall, adjacent furniture, curtains) completely sharp and clear in deep focus.
    - DO NOT apply unnatural bokeh blur or heavy portrait-style background blur.
 
+${qualityPrompt}
+
 ${preservationGuidance}
 
 ${humanGuidance}`;
@@ -600,7 +617,7 @@ ${humanGuidance}`;
           },
           config: {
             imageConfig: {
-              aspectRatio: params.ratio || "4:3",
+              aspectRatio: safeParams.ratio || "4:3",
             },
           },
         });
