@@ -1,7 +1,6 @@
 const fs = require('fs');
-let code = fs.readFileSync('api/proxy.ts', 'utf8');
+let code = fs.readFileSync('server.ts', 'utf8');
 
-const target = 'const roomStylePrompt = isVirtualRoom';
 const replacement = `let roomStylePrompt = "";
         if (isVirtualRoom) {
           if (params.viewType === "close") {
@@ -24,10 +23,12 @@ The room style and context MUST match:
 - Colors: \${roomAnalysis.colors.join(", ")}\`;
           }
         } else {
-          roomStylePrompt = \`CRITICAL ROOM STYLE MATCHING: You MUST preserve the exact style and structural integrity of the uploaded room background. Under no circumstances should you generate a completely different style of walls, floors, or furniture. The generated scene MUST feel like a natural extension and high-fidelity placement of the lamp within the real uploaded room context.\`;
-        }
+          roomStylePrompt = \`CRITICAL ROOM PRESERVATION RULES (真实照片背景、家具硬装与布局100%严苛保持一致 - 绝不修改或虚构背景):
+- You MUST use the EXACT room layout, wall paneling, cabinets, decorative items, flooring, doors, windows, and furniture shown in the "Reference Room Image".
+- ABSOLUTELY NO ALTERATIONS TO BACKGROUND: Do NOT rearrange the sofa, do NOT change the wall material or texture, do not add or delete cabinet boards, do not introduce new shelves or plants, and do not create non-existent window designs.
+- STRICTLY CONSTRAIN PLACEMENT: The room environment MUST remain 100% identical to the uploaded photo. You are ONLY placing the floor lamp into this existing real corner.
+- The corner of the room must be a real corner from the room uploaded by the user, and the layout and furniture must remain consistent. Do not add or delete items, and do not invent non-existent walls, cabinets, or windows (画面里展示的房间一角必须是用户上传照片中真实的一角，家具与硬装布局必须完全保持一致，严禁自己添加多余物品或删除原有物品，严禁虚构任何原本不存在的墙面、柜面、窗户、柜子或背景元素！).\`;
+        }`;
 
-        //`;
-
-code = code.replace(/const roomStylePrompt = isVirtualRoom[\s\S]*?context\.\`;/, replacement);
-fs.writeFileSync('api/proxy.ts', code);
+code = code.replace(/const roomStylePrompt = isVirtualRoom[\s\S]*?元素！\)\.\`;/, replacement);
+fs.writeFileSync('server.ts', code);

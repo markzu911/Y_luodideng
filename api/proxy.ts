@@ -321,18 +321,32 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
           "田园风": "MASTERPIECE ARCHITECTURE: Warm cozy French country-style bedroom (温润田园风卧室) featuring authentic and realistic high-end residential furniture. MATERIALS: Light natural warm honey-oak wood floors, soft creamy-white or pale beige plaster walls, sheer translucent flowing white curtains, beautiful ruffled floral-lace window curtains. LIGHTING: Gentle, romantic indirect light from classic wall-mounted bronze sconces with small pleated fabric shades glowing warm golden yellow, combined with soft diffused daylight filtering from the window. FURNITURE: A highly comfortable classic solid-wood single/double bed frame styled with fluffy white pillows, delicate pink and yellow pastel-colored accent bedding and sheets with floral patterns, and a soft knit throw blanket. Side table is a minimalist metal round bedside stand with tulips. A classic, rustic warm solid-wood study desk styled with books, a small pleated-shade table lamp, and small green potted plant. Under the bed lies a textured handwoven jute area rug. VIBE: Warm, sweet, romantic, serene, natural, healing, peaceful, and cozy, photorealistic 8k."
         };
 
-        const roomStylePrompt = isVirtualRoom
-          ? `CRITICAL ROOM STYLE MATCHING: You MUST strictly generate the room according to the textual design specifications below to perfectly capture the essence of "${roomAnalysis.style}". 必须严格按照以下【设计规范】和【文字描述】生成极致完美的【${roomAnalysis.style}】风格样板间，完全符合对应的颜色、家具和布局设定，切记不要偏离指定的风格！
-  
+        let roomStylePrompt = "";
+        if (isVirtualRoom) {
+          if (params.viewType === "close") {
+            roomStylePrompt = `CRITICAL BACKGROUND MATCHING: You MUST strictly generate the background to perfectly capture the essence of "${roomAnalysis.style}". 
+DESIGN SPECIFICATION FOR BACKGROUND:
+Keep the background extremely simple, such as a dim, clean, and out-of-focus dark-grey or deep-brown flat paneled wall or cabinet door, creating a sophisticated luxury contrast. 
+CRITICAL: DO NOT generate any large furniture, beds, sofas, floors, or complete rooms, as this is an extreme close-up detail shot of the lamp only.
+- Style: ${roomAnalysis.style}
+- Colors: ${roomAnalysis.colors.join(", ")}`;
+          } else {
+            roomStylePrompt = `CRITICAL ROOM STYLE MATCHING: You MUST strictly generate the room according to the textual design specifications below to perfectly capture the essence of "${roomAnalysis.style}". 必须严格按照以下【设计规范】和【文字描述】生成极致完美的【${roomAnalysis.style}】风格样板间，完全符合对应的颜色、家具和布局设定，切记不要偏离指定的风格！
+
 DESIGN SPECIFICATION FOR THIS STYLE:
 ${STYLE_SPECS[roomAnalysis.style] || "Generate a professional, high-end interior matching the requested style."}
-  
+
 The room style and context MUST match:
 - Style: ${roomAnalysis.style}
 - Layout: ${roomAnalysis.layout}
 - Furniture: ${roomAnalysis.furniture.join(", ")}
-- Colors: ${roomAnalysis.colors.join(", ")}`
-          : `CRITICAL ROOM STYLE MATCHING: You MUST preserve the exact style and structural integrity of the uploaded room background. Under no circumstances should you generate a completely different style of walls, floors, or furniture. The generated scene MUST feel like a natural extension and high-fidelity placement of the lamp within the real uploaded room context.`;
+- Colors: ${roomAnalysis.colors.join(", ")}`;
+          }
+        } else {
+          roomStylePrompt = `CRITICAL ROOM STYLE MATCHING: You MUST preserve the exact style and structural integrity of the uploaded room background. Under no circumstances should you generate a completely different style of walls, floors, or furniture. The generated scene MUST feel like a natural extension and high-fidelity placement of the lamp within the real uploaded room context.`;
+        }
+
+        //
 
         const lightPrompt = params.lightState === "on"
           ? `CRITICAL (LIGHT IS ON): Warm, soft, high-fidelity light glows from the light source of the lamp. You MUST generate realistic volumetric light cones, ambient lighting casting on the nearby furniture and floor, and highlight shadows with rich glow effects. The warm light from the floor lamp (approx 3000K-3500K) must blend harmoniously with the room's cozy ambient lighting. The entire scene must use a unified, natural, and comfortable color temperature without any strange, extreme contrast between cold blue and warm orange.`
