@@ -359,6 +359,7 @@ HIGHEST PRIORITY CONSTRAINTS (MUST BE STRICTLY FOLLOWED):
 
 2. ABSOLUTE LAMP FAITHFULNESS & STRUCTURAL INTEGRITY (100% 还原落地灯整体结构与颜色):
    - You MUST completely and exactly reproduce the floor lamp's original appearance, colors, materials, structure, and shape.
+   - REALISTIC SCALE & PROPORTION (真实比例大小): The floor lamp MUST maintain a realistic scale and proportion relative to the sofa and room. It MUST NOT be unnaturally oversized, gigantic, or overly tall. The lampshade and pole should look appropriately sized for a standard living room floor lamp standing naturally next to a sofa.
    - PHYSICAL INTEGRITY: The floor lamp (lampshade, pole, built-in tray if any, and bottom base) is ONE SINGLE CONNECTED PHYSICAL OBJECT. ${params.viewType === "close" ? "FOR CLOSE-UP VIEW (近景特写): The camera is zoomed in tight on the upper lampshade and pole, so the bottom base and floor are naturally CROPPED OUT of the camera frame." : "The base MUST rest firmly on the floor. DO NOT detach the pole from its base, do not separate the tray, and DO NOT fuse/embed the lamp pole or tray into adjacent nightstands or drawers! The bedside nightstand and sofa are independent items sitting beside the floor lamp."}
 
 3. ROOM LAYOUT CONSISTENCY & LOCALIZED CORNER (房间布局变动限制与局部角落取景):
