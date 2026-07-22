@@ -524,14 +524,14 @@ Return only the raw JSON. Do not wrap it in markdown code blocks like \`\`\`json
         let perspectiveGuidance = "";
 
         if (safeParams.viewType === "far") {
-          preservationGuidance = "2. CORNER CLOSE-UP FULL LAMP SHOT (沙发床头局部特写/完整展示落地灯): YOU MUST FIND the sofa or bed in the room. Place the floor lamp perfectly next to the sofa or bedside. The camera MUST be a close-up shot (特写镜头) of this localized corner. The room DOES NOT need to be fully shown (房间不用全部展示，只展示一角即可). However, the floor lamp itself MUST be fully and completely displayed from top to bottom (完整的展示落地灯).";
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (FAR VIEW / 远景设定/局部特写): CRITICAL! Do NOT generate a wide panoramic room photo. Frame a tight, cozy close-up shot (特写镜头) focusing strictly on the sofa or bed corner and the lamp. Only show this corner (只展示一角即可). The entire floor lamp must be fully visible in this close-up frame.";
+          preservationGuidance = "2. FULL-HEIGHT FAR SHOT (远景全景 - 完整展示落地灯与房间角落): YOU MUST capture a wide-angle perspective (远景镜头) showing the ENTIRE floor lamp from its bottom base resting on the floor, its full pole height, up to the top lampshade. Also show the full sofa or bed and adjacent room wall/floor area. The camera is pulled back (~2.5 to 3 meters). DO NOT ZOOM IN or crop the lamp base!";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (FAR VIEW / 远景全貌视角): Wide interior photograph from a comfortable distance. The camera MUST show the ENTIRE vertical height of the floor lamp including the base resting on the floor, the complete sofa/bed, and the surrounding room corner. This is a full wide shot (远景全姿展现), NOT a close-up!";
         } else if (safeParams.viewType === "mid") {
-          preservationGuidance = "2. TIGHT MEDIUM SHOT (中景/进一步拉近镜头): ZOOM THE CAMERA IN VERY CLOSE! Frame tightly on the upper half of the floor lamp (lampshade and top pole curve) and the upper surface of nearby furniture (top of sofa backrest/armrest, or nightstand top). The lampshade MUST be large and prominent, occupying 40%-50% of the image frame. The floor, lamp base, and lower pole MUST be completely cropped off at the bottom of the frame.";
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MID VIEW / 中景紧凑拉近视角): CRITICAL CLOSE MEDIUM DISTANCE! Position the camera about 1 meter away. Focus closely on the lampshade, its warm light diffusion, and the adjacent sofa cushion or tabletop details. Do NOT show the lamp base or lower floor. The composition should be an intimate, tight mid-close-up shot emphasizing the product's upper silhouette and cozy lighting.";
+          preservationGuidance = "2. MEDIUM SHOT (中景/进一步拉近镜头): ZOOM THE CAMERA IN to a medium distance (~1.2 to 1.5 meters). Frame tightly on the upper half of the floor lamp (lampshade and top curved pole) and the upper surface of nearby furniture (top of sofa backrest/armrest, or nightstand top). The lampshade MUST be prominent in the upper half of the frame. The floor and the bottom lamp base MUST be cropped OFF at the bottom of the frame.";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (MID VIEW / 中景视角): Medium-distance camera framing (~1.2-1.5 meters). Focus closely on the upper section of the floor lamp (lampshade, top pole, warm light diffusion) and adjacent sofa backrest or headboard details. The lamp base on the floor is NOT visible in this frame.";
         } else if (safeParams.viewType === "close") {
-          preservationGuidance = "2. EXTREME MACRO CLOSE-UP (近景/特写 - 画面仅展示灯罩与上段灯杆): EXTREME MACRO DETAIL SHOT. The camera MUST zoom in very closely to focus exclusively on the upper lampshade and top pole/bracket. DO NOT add any pull-chain, bead-chain switch, or hanging cord unless explicitly visible in the uploaded lamp image! The lampshade MUST dominate 60%-70% of the photo frame. The floor, lamp base, and room ceiling MUST be completely cropped OUT of the frame!";
-          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (CLOSE VIEW / 近景/灯罩长焦特写): Macro photography distance focusing directly on the lampshade and light glow. Look at classic product close-up detail photos: only the upper shade and top rod are visible, with the wall/cabinet right behind it. DO NOT show the bottom base or whole room floor!";
+          preservationGuidance = "2. MACRO CLOSE-UP SHOT (近景/特写 - 画面仅展示灯罩与上段灯杆): EXTREME MACRO CLOSE-UP (~0.5 to 0.8 meters). The camera MUST zoom in very closely to focus exclusively on the upper lampshade, its texture, fabric weave, and top bracket/pole. The lampshade MUST dominate 60%-70% of the entire photo frame. The bottom base, floor, and distant room walls MUST be completely cropped OUT of the frame!";
+          perspectiveGuidance = "4. VIEW AND PERSPECTIVE (CLOSE VIEW / 近景特写视角): Macro product photography distance focusing directly on the lampshade, material finish, and light glow. Only the lampshade and immediate upper rod/wall texture behind it are visible. Base and floor are completely excluded from the picture.";
         }
 
         // Detailed style specifications for Virtual Rooms
@@ -572,6 +572,16 @@ The room style and context MUST match:
           ? "7. IMAGE QUALITY & RESOLUTION: Render at high-definition 2K resolution with crisp details and clean clarity."
           : "7. IMAGE QUALITY & RESOLUTION: Render at standard clean 1K resolution.";
 
+        // Sanitize lamp structure description to prevent negative token activation in diffusion models
+        let sanitizedLampStructure = lampAnalysis.structure || "N/A";
+        const hasExplicitPullChain = /有拉链|有链子|有拉绳|有珠链|pull-chain/i.test(sanitizedLampStructure);
+        if (!hasExplicitPullChain) {
+          // Strip out mentions of chains/pulls so negative keywords don't trigger the image model
+          sanitizedLampStructure = sanitizedLampStructure
+            .replace(/(无拉链开关|无挂珠链|无拉绳|无拉链|无开关拉链|无链子|无开关绳)/g, "")
+            .replace(/(无调节手柄|无铰链|无凸起调节手柄|无铰链转轴)/g, "");
+        }
+
         const prompt = `A professional, ultra-high-resolution interior design photograph.
 Your task is to generate a new room based on the analysis and embed the provided floor lamp into it.
 
@@ -579,12 +589,11 @@ ${roomStylePrompt}
 
 THE LAMP TO INTEGRATE:
 Style: ${lampAnalysis.style}
-Structure details: ${lampAnalysis.structure || "N/A"}
+Structure details: ${sanitizedLampStructure}
 Materials: ${lampAnalysis.materials.join(", ")}
 Color: ${lampAnalysis.color}
 Light Type: ${lampAnalysis.lightType}
 Light Warmth: ${lampAnalysis.lightWarmth}
-${lampAnalysis?.structure?.includes("有拉链") || lampAnalysis?.structure?.includes("有链子") || lampAnalysis?.structure?.includes("有拉绳") || lampAnalysis?.structure?.includes("有珠链") ? "PULL-CHAIN FEATURE: The reference lamp HAS a visible pull-chain under the lampshade. Preserve it." : "ABSOLUTE ZERO PULL-CHAIN MANDATE (100%无拉链/无珠链/无小吊坠): The reference lamp in IMAGE 2 has NO pull-chain or hanging cord under the lampshade. THE BOTTOM RIM OF THE LAMPSHADE MUST BE COMPLETELY CLEAN, SMOOTH, AND EMPTY. YOU ARE STRICTLY FORBIDDEN FROM DRAWING ANY DANGLING CHAIN, BEAD CORD, SWITCH STRING, OR WIRE BELOW THE LAMPSHADE!"}
 
 ${lightPrompt}
 
@@ -592,21 +601,16 @@ HIGHEST PRIORITY CONSTRAINTS (MUST BE STRICTLY FOLLOWED):
 0. CRITICAL DIRECT VISUAL REPLICATION OF IMAGE 2 (最核心约束 - 必须和用户上传/选择的落地灯图片完全一致):
    - Look directly at the attached reference floor lamp image (IMAGE 2).
    - The generated floor lamp MUST BE AN EXACT 1:1 VISUAL REPLICA of the floor lamp in IMAGE 2 in every single dimension:
-     * EXACT Lampshade: Same geometry (e.g. cylinder/drum/cone/pleated/flower-shaped), fabric/material texture, pleat pattern, and color as shown in IMAGE 2.
-     * EXACT Pole/Stand: Same exact curve angle, pole thickness, material finish (e.g. matte black/brushed brass/chrome), and trajectory. If IMAGE 2 shows a smooth arched pole, DO NOT add any joints, levers, knobs, or extra bends! If IMAGE 2 shows a straight vertical pole, DO NOT bend it!
+     * EXACT Lampshade: Same geometry (e.g. cylinder/drum/cone/pleated/flower-shaped), fabric/material texture, pleat pattern, and color as shown in IMAGE 2. The bottom of the lampshade is clean and unobstructed.
+     * EXACT Pole/Stand: Same exact curve angle, pole thickness, material finish (e.g. matte black/brushed brass/chrome), and trajectory. If IMAGE 2 shows a smooth arched pole, render it as ONE smooth, continuous curved rod without any extra knobs, levers, or joints.
      * EXACT Base: Same base type, diameter, and material as in IMAGE 2.
-     * ZERO HALLUCINATIONS: DO NOT add any pull-chains, hanging beads, extra shelves, swing arms, or hardware controls unless explicitly visible in IMAGE 2!
-   - If there is any discrepancy between text descriptions and IMAGE 2, IMAGE 2 IS THE ABSOLUTE TRUTH AND MUST BE REPLICATED EXACTLY. Any visual deviation from IMAGE 2 is a critical failure!
+     * MINIMALIST PURITY: Render ONLY the exact physical parts visible in IMAGE 2. No extra accessories or unrequested hardware.
+   - If there is any discrepancy between text descriptions and IMAGE 2, IMAGE 2 IS THE ABSOLUTE TRUTH AND MUST BE REPLICATED EXACTLY.
 
-1. POLE SHAPE & CONTROL DETAILS (灯杆造型与开关细节 - 绝对严禁出现任何链子/绳子/关节手柄):
-   - ABSOLUTE PROHIBITION OF PULL-CHAINS & CORDS (严禁出现拉线/拉链开关/珠链):
-     * THE LAMPSHADE BOTTOM RIM MUST BE 100% CLEAN AND SMOOTH.
-     * DO NOT DRAW ANY PULL-CHAIN, BEAD CORD, SWITCH STRING, WIRE, OR HANGING BEAD UNDERNEATH THE LAMPSHADE!
-     * IF THE REFERENCE LAMP (IMAGE 2) DOES NOT HAVE A HANGING PULL-CHAIN, THE GENERATED LAMPSHADE MUST NOT HAVE ANY PULL-CHAIN OR STRING DANGLING FROM IT!
-   - POLE SHAPE FIDELITY (灯杆造型):
-     * If the lamp pole in IMAGE 2 is a smooth arched curve (光滑弧形弯杆), it MUST be rendered as ONE continuous, sleek, smooth curved rod. STRICTLY FORBIDDEN: DO NOT add any mechanical adjustment knobs, angular elbow hinges, counterweight handles, or lever sticks protruding from the pole bend!
-   - You MUST reproduce ONLY the exact physical parts visible in IMAGE 2 and described in the lamp analysis structure: ${lampAnalysis.structure || "N/A"}.
-   - IF the original floor lamp pole is a straight vertical rod, it MUST remain a single clean vertical rod. DO NOT generate any horizontal side arms protruding outwards.
+1. POLE SHAPE & DESIGN PURITY (灯杆与灯体造型纯正性):
+   - If the lamp pole in IMAGE 2 is a smooth arched curve, render it as ONE continuous, sleek, smooth curved rod.
+   - The bottom opening of the lampshade must be clean, neat, and minimalist.
+   - IF the original floor lamp pole is a straight vertical rod, it MUST remain a single clean vertical rod.
    - IF the original floor lamp does NOT have a built-in tray/table, DO NOT add a tray. IF it HAS a tray, preserve its exact shape, height, and color.
 
 2. ABSOLUTE LAMP FAITHFULNESS & STRUCTURAL INTEGRITY (100% 还原落地灯整体结构与颜色 - 最重要约束):
