@@ -362,8 +362,10 @@ HIGHEST PRIORITY CONSTRAINTS (MUST BE STRICTLY FOLLOWED):
    - REALISTIC SCALE & PROPORTION (真实比例大小): The floor lamp MUST maintain a realistic scale and proportion relative to the sofa and room. It MUST NOT be unnaturally oversized, gigantic, or overly tall. The lampshade and pole should look appropriately sized for a standard living room floor lamp standing naturally next to a sofa.
    - PHYSICAL INTEGRITY: The floor lamp (lampshade, pole, built-in tray if any, and bottom base) is ONE SINGLE CONNECTED PHYSICAL OBJECT. ${params.viewType === "close" ? "FOR CLOSE-UP VIEW (近景特写): The camera is zoomed in tight on the upper lampshade and pole, so the bottom base and floor are naturally CROPPED OUT of the camera frame." : "The base MUST rest firmly on the floor. DO NOT detach the pole from its base, do not separate the tray, and DO NOT fuse/embed the lamp pole or tray into adjacent nightstands or drawers! The bedside nightstand and sofa are independent items sitting beside the floor lamp."}
 
-3. ROOM LAYOUT CONSISTENCY & LOCALIZED CORNER (房间布局变动限制与局部角落取景):
-   - Keep the background walls, wall paneling, curtains, window positions, and furniture style completely consistent and stable.
+3. ROOM LAYOUT CONSISTENCY & STRICT ROOM ARCHITECTURE (房间布局变动限制与严禁幻觉):
+   - ABSOLUTE ROOM FIDELITY: Keep the background walls, wall paneling, curtains, window positions, and furniture style completely consistent and stable.
+   - NO HALLUCINATED WINDOWS OR WALLS: If the original room image does NOT have a window on a wall, DO NOT add a window! DO NOT change the wall material or color! You are STRICTLY FORBIDDEN from inventing new walls, windows, or architectural features that do not exist in the original image.
+   - NO UNREQUESTED FURNITURE OR LAYOUT CHANGES: DO NOT introduce random new cabinets, tables, chairs, or shelves that do not exist in the original room. Do NOT move the sofa or rearrange the room layout.
    - You are STRICTLY FORBIDDEN from generating a wide-angle full-room shot showing an entire room, huge open space, or random new room layouts. Focus strictly on the localized nook/corner where the lamp is placed.
 
 4. STRICT LAMP PLACEMENT RULES & REALISTIC SPATIAL PERSPECTIVE (落地灯摆放位置与透视空间关系):

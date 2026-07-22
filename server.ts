@@ -624,8 +624,8 @@ HIGHEST PRIORITY CONSTRAINTS (MUST BE STRICTLY FOLLOWED):
 
 3. STRICT ROOM ARCHITECTURE, WALLS, WINDOWS & FURNITURE FAITHFULNESS (房间墙面、窗户与家具严禁随意篡改与幻觉):
    - ABSOLUTE ROOM FIDELITY: You MUST PRESERVE the exact architectural structure, wall finishes (wallpapers, dark wood paneling, stone slabs, paint color, plaster textures), window locations, and existing furniture from IMAGE 1.
-   - NO HALLUCINATED WINDOWS OR WALLS: If IMAGE 1 does NOT have a window on a wall, DO NOT add a window! If IMAGE 1 has dark wood wall panels, KEEP the exact same dark wood panels! DO NOT change the wall material or color!
-   - NO UNREQUESTED FURNITURE: DO NOT introduce random new cabinets, tables, chairs, or shelves that do not exist in IMAGE 1. The furniture present in the generated image MUST strictly match the furniture in IMAGE 1.
+   - NO HALLUCINATED WINDOWS OR WALLS: If IMAGE 1 does NOT have a window on a wall, DO NOT add a window! If IMAGE 1 has dark wood wall panels, KEEP the exact same dark wood panels! DO NOT change the wall material or color! You are STRICTLY FORBIDDEN from inventing new walls, windows, or architectural features that do not exist in the original image.
+   - NO UNREQUESTED FURNITURE OR LAYOUT CHANGES: DO NOT introduce random new cabinets, tables, chairs, or shelves that do not exist in IMAGE 1. The furniture present in the generated image MUST strictly match the furniture in IMAGE 1. Do NOT move the sofa, do NOT rearrange the room layout.
    - PERSPECTIVE CONSISTENCY: The camera's shooting distance or framing may zoom in depending on the View Type (Far / Mid / Close), BUT the underlying room elements (background wall, curtains, sofa, bedding) MUST remain 100% faithful to IMAGE 1 without any arbitrary changes.
    - You are STRICTLY FORBIDDEN from generating a wide-angle full-room shot showing an entire room, huge open space, or random new room layouts. Focus strictly on the localized nook/corner where the lamp is placed.
 
