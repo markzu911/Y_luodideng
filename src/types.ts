@@ -47,7 +47,7 @@ export interface PresetLamp {
 }
 
 export interface GenerationParams {
-  viewType: 'far' | 'mid' | 'close';
+  viewType: 'far' | 'close';
   quality: '1K' | '2K' | '4K';
   ratio: '3:4' | '4:3';
   lightState: 'on' | 'off';
